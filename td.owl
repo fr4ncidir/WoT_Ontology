@@ -1,0 +1,596 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#"
+     xml:base="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things"
+     xmlns:td="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#"
+     xmlns:adt="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#"
+     xmlns:prot="http://www.semanticweb.org/francesco/ontologies/2017/9/protocol_ontology#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:dul="http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#"
+     xmlns:ire="http://w3c.github.io/wot/w3c-wot-td-ire.owl#">
+    <owl:Ontology rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things">
+        <owl:imports rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/protocol_ontology"/>
+        <owl:imports rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations"/>
+        <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2017-10-22T16:50:00</owl:versionInfo>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Web Of Things Ontology by ARCES WOT group</rdfs:comment>
+    </owl:Ontology>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- dul:hasComponent -->
+
+    <owl:ObjectProperty rdf:about="dul:hasComponent">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Thing"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Thing"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#forProperty -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#forProperty">
+        <rdfs:domain>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Action"/>
+                    <rdf:Description rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Event"/>
+                </owl:unionOf>
+            </owl:Class>
+        </rdfs:domain>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Property"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">An Action or an Event may refer to a Property.</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#hasAction -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#hasAction">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Thing"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Action"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A Thing may be able to perform a task in a finite amount of time: the task is the Action</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#hasActionInstance -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#hasActionInstance">
+        <rdfs:subPropertyOf rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#hasInstance"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Action"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#ActionInstance"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#hasDataSchema -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#hasDataSchema">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Property"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#DataSchema"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#hasEvent -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#hasEvent">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Thing"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Event"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A Thing may be able to notify an Event</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#hasEventInstance -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#hasEventInstance">
+        <rdfs:subPropertyOf rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#hasInstance"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Event"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#EventInstance"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#hasInputData -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#hasInputData">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#ActionInstance"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#InputData"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#hasInputDataSchema -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#hasInputDataSchema">
+        <rdfs:subPropertyOf rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#hasDataSchema"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Action"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#DataSchema"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#hasInstance -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#hasInstance"/>
+    
+
+
+    <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#hasOutputData -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#hasOutputData">
+        <rdfs:domain>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#ActionInstance"/>
+                    <rdf:Description rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#EventInstance"/>
+                </owl:unionOf>
+            </owl:Class>
+        </rdfs:domain>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#OutputData"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#hasOutputDataSchema -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#hasOutputDataSchema">
+        <rdfs:subPropertyOf rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#hasDataSchema"/>
+        <rdfs:domain>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Action"/>
+                    <rdf:Description rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Event"/>
+                </owl:unionOf>
+            </owl:Class>
+        </rdfs:domain>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#DataSchema"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#hasProperty -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#hasProperty">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Thing"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Property"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A Thing may have some Properties</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#isAccessibleBy -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#isAccessibleBy">
+        <rdfs:domain>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Action"/>
+                    <rdf:Description rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Thing"/>
+                </owl:unionOf>
+            </owl:Class>
+        </rdfs:domain>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/protocol_ontology#Protocol"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">An Action, or a whole Thing, can be reached by using some specific Protocols</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- ire:hasWebLocation -->
+
+    <owl:ObjectProperty rdf:about="ire:hasWebLocation">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#DataSchema"/>
+        <rdfs:range rdf:resource="ire:AbstractWebLocation"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- dul:hasDataValue -->
+
+    <owl:DatatypeProperty rdf:about="dul:hasDataValue">
+        <rdfs:domain>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#InputData"/>
+                    <rdf:Description rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#OutputData"/>
+                    <rdf:Description rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Property"/>
+                </owl:unionOf>
+            </owl:Class>
+        </rdfs:domain>
+        <rdfs:range>
+            <rdfs:Datatype>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.w3.org/2001/XMLSchema#anyURI"/>
+                    <rdf:Description rdf:about="http://www.w3.org/2001/XMLSchema#string"/>
+                </owl:unionOf>
+            </rdfs:Datatype>
+        </rdfs:range>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#hasName -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#hasName">
+        <rdfs:domain>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Action"/>
+                    <rdf:Description rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Event"/>
+                    <rdf:Description rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Property"/>
+                    <rdf:Description rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Thing"/>
+                </owl:unionOf>
+            </owl:Class>
+        </rdfs:domain>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#Name"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#hasStability -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#hasStability">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Property"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#long"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A Property value may be stable for a certain period of time, expressed in ms. We use 0 to say that it changes asynchronously</rdfs:comment>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#hasTimeStamp -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#hasTimeStamp">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Instance"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTimeStamp"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Identifies when an Instance is thrown</rdfs:comment>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#isDiscoverable -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#isDiscoverable">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Thing"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#isWritable -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#isWritable">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Property"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">If a Property value can be changed through the use of an Action, the value should be &apos;true&apos;. Else, it should be &apos;false&apos;.</rdfs:comment>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Action -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Action">
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A Thing may be able to perform Actions. Some actions may include as effect the modification of a Property owned by the same Thing.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#ActionInstance -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#ActionInstance">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Instance"/>
+        <adt:query rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">SELECT ?aInputDS ?aOutputData ?aOutputValue WHERE {
+?action td:hasInstance &lt;actionInstance&gt;.
+?action td:hasInputDataSchema ?aInputDS.
+&lt;actionInstance&gt; td:hasOutputData ?aOutputData.
+?aOutputData dul:hasDataValue ?aOutputValue
+}</adt:query>
+        <adt:query rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">SELECT ?aOutputDataSchema ?aInstance ?timeStamp ?inputData ?inputValue WHERE {
+&lt;action&gt; td:hasActionInstance ?aInstance.
+?aInstance rdf:type td:ActionInstance.
+?aInstance rdf:type td:Instance.
+?aInstance td:hasTimeStamp ?timeStamp.
+
+OPTIONAL {
+&lt;action&gt; td:hasInputDataSchema ?aInputDataSchema.
+?aInstance td:hasInputData ?inputData.
+?inputData dul:hasDataValue ?inputValue.
+}.
+}</adt:query>
+        <adt:update rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">DELETE {
+&lt;action&gt; td:hasInstance ?oldInstance.
+?oldInstance rdf:type td:ActionInstance.
+?oldInstance rdf:type td:Instance.
+?oldInstance td:hasTimeStamp ?oldTS.
+{?oldInstance td:hasInputData ?oldInput.
+?oldInput rdf:type td:InputData.
+?oldInput dul:hasDataValue ?oldInValue.}+
+{?oldInstance td:hasOutputData ?oldOutput.
+?oldOutput rdf:type td:OutputData.
+?oldOutput dul:hasDataValue ?oldOutValue.}+
+}
+
+INSERT {
+&lt;event&gt; td:hasInstance ?newInstance.
+?newInstance rdf:type td:ActionInstance.
+?newInstance rdf:type td:Instance.
+?newInstance td:hasTimeStamp ?newTS.
+{?newInstance td:hasInputData ?newInput.
+?newInput rdf:type td:InputData.
+?newInput dul:hasDataValue ?newValue.}+
+{?newInstance td:hasOutputData ?newOutput.
+?newOutput rdf:type td:OutputData.
+?newOutput dul:hasDataValue ?newOutValue.}+
+}
+
+WHERE {
+&lt;event&gt; rdf:type td:Action.
+OPTIONAL {
+&lt;event&gt; td:hasInstance ?oldInstance.
+?oldInstance rdf:type td:ActionInstance.
+?oldInstance td:hasTimeStamp ?oldTS.
+{?oldInstance td:hasInputData ?oldInput.
+?oldInput rdf:type td:InputData.
+?oldInput dul:hasDataValue ?oldValue.}+
+{?oldInstance td:hasOutputData ?oldOutput.
+?oldOutput rdf:type td:OutputData.
+?oldOutput dul:hasDataValue ?oldOutValue.}+
+}.
+}</adt:update>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">To request the execution of an Action, an ActionInstance must be defined</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Data -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Data"/>
+    
+
+
+    <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#DataSchema -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#DataSchema">
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A DataSchema identifies a way of encoding a piece of information. So, an InputData, an OutputData as well as a Property values must refer to a DataSchema to be correctly interpreted</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Event -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Event">
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A Thing may be able to signal the occurrence of particular Events.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#EventInstance -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#EventInstance">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Instance"/>
+        <adt:query rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">SELECT ?eOutputDataSchema ?eInstance ?timeStamp ?outputData ?outputValue WHERE {
+&lt;event&gt; td:hasEventInstance ?eInstance.
+?eInstance rdf:type td:EventInstance.
+?eInstance rdf:type td:Instance.
+?eInstance td:hasTimeStamp ?timeStamp.
+
+OPTIONAL {
+&lt;event&gt; td:hasOutputSchema ?eOutputDataSchema.
+?eInstance td:hasOutputData ?outputData.
+?outputData dul:hasDataValue ?outputValue.
+}.
+}</adt:query>
+        <adt:update rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">DELETE {
+&lt;event&gt; td:hasInstance ?oldInstance.
+?oldInstance rdf:type td:EventInstance.
+?oldInstance rdf:type td:Instance.
+?oldInstance td:hasTimeStamp ?oldTS.
+?oldInstance td:hasOutputData ?oldOutput.
+?oldOutput rdf:type td:OutputData.
+?oldOutput dul:hasDataValue ?oldValue.
+}
+
+INSERT {
+&lt;event&gt; td:hasInstance ?newInstance.
+?newInstance rdf:type td:EventInstance.
+?newInstance rdf:type td:Instance.
+?newInstance td:hasTimeStamp ?newTS.
+?newInstance td:hasOutputData ?newOutput.
+?newOutput rdf:type td:OutputData.
+?newOutput dul:hasDataValue ?newValue.
+}
+
+WHERE {
+&lt;event&gt; rdf:type td:Event.
+OPTIONAL {
+&lt;event&gt; td:hasInstance ?oldInstance.
+?oldInstance rdf:type td:EventInstance.
+?oldInstance td:hasTimeStamp ?oldTS.
+?oldInstance td:hasOutputData ?oldOutput.
+?oldOutput rdf:type td:OutputData.
+?oldOutput dul:hasDataValue ?oldValue.
+}.
+}</adt:update>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">To throw an Event, you must creat an EventInstance</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#InputData -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#InputData">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Data"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Instance -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Instance">
+        <adt:discovery rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">SELECT ?instance ?iOrigin ?iType ?thing WHERE {
+?instance rdf:type td:Instance.
+?iOrigin td:hasInstance ?instance.
+?thing rdf:type td:Thing.
+?thing ?iType ?iOrigin.
+}</adt:discovery>
+        <rdfs:comment rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">Superclass for ActionInstances and EventInstances</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#OutputData -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#OutputData">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Data"/>
+        <adt:query rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">SELECT ?thing ?action ?aInstance ?aOutputDataSchema ?output ?outputDS ?outputValue WHERE {
+
+?thing rdf:type td:Thing.
+?thing td:hasAction ?action.
+?action td:hasOutputDataSchema ?aOutputDataSchema.
+?action td:hasInstance ?aInstance.
+?aInstance td:hasOutputData ?output.
+OPTIONAL{?output td:hasDataSchema ?outputDS}.
+?output dul:hasDataValue ?outputValue}</adt:query>
+        <rdfs:comment rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">Actions and Events may result in some data. Such data is collected within OutputData instance</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Property -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Property">
+        <adt:discovery rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">SELECT ?thing ?property ?stability ?write ?schema ?name ?value WHERE {
+?thing rdf:type td:Thing.
+?thing td:hasProperty ?property.
+?property td:hasStability ?stability.
+?property td:isWritable ?write.
+?property td:hasDataSchema ?schema.
+?property dul:hasDataValue ?value
+}</adt:discovery>
+        <adt:update rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">INSERT DATA {
+&lt;thing&gt; td:hasProperty &lt;property&gt;.
+&lt;property&gt; td:hasStability &apos;milliseconds&apos;.
+&lt;property&gt; td:isWritable &apos;boolean&apos;.
+&lt;property&gt; td:hasName &apos;PropertyName&apos;.
+&lt;property&gt; td:hasDataschema &lt;schemaURI&gt;.
+&lt;property&gt; dul:hasDataValue &apos;jsonValue OR URI&apos;
+}</adt:update>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A Thing may have some internal parameters, called Properties. They may be static (i.e. they cannot be modified), or dynamic (i.e. there is an Action which can change it as side effect)</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#PropertyChangedEvent -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#PropertyChangedEvent">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Event"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A PropertyChangedEvent is a particular Event that a Thing may throw, in case a Property it owns is changed by someone.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Thing -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Thing">
+        <adt:discovery rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">SELECT ?thing ?name WHERE {
+?thing rdf:type td:Thing.
+?thing td:hasName ?name.
+?thing td:isDiscoverable &apos;true&apos;}</adt:discovery>
+        <adt:query rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">SELECT ?nestedThing ?nestedName WHERE {
+&lt;thing&gt; rdf:type td:Thing.
+&lt;thing&gt; dul:hasComponent ?nestedThing.
+?nestedThing td:hasName ?nestedName}</adt:query>
+        <adt:query rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">SELECT ?tName ?tDisc ?tProtocol
+?event ?eName ?eSchema ?eProperty
+?property ?pName ?pStability ?pWritable ?pSchema ?pValue
+?action ?aName ?aInputSchema ?aOutputSchema ?aProperty ?aProtocol
+WHERE {
+&lt;thing&gt; rdf:type td:Thing.
+&lt;thing&gt; td:hasName ?tName.
+&lt;thing&gt; td:isDiscoverable ?tDisc.
+OPTIONAL{&lt;thing&gt; td:isAccessibleBy ?tProtocol}.
+
+OPTIONAL {
+&lt;thing&gt; td:hasEvent ?event.
+?event td:hasName ?eName.
+OPTIONAL{?event td:hasOutputDataSchema ?eSchema}.
+OPTIONAL{?event td:forProperty ?eProperty}.
+}.
+
+OPTIONAL {
+&lt;thing&gt; td:hasProperty ?property.
+?property td:hasName ?pName.
+?property td:hasStability ?pStability.
+?property td:isWritable ?pWritable.
+?property td:hasDataSchema ?pSchema.
+?property dul:hasDataValue ?pValue.
+}.
+
+OPTIONAL {
+&lt;thing&gt; td:hasAction ?action.
+?action td:hasName ?aName.
+OPTIONAL{?action td:hasInputDataSchema ?aInputSchema}.
+OPTIONAL{?action td:hasOutputDataSchema ?aOutputSchema}.
+OPTIONAL{?action td:forProperty ?aProperty}.
+OPTIONAL{?action td:isAccessibleBy ?aProtocol}.
+}.
+}</adt:query>
+        <adt:update rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">INSERT DATA {
+&lt;thing&gt; rdf:type td:Thing.
+&lt;thing&gt; td:hasName &lt;thingName&gt;.
+&lt;thing&gt; td:isDiscoverable &lt;thingDiscoverability&gt;.
+{&lt;thing&gt; td:isAccessibleBy &lt;PROTOCOL&gt;.}*
+{&lt;thing&gt; td:hasEvent &lt;EVENT&gt;.}*
+{&lt;thing&gt; td:hasProperty &lt;PROPERTY&gt;.}*
+{&lt;thing&gt; td:hasAction &lt;ACTION&gt;.}*
+}</adt:update>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The web thing object unique identification</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- ire:AbstractWebLocation -->
+
+    <owl:Class rdf:about="ire:AbstractWebLocation"/>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 4.2.8.20170104-2310) https://github.com/owlcs/owlapi -->
+
