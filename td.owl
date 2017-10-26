@@ -68,6 +68,14 @@ francesco.antoniazzi@unibo.it</owl:versionInfo>
     
 
 
+    <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#add_data_schema -->
+
+    <owl:AnnotationProperty rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#add_data_schema">
+        <rdfs:subPropertyOf rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#update"/>
+    </owl:AnnotationProperty>
+    
+
+
     <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#append_action_to_thing -->
 
     <owl:AnnotationProperty rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#append_action_to_thing">
@@ -617,6 +625,11 @@ OPTIONAL {
     <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#DataSchema -->
 
     <owl:Class rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#DataSchema">
+        <add_data_schema rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">INSERT DATA {
+&lt;dataSchema&gt; rdf:type td:DataSchema.
+&lt;dataSchema&gt; ire:hasWebLocation &lt;webLocation&gt;.
+&lt;webLocation&gt; rdf:type ire:AbstractWebLocation
+}</add_data_schema>
         <dataschema_discovery rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">SELECT ?item ?itemType ?relation ?schema ?webLocation WHERE {
 ?schema rdf:type td:DataSchema.
 OPTIONAL {?schema ire:hasWebLocation ?webLocation}.
