@@ -26,25 +26,19 @@
 
     <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#discovery -->
 
-    <owl:AnnotationProperty rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#discovery">
-        <rdfs:range rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL"/>
-    </owl:AnnotationProperty>
+    <owl:AnnotationProperty rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#discovery"/>
     
 
 
     <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#query -->
 
-    <owl:AnnotationProperty rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#query">
-        <rdfs:range rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL"/>
-    </owl:AnnotationProperty>
+    <owl:AnnotationProperty rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#query"/>
     
 
 
     <!-- http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#update -->
 
-    <owl:AnnotationProperty rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#update">
-        <rdfs:range rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL"/>
-    </owl:AnnotationProperty>
+    <owl:AnnotationProperty rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#update"/>
     
 
 
