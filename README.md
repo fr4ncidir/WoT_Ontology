@@ -2,12 +2,12 @@
 Web Of Things Thing Ontology
 
 This repository contains
-- the thing description ontology as imagined by the WoT group of ARCES (Università di Bologna) in progress
-- a tool ontology for communication protocols (to be extended in the future, of course, or to be removed... who knows)
-- a tool ontology for annotations (to be extended in the future, of course, or to be removed... who knows)
+- [ ] the thing description ontology as imagined by the WoT group of ARCES (Università di Bologna) in progress
+- [ ] a tool ontology for communication protocols (to be extended in the future, of course, or to be removed... who knows)
+- [ ] a tool ontology for annotations (to be extended in the future, of course, or to be removed... who knows)
 
 This repository will contain
-- a tool to create Thing Descriptions on-the-go by smart humans
+- [ ] a tool to create Thing Descriptions on-the-go by smart humans
 
 Please look in http://wot.arces.unibo.it
 
