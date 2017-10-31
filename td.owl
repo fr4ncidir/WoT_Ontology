@@ -369,6 +369,7 @@ francesco.antoniazzi@unibo.it</owl:versionInfo>
             <owl:Class>
                 <owl:unionOf rdf:parseType="Collection">
                     <rdf:Description rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Action"/>
+                    <rdf:Description rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Property"/>
                     <rdf:Description rdf:about="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things#Thing"/>
                 </owl:unionOf>
             </owl:Class>
