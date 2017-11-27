@@ -2,10 +2,7 @@
 <catalog prefer="public" xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
     <uri id="Imports Wizard Entry" name="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations" uri="annotations_datatype.owl"/>
     <group id="Folder Repository, directory=, recursive=true, Auto-Update=true, version=2" prefer="public" xml:base="">
-        <uri id="Automatically generated entry, Timestamp=1511780717553" name="http://w3c.github.io/wot/w3c-wot-td-ire.owl" uri="wt3-wot-td-ire.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1511780717553" name="http://www.ontologydesignpatterns.org/ont/dul/DUL.owl" uri="DUL.xml"/>
-        <uri id="Automatically generated entry, Timestamp=1511780717553" name="http://www.semanticweb.org/francesco/ontologies/2017/9/protocol_ontology" uri="protocol_ontology.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1511780717553" name="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations" uri="annotations_datatype.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1511780717553" name="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things" uri="td.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1511781777945" name="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations" uri="annotations_datatype.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1511781777945" name="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things" uri="td.owl"/>
     </group>
 </catalog>

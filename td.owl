@@ -14,7 +14,6 @@
      xmlns:web_of_things="http://wot.arces.unibo.it/ontology/web_of_things#">
     <owl:Ontology rdf:about="http://wot.arces.unibo.it/ontology/web_of_things">
         <owl:versionIRI rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things/0.5"/>
-        <owl:imports rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/protocol_ontology"/>
         <owl:imports rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations"/>
         <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Created by Francesco Antoniazzi
 francesco.antoniazzi@unibo.it</owl:versionInfo>
