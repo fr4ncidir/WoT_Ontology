@@ -2,7 +2,7 @@
 <catalog prefer="public" xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
     <uri id="Imports Wizard Entry" name="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations" uri="annotations_datatype.owl"/>
     <group id="Folder Repository, directory=, recursive=true, Auto-Update=true, version=2" prefer="public" xml:base="">
-        <uri id="Automatically generated entry, Timestamp=1511801439341" name="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations" uri="annotations_datatype.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1511801439341" name="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things" uri="td.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1511876568107" name="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations" uri="annotations_datatype.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1511876568107" name="http://www.semanticweb.org/francesco/ontologies/2017/9/web_of_things" uri="td.owl"/>
     </group>
 </catalog>

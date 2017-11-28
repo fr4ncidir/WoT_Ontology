@@ -53,10 +53,66 @@ francesco.antoniazzi@unibo.it</owl:versionInfo>
     
 
 
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#add_dataschema -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#add_dataschema">
+        <rdfs:subPropertyOf rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#update"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#add_event -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#add_event">
+        <rdfs:subPropertyOf rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#update"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#add_forproperty -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#add_forproperty">
+        <rdfs:subPropertyOf rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#update"/>
+    </owl:AnnotationProperty>
+    
+
+
     <!-- http://wot.arces.unibo.it/ontology/web_of_things#add_new_outputdata -->
 
     <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#add_new_outputdata">
         <rdfs:subPropertyOf rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#update"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#add_new_thing -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#add_new_thing">
+        <rdfs:subPropertyOf rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#update"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#add_output_data -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#add_output_data">
+        <rdfs:subPropertyOf rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#update"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#add_properties -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#add_properties">
+        <rdfs:subPropertyOf rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#update"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#add_property_changed_event -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#add_property_changed_event">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#add_event"/>
     </owl:AnnotationProperty>
     
 
@@ -66,6 +122,46 @@ francesco.antoniazzi@unibo.it</owl:versionInfo>
     <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#dataschema_discovery">
         <rdfs:subPropertyOf rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#discovery"/>
         <rdfs:range rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#delete_actionInstance -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#delete_actionInstance">
+        <rdfs:subPropertyOf rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#update"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#delete_event -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#delete_event">
+        <rdfs:subPropertyOf rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#update"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#delete_forproperty -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#delete_forproperty">
+        <rdfs:subPropertyOf rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#update"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#delete_properties -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#delete_properties">
+        <rdfs:subPropertyOf rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#update"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#delete_property_changed_event -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#delete_property_changed_event">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#delete_event"/>
     </owl:AnnotationProperty>
     
 
@@ -95,6 +191,14 @@ francesco.antoniazzi@unibo.it</owl:versionInfo>
     
 
 
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#get_execution_confirmation -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#get_execution_confirmation">
+        <rdfs:subPropertyOf rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#query"/>
+    </owl:AnnotationProperty>
+    
+
+
     <!-- http://wot.arces.unibo.it/ontology/web_of_things#get_instances -->
 
     <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#get_instances">
@@ -106,6 +210,14 @@ francesco.antoniazzi@unibo.it</owl:versionInfo>
     <!-- http://wot.arces.unibo.it/ontology/web_of_things#get_output -->
 
     <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#get_output">
+        <rdfs:subPropertyOf rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#query"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#get_thing_by_name -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#get_thing_by_name">
         <rdfs:subPropertyOf rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#query"/>
     </owl:AnnotationProperty>
     
@@ -123,6 +235,14 @@ francesco.antoniazzi@unibo.it</owl:versionInfo>
 
     <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#nested_discovery">
         <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#thing_discovery"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#post_action_instance -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#post_action_instance">
+        <rdfs:subPropertyOf rdf:resource="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#update"/>
     </owl:AnnotationProperty>
     
 
@@ -201,6 +321,23 @@ francesco.antoniazzi@unibo.it</owl:versionInfo>
             </owl:Class>
         </rdfs:domain>
         <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Property"/>
+        <web_of_things:add_forproperty rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">&quot;INSERT_FORPROPERTY&quot;:{
+&quot;sparql&quot;:&quot;INSERT {?item td:forProperty ?property}
+WHERE {?property rdf:type td:Property.
+{?item rdf:type td:Action} UNION {?item rdf:type td:Event}}&quot;,
+&quot;forcedBindings&quot;:{
+&quot;item&quot;:{&quot;type&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;},
+&quot;property&quot;:{&quot;type&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;}
+}
+}</web_of_things:add_forproperty>
+        <web_of_things:delete_forproperty rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">&quot;DELETE_FORPROPERTY&quot;:{
+&quot;sparql&quot;:&quot;DELETE {?item td:forProperty ?property}
+WHERE {?property rdf:type td:Property.
+{?item rdf:type td:Action} UNION {?item rdf:type td:Event}}&quot;,
+&quot;forcedBindings&quot;:{
+&quot;item&quot;:{&quot;type&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;},
+}
+}</web_of_things:delete_forproperty>
         <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">An Action or an Event may refer to a Property.</rdfs:comment>
     </owl:ObjectProperty>
     
@@ -339,6 +476,13 @@ WHERE {BIND(now() AS ?time)}&quot;,
 }
 }
 }</web_of_things:add_confirmation_timestamp>
+        <web_of_things:get_execution_confirmation rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">&quot;GET_CONFIRMATION_TIMESTAMP&quot;:{
+&quot;sparql&quot;:&quot;SELECT ?confirmation WHERE {?instance rdf:type td:ActionInstance.
+?instance td:hasConfirmationTimeStamp ?time}&quot;,
+&quot;forcedBindings&quot;:{
+&quot;instance&quot;:{&quot;type&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;}
+}
+}</web_of_things:get_execution_confirmation>
         <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">This timestamp is set when the Thing requested for the action has accepted the instance for execution</rdfs:comment>
     </owl:DatatypeProperty>
     
@@ -349,6 +493,19 @@ WHERE {BIND(now() AS ?time)}&quot;,
     <owl:DatatypeProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#hasDataSchema">
         <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Property"/>
         <rdfs:range rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
+        <web_of_things:add_dataschema rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">&quot;ADD_DATASCHEMA&quot;:{
+&quot;sparql&quot;:&quot;DELETE {?property td:hasDataSchema ?oldDataSchema} INSERT {?property td:hasDataSchema ?newDataSchema} WHERE {?property rdf:type td:Property}&quot;,
+&quot;forcedBindings&quot;:{
+&quot;property&quot;:{
+ &quot;type&quot;:&quot;uri&quot;,
+  &quot;value&quot;:&quot;&quot;
+},
+&quot;newDataSchema&quot;:{
+&quot;type&quot;:&quot;literal&quot;,
+&quot;value&quot;:&quot;&quot;
+}
+}
+}</web_of_things:add_dataschema>
         <web_of_things:dataschema_discovery rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">&quot;ALL_DATASCHEMA_DISCOVERY&quot;:{
 &quot;sparql&quot;:&quot;SELECT ?item ?itemType ?dataSchema ?inputDS ?outputDS WHERE {
 OPTIONAL{?item td:hasDataSchema ?dataSchema}.
@@ -368,6 +525,19 @@ OPTIONAL{?item td:hasOutputDataSchema ?outputDS}.
         <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#hasDataSchema"/>
         <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Action"/>
         <rdfs:range rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
+        <web_of_things:add_dataschema rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">&quot;ADD_INPUT_DATASCHEMA&quot;:{
+&quot;sparql&quot;:&quot;DELETE {?action td:hasInputDataSchema ?oldDataSchema} INSERT {?action td:hasInputDataSchema ?newDataSchema} WHERE {?action rdf:type td:Action}&quot;,
+&quot;forcedBindings&quot;:{
+&quot;action&quot;:{
+ &quot;type&quot;:&quot;uri&quot;,
+  &quot;value&quot;:&quot;&quot;
+},
+&quot;newDataSchema&quot;:{
+&quot;type&quot;:&quot;literal&quot;,
+&quot;value&quot;:&quot;&quot;
+}
+}
+}</web_of_things:add_dataschema>
         <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Format schema for input data to be given to actions</rdfs:comment>
     </owl:DatatypeProperty>
     
@@ -387,6 +557,15 @@ OPTIONAL{?item td:hasOutputDataSchema ?outputDS}.
             </owl:Class>
         </rdfs:domain>
         <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#Name"/>
+        <web_of_things:get_thing_by_name rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">&quot;GET_THING_BY_NAME&quot;:{
+&quot;sparql&quot;:&quot;SELECT ?thing WHERE {?thing rdf:type td:Thing. ?thing td:hasName ?name}&quot;,
+&quot;forcedBindings&quot;:{
+&quot;name&quot;:{
+&quot;type&quot;:&quot;literal&quot;,
+&quot;value&quot;:&quot;&quot;
+}
+}
+}</web_of_things:get_thing_by_name>
         <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Human readable name of Things, Actions, Properties and Events</rdfs:comment>
     </owl:DatatypeProperty>
     
@@ -405,6 +584,19 @@ OPTIONAL{?item td:hasOutputDataSchema ?outputDS}.
             </owl:Class>
         </rdfs:domain>
         <rdfs:range rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
+        <web_of_things:add_dataschema rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">&quot;ADD_DATASCHEMA&quot;:{
+&quot;sparql&quot;:&quot;DELETE {?item td:hasOutputDataSchema ?oldDataSchema} INSERT {?item td:hasOutputDataSchema ?newDataSchema} WHERE {{?item rdf:type td:Action} UNION {?item rdf:type }}&quot;,
+&quot;forcedBindings&quot;:{
+&quot;property&quot;:{
+ &quot;type&quot;:&quot;uri&quot;,
+  &quot;value&quot;:&quot;&quot;
+},
+&quot;newDataSchema&quot;:{
+&quot;type&quot;:&quot;literal&quot;,
+&quot;value&quot;:&quot;&quot;
+}
+}
+}</web_of_things:add_dataschema>
         <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Format schema that output of Events and Actions have.</rdfs:comment>
     </owl:DatatypeProperty>
     
@@ -480,6 +672,59 @@ OPTIONAL{?item td:hasOutputDataSchema ?outputDS}.
     <!-- http://wot.arces.unibo.it/ontology/web_of_things#ActionInstance -->
 
     <owl:Class rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#ActionInstance">
+        <web_of_things:delete_actionInstance rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">&quot;DELETE_ACTIONINSTANCE&quot;:{
+&quot;sparql&quot;:&quot;DELETE {?action td:hasActionInstance ?instance.
+?instance td:hasRequestTimeStamp ?request.
+?instance td:hasConfirmationTimeStamp ?confirmation.
+?instance rdf:type td:ActionInstance.
+?instance td:hasInputData ?inputData.
+?inputData dul:hasDataValue ?value}
+WHERE {?action rdf:type td:Action.
+OPTIONAL {?instance td:hasInputData ?inputData.
+?inputData dul:hasDataValue ?value}}&quot;,
+&quot;forcedBindings&quot;:{
+&quot;action&quot;:{&quot;type&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;},
+&quot;instance&quot;:{&quot;type&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;},
+}
+}</web_of_things:delete_actionInstance>
+        <web_of_things:get_action_request rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">&quot;GET_ACTION_REQUEST&quot;:{
+&quot;sparql&quot;:&quot;SELECT ?action ?instance ?request ?inputData ?value
+WHERE {?thing td:hasAction ?action. 
+?action td:hasActionInstance ?instance.
+?instance td:hasRequestTimeStamp ?request.
+?instance rdf:type td:ActionInstance.
+OPTIONAL {?instance td:hasInputData ?inputData.
+?inputData dul:hasDataValue ?value}}&quot;,
+&quot;forcedBindings&quot;:{
+&quot;thing&quot;:{&quot;type&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;}
+}
+}</web_of_things:get_action_request>
+        <web_of_things:post_action_instance rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">&quot;POST_ACTION_INSTANCE_NO_INPUT&quot;:{
+&quot;sparql&quot;:&quot;INSERT {?action td:hasActionInstance ?instance.
+?instance td:hasRequestTimeStamp ?request.
+?instance rdf:type td:ActionInstance}
+WHERE {?action rdf:type td:Action.
+BIND(now() AS ?request)}&quot;,
+&quot;forcedBindings&quot;:{
+&quot;action&quot;:{&quot;type&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;},
+&quot;instance&quot;:{&quot;type&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;}
+}
+}</web_of_things:post_action_instance>
+        <web_of_things:post_action_instance rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">&quot;POST_ACTION_INSTANCE_WITH_INPUT&quot;:{
+&quot;sparql&quot;:&quot;INSERT {?action td:hasActionInstance ?instance.
+?instance td:hasRequestTimeStamp ?request.
+?instance rdf:type td:ActionInstance.
+?instance td:hasInputData ?inputData.
+?inputData dul:hasDataValue ?value}
+WHERE {?action rdf:type td:Action.
+BIND(now() AS ?request).
+BIND(IRI(CONCAT(&quot;td:input_&quot;,STR(NOW()))) as ?inputData)}&quot;,
+&quot;forcedBindings&quot;:{
+&quot;action&quot;:{&quot;type&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;},
+&quot;instance&quot;:{&quot;type&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;},
+&quot;value&quot;:{&quot;type&quot;:&quot;literal&quot;,&quot;value&quot;:&quot;&quot;},
+}
+}</web_of_things:post_action_instance>
         <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">To request the execution of an Action, an ActionInstance must be defined. It will contain the references to outputs and inputs, if they are present.</rdfs:comment>
     </owl:Class>
     
@@ -496,6 +741,40 @@ OPTIONAL{?item td:hasOutputDataSchema ?outputDS}.
     <!-- http://wot.arces.unibo.it/ontology/web_of_things#Event -->
 
     <owl:Class rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#Event">
+        <web_of_things:add_event rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">&quot;ADD_EVENT&quot;:{
+&quot;sparql&quot;:&quot;DELETE {?event td:hasName ?oldName}
+INSERT {?thing td:hasEvent ?event.
+?event rdf:type td:Event.
+?event td:hasName ?newName}
+WHERE {?thing rdf:type td:Thing. OPTIONAL{?event td:hasName ?oldName}}&quot;,
+&quot;forcedBindings&quot;:{
+&quot;event&quot;:{&quot;type&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;},
+&quot;thing&quot;:{&quot;type&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;},
+&quot;newName&quot;:{&quot;type&quot;:&quot;literal&quot;,&quot;value&quot;:&quot;&quot;},
+}
+}</web_of_things:add_event>
+        <web_of_things:delete_event rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">&quot;DELETE_EVENT&quot;:{
+&quot;sparql&quot;:&quot;DELETE {?thing td:hasEvent ?event.
+?event td:hasName ?name.
+?event rdf:type td:Event}
+WHERE {?thing rdf:type td:Thing}&quot;,
+&quot;forcedBindings&quot;:{
+&quot;thing&quot;:{&quot;type&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;},
+&quot;thing&quot;:{&quot;event&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;},
+}
+}</web_of_things:delete_event>
+        <web_of_things:get_event_notification rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">&quot;GET_EVENT_NOTIFICATION&quot;:{
+&quot;sparql&quot;:&quot;SELECT ?event_time ?output ?output_time ?value
+WHERE {
+?event rdf:type td:Event.
+?event td:hasTimeStamp ?event_time.
+OPTIONAL{?event td:hasOutputData ?output.
+?output td:hasTimeStamp ?output_time.
+?output dul:hasDataValue ?value}}&quot;,
+&quot;forcedBindings&quot;:{
+&quot;event&quot;:{&quot;type&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;}
+}
+}</web_of_things:get_event_notification>
         <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A Thing may be able to signal the occurrence of particular Events.</rdfs:comment>
     </owl:Class>
     
@@ -514,6 +793,27 @@ OPTIONAL{?item td:hasOutputDataSchema ?outputDS}.
 
     <owl:Class rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#OutputData">
         <rdfs:subClassOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Data"/>
+        <web_of_things:add_output_data rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">&quot;ADD_OUTPUT_DATA&quot;:{
+&quot;sparql&quot;:&quot;DELETE {?item td:hasOutputData ?oldOoutput.
+?output td:hasTimestamp ?oldTimeStamp.
+?output dul:hasDataValue ?oldValue}
+INSERT {?item td:hasOutputData ?newOutput.
+?newOutput td:hasTimestamp ?newTimeStamp.
+?newOutput dul:hasDataValue ?newValue}
+WHERE {
+{{?item rdf:type td:ActionInstance} UNION {?item rdf:type td:Event}}.
+OPTIONAL{?item td:hasOutputData ?oldOoutput.
+?output td:hasTimestamp ?oldTimeStamp.
+?output dul:hasDataValue ?oldValue
+}.
+BIND(now() AS ?newTimeStamp)
+}&quot;,
+&quot;forcedBindings&quot;:{
+&quot;item&quot;:{&quot;type&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;},
+&quot;newOutput&quot;:{&quot;type&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;},
+&quot;newValue&quot;:{&quot;type&quot;:&quot;literal&quot;,&quot;value&quot;:&quot;&quot;},
+}
+}</web_of_things:add_output_data>
         <rdfs:comment rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">Actions and Events may result in some data. Such data is collected within OutputData instance</rdfs:comment>
     </owl:Class>
     
@@ -522,6 +822,45 @@ OPTIONAL{?item td:hasOutputDataSchema ?outputDS}.
     <!-- http://wot.arces.unibo.it/ontology/web_of_things#Property -->
 
     <owl:Class rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#Property">
+        <web_of_things:add_properties rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">&quot;ADD_PROPERTY&quot;:{
+&quot;sparql&quot;:&quot;DELETE {?thing td:hasProperty ?property.
+?property rdf:type td:Property.
+?property td:hasName ?oldName.
+?property td:hasStability ?oldStability.
+?property td:isWritable ?oldWritable.
+?property dul:hasDataValue ?oldValue}
+INSERT {?thing td:hasProperty ?property.
+?property rdf:type td:Property.
+?property td:hasName ?newName.
+?property td:hasStability ?newStability.
+?property td:isWritable ?newWritable.
+?property dul:hasDataValue ?newValue}
+WHERE {?thing rdf:type td:Thing.
+OPTIONAL {?thing td:hasProperty ?property.
+?property rdf:type td:Property.
+?property td:hasName ?oldName.
+?property td:hasStability ?oldStability.
+?property td:isWritable ?oldWritable.
+?property dul:hasDataValue ?oldValue}}&quot;,
+&quot;forcedBindings&quot;:{
+&quot;thing&quot;:{&quot;type&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;},
+&quot;property&quot;:{&quot;type&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;},
+&quot;newName&quot;:{&quot;type&quot;:&quot;literal&quot;,&quot;value&quot;:&quot;&quot;},
+&quot;newStability&quot;:{&quot;type&quot;:&quot;literal&quot;,&quot;value&quot;:&quot;&quot;},
+&quot;newWritable&quot;:{&quot;type&quot;:&quot;literal&quot;,&quot;value&quot;:&quot;&quot;},
+&quot;newValue&quot;:{&quot;type&quot;:&quot;literal&quot;,&quot;value&quot;:&quot;&quot;}
+}
+}</web_of_things:add_properties>
+        <web_of_things:delete_properties rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">&quot;DELETE_PROPERTIES&quot;:{
+&quot;sparql&quot;:&quot;DELETE {?thing td:hasProperty ?property.
+?property rdf:type td:Property.
+?property td:hasName ?name.
+?property td:hasStability ?stability.
+?property td:isWritable ?writable.
+?property dul:hasDataValue ?value}
+WHERE {?thing rdf:type td:Thing.
+OPTIONAL{?property dul:hasDataValue ?value}}&quot;
+}</web_of_things:delete_properties>
         <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A Thing may have some internal parameters, called Properties. They may be static (i.e. they cannot be modified), or dynamic (i.e. there is an Action which can change it as side effect)</rdfs:comment>
     </owl:Class>
     
@@ -531,6 +870,30 @@ OPTIONAL{?item td:hasOutputDataSchema ?outputDS}.
 
     <owl:Class rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#PropertyChangedEvent">
         <rdfs:subClassOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Event"/>
+        <web_of_things:add_property_changed_event rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">&quot;ADD_EVENT&quot;:{
+&quot;sparql&quot;:&quot;DELETE {?event td:hasName ?oldName}
+INSERT {?thing td:hasEvent ?event.
+?event rdf:type td:Event.
+?event rdf:type td:PropertyChangedEvent.
+?event td:hasName ?newName}
+WHERE {?thing rdf:type td:Thing. OPTIONAL{?event td:hasName ?oldName}}&quot;,
+&quot;forcedBindings&quot;:{
+&quot;event&quot;:{&quot;type&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;},
+&quot;thing&quot;:{&quot;type&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;},
+&quot;newName&quot;:{&quot;type&quot;:&quot;literal&quot;,&quot;value&quot;:&quot;&quot;},
+}
+}</web_of_things:add_property_changed_event>
+        <web_of_things:delete_property_changed_event rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">&quot;DELETE_EVENT&quot;:{
+&quot;sparql&quot;:&quot;DELETE {?thing td:hasEvent ?event.
+?event td:hasName ?name.
+?event rdf:type td:Event.
+?event rdf:type td:PropertyChangedEvent}
+WHERE {?thing rdf:type td:Thing}&quot;,
+&quot;forcedBindings&quot;:{
+&quot;thing&quot;:{&quot;type&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;},
+&quot;thing&quot;:{&quot;event&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;},
+}
+}</web_of_things:delete_property_changed_event>
         <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A PropertyChangedEvent is a particular Event that a Thing may throw, in case a Property it owns is changed by someone.</rdfs:comment>
     </owl:Class>
     
@@ -539,6 +902,19 @@ OPTIONAL{?item td:hasOutputDataSchema ?outputDS}.
     <!-- http://wot.arces.unibo.it/ontology/web_of_things#Thing -->
 
     <owl:Class rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#Thing">
+        <web_of_things:add_new_thing rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">&quot;ADD_NEW_THING&quot;:{
+&quot;sparql&quot;:&quot;INSERT DATA {?thing rdf:type td:Thing. ?thing td:hasName ?name}&quot;,
+&quot;forcedBindings&quot;:{
+&quot;thing&quot;:{
+&quot;type&quot;:&quot;uri&quot;,
+&quot;value&quot;:&quot;&quot;
+},
+&quot;name&quot;:{
+&quot;type&quot;:&quot;literal&quot;,
+&quot;value&quot;:&quot;&quot;
+}
+}
+}</web_of_things:add_new_thing>
         <web_of_things:nested_discovery rdf:datatype="http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#SPARQL">&quot;NESTED_THINGS&quot;:{
 	&quot;sparql&quot;:&quot;SELECT ?thingSon WHERE {?thingFather rdf:type td:Thing. ?thingFather dul:hasComponent ?thingSon}&quot;,
 	&quot;forcedBindings&quot;:{
