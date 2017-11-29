@@ -1,33 +1,122 @@
 {
-    "queries": {
-        "wilbur": "smith",
-        "francesco": "ciao"
-    },
     "parameters": {
-        "ports": {
-            "https": 8443,
-            "wss": 9443,
-            "http": 8000,
-            "ws": 9000
-        },
-        "host": "10.10.10.100",
         "paths": {
+            "tokenRequest": "/oauth/token",
             "securePath": "/secure",
             "query": "/query",
-            "update": "/update",
+            "subscribe": "/subscribe",
             "register": "/oauth/register",
-            "tokenRequest": "/oauth/token",
-            "subscribe": "/subscribe"
+            "update": "/update"
+        },
+        "ports": {
+            "http": 8000,
+            "wss": 9443,
+            "https": 8443,
+            "ws": 9000
+        },
+        "host": "10.10.10.100"
+    },
+    "updates": {
+        "ADD_INPUT_DATASCHEMA\":{\n\"sparql\":\"DELETE {?action td:hasInputDataSchema ?oldDataSchema} INSERT {?action td:hasInputDataSchema ?newDataSchema} WHERE {?action rdf:type td:Action}\",\n\"forcedBindings\":{\n\"action\":{\n \"type\":\"uri\",\n  \"value\":\"\"\n},\n\"newDataSchema\":{\n\"type\":\"literal\",\n\"value\":\"\"\n}\n}\n": {
+            "forcedBindings": {
+                "action": {
+                    "type": "uri",
+                    "value": ""
+                },
+                "newDataSchema": {
+                    "type": "literal",
+                    "value": ""
+                }
+            },
+            "sparql": "DELETE {?action td:hasInputDataSchema ?oldDataSchema} INSERT {?action td:hasInputDataSchema ?newDataSchema} WHERE {?action rdf:type td:Action}"
+        },
+        "ADD_DATASCHEMA\":{\n\"sparql\":\"DELETE {?property td:hasDataSchema ?oldDataSchema} INSERT {?property td:hasDataSchema ?newDataSchema} WHERE {?property rdf:type td:Property}\",\n\"forcedBindings\":{\n\"property\":{\n \"type\":\"uri\",\n  \"value\":\"\"\n},\n\"newDataSchema\":{\n\"type\":\"literal\",\n\"value\":\"\"\n}\n}\n": {
+            "forcedBindings": {
+                "newDataSchema": {
+                    "type": "literal",
+                    "value": ""
+                },
+                "property": {
+                    "type": "uri",
+                    "value": ""
+                }
+            },
+            "sparql": "DELETE {?property td:hasDataSchema ?oldDataSchema} INSERT {?property td:hasDataSchema ?newDataSchema} WHERE {?property rdf:type td:Property}"
+        },
+        "ADD_CONFIRMATION_TIMESTAMP\":{\n\"sparql\":\"INSERT {?instance rdf:type td:ActionInstance.\n?instance td:hasConfirmationTimeStamp ?time}\nWHERE {BIND(now() AS ?time)}\",\n\"forcedBindings\":{\n\"instance\":{\n\"type\":\"uri\",\n \"value\":\"\"\n}\n}\n": {
+            "forcedBindings": {
+                "instance": {
+                    "type": "uri",
+                    "value": ""
+                }
+            },
+            "sparql": "INSERT {?instance rdf:type td:ActionInstance.?instance td:hasConfirmationTimeStamp ?time}WHERE {BIND(now() AS ?time)}"
+        },
+        "ADD_DATASCHEMA\":{\n\"sparql\":\"DELETE {?item td:hasOutputDataSchema ?oldDataSchema} INSERT {?item td:hasOutputDataSchema ?newDataSchema} WHERE {{?item rdf:type td:Action} UNION {?item rdf:type }}\",\n\"forcedBindings\":{\n\"property\":{\n \"type\":\"uri\",\n  \"value\":\"\"\n},\n\"newDataSchema\":{\n\"type\":\"literal\",\n\"value\":\"\"\n}\n}\n": {
+            "forcedBindings": {
+                "newDataSchema": {
+                    "type": "literal",
+                    "value": ""
+                },
+                "property": {
+                    "type": "uri",
+                    "value": ""
+                }
+            },
+            "sparql": "DELETE {?item td:hasOutputDataSchema ?oldDataSchema} INSERT {?item td:hasOutputDataSchema ?newDataSchema} WHERE {{?item rdf:type td:Action} UNION {?item rdf:type }}"
         }
     },
-    "updates": {},
     "namespaces": {
-        "td": "http://wot.arces.unibo.it/ontology/web_of_things#",
-        "dul": "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#",
-        "wot": "http://wot.arces.unibo.it/sepa#",
-        "xsd": "http://www.w3.org/2001/XMLSchema",
-        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
         "rdfs": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-        "ire": "http://w3c.github.io/wot/w3c-wot-td-ire.owl#"
+        "dul": "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#",
+        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        "td": "http://wot.arces.unibo.it/ontology/web_of_things#",
+        "ire": "http://w3c.github.io/wot/w3c-wot-td-ire.owl#",
+        "xsd": "http://www.w3.org/2001/XMLSchema",
+        "wot": "http://wot.arces.unibo.it/sepa#"
+    },
+    "queries": {
+        "GET_CONFIRMATION_TIMESTAMP\":{\n\"sparql\":\"SELECT ?confirmation WHERE {?instance rdf:type td:ActionInstance.\n?instance td:hasConfirmationTimeStamp ?time}\",\n\"forcedBindings\":{\n\"instance\":{\"type\":\"uri\",\"value\":\"\"}\n}\n": {
+            "forcedBindings": {
+                "instance": {
+                    "type": "uri",
+                    "value": ""
+                }
+            },
+            "sparql": "SELECT ?confirmation WHERE {?instance rdf:type td:ActionInstance.?instance td:hasConfirmationTimeStamp ?time}"
+        },
+        "GET_THING_BY_NAME\":{\n\"sparql\":\"SELECT ?thing WHERE {?thing rdf:type td:Thing. ?thing td:hasName ?name}\",\n\"forcedBindings\":{\n\"name\":{\n\"type\":\"literal\",\n\"value\":\"\"\n}\n}\n": {
+            "forcedBindings": {
+                "name": {
+                    "type": "literal",
+                    "value": ""
+                }
+            },
+            "sparql": "SELECT ?thing WHERE {?thing rdf:type td:Thing. ?thing td:hasName ?name}"
+        },
+        "ALL_DATASCHEMA_DISCOVERY\":{\n\"sparql\":\"SELECT ?item ?itemType ?dataSchema ?inputDS ?outputDS WHERE {\nOPTIONAL{?item td:hasDataSchema ?dataSchema}.\nOPTIONAL{?item td:hasInputDataSchema ?inputDS}.\nOPTIONAL{?item td:hasOutputDataSchema ?outputDS}.\n?item rdf:type ?itemType\n}\"\n": {
+            "sparql": "SELECT ?item ?itemType ?dataSchema ?inputDS ?outputDS WHERE {OPTIONAL{?item td:hasDataSchema ?dataSchema}.OPTIONAL{?item td:hasInputDataSchema ?inputDS}.OPTIONAL{?item td:hasOutputDataSchema ?outputDS}.?item rdf:type ?itemType}"
+        },
+        "GET_EVENT_NOTIFICATION\":{\n\"sparql\":\"SELECT ?event_time ?output ?output_time ?value\nWHERE {\n?event rdf:type td:Event.\n?event td:hasTimeStamp ?event_time.\nOPTIONAL{?event td:hasOutputData ?output.\n?output td:hasTimeStamp ?output_time.\n?output dul:hasDataValue ?value}}\",\n\"forcedBindings\":{\n\"event\":{\"type\":\"uri\",\"value\":\"\"}\n}\n": {
+            "forcedBindings": {
+                "event": {
+                    "type": "uri",
+                    "value": ""
+                }
+            },
+            "sparql": "SELECT ?event_time ?output ?output_time ?valueWHERE {?event rdf:type td:Event.?event td:hasTimeStamp ?event_time.OPTIONAL{?event td:hasOutputData ?output.?output td:hasTimeStamp ?output_time.?output dul:hasDataValue ?value}}"
+        },
+        "ALL_THINGS\":{\n\"sparql\":\"SELECT ?thing WHERE {?thing rdf:type td:Thing}\"\n": {
+            "sparql": "SELECT ?thing WHERE {?thing rdf:type td:Thing}"
+        },
+        "GET_ACTION_REQUEST\":{\n\"sparql\":\"SELECT ?action ?instance ?request ?inputData ?value\nWHERE {?thing td:hasAction ?action. \n?action td:hasActionInstance ?instance.\n?instance td:hasRequestTimeStamp ?request.\n?instance rdf:type td:ActionInstance.\nOPTIONAL {?instance td:hasInputData ?inputData.\n?inputData dul:hasDataValue ?value}}\",\n\"forcedBindings\":{\n\"thing\":{\"type\":\"uri\",\"value\":\"\"}\n}\n": {
+            "forcedBindings": {
+                "thing": {
+                    "type": "uri",
+                    "value": ""
+                }
+            },
+            "sparql": "SELECT ?action ?instance ?request ?inputData ?valueWHERE {?thing td:hasAction ?action. ?action td:hasActionInstance ?instance.?instance td:hasRequestTimeStamp ?request.?instance rdf:type td:ActionInstance.OPTIONAL {?instance td:hasInputData ?inputData.?inputData dul:hasDataValue ?value}}"
+        }
     }
 }
