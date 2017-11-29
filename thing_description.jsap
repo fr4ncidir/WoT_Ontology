@@ -25,19 +25,7 @@
       "td":"http://wot.arces.unibo.it/ontology/web_of_things#",
       "xsd":"http://www.w3.org/2001/XMLSchema"
    },
-   "updates":{    
-         "sparql":" DELETE { ?instance td:hasOutput ?oldOutput . ?oldOutput rdf:type wot:ActionOutput . ?oldOutput dul:hasDataValue ?value } INSERT { ?instance td:hasOutput ?output. ?output rdf:type wot:ActionOutput . ?output dul:hasDataValue ?value } WHERE { ?action wot:hasInstance ?instance . ?instance rdf:type wot:ActionInstance . BIND(IRI(concat('http://wot.arces.unibo.it/sepa#ActionOutput_',STRUUID())) AS ?output) . OPTIONAL {?instance td:hasOutput ?oldOutput . ?oldOutput rdf:type wot:ActionOutput . ?oldOutput dul:hasDataValue ?value }}",
-         "forcedBindings":{
-            "value":{
-               "type":"literal",
-               "value":""
-            },
-            "action":{
-               "type":"uri",
-               "value":""
-            }
-         }
-      },
+   "updates":{
    },
    "queries":{
    }
