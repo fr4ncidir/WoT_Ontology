@@ -28,10 +28,17 @@ import json
 
 TD_template = "./thing_description.jsap"
 TD_complete = "./thing_description2.jsap"
+ontology_namespace = "http://wot.arces.unibo.it/ontology/web_of_things#"
+namespaces = {"owl","http://www.w3.org/2002/07/owl#"}
 
 def main(args):
 	copy(TD_template,TD_complete)
 	
+	owl = ET.parse("./td.owl")
+	root = owl.getroot()
+	for element in root.findall("{http://www.w3.org/2002/07/owl#}AnnotationProperty"):
+		for item in element.attrib.values():
+			print("-->{}".format(item))
 	
 	with open(TD_complete,"r+") as jsap:
 		data = json.load(jsap)

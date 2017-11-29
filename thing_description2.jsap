@@ -1,33 +1,33 @@
 {
-    "parameters": {
-        "ports": {
-            "wss": 9443,
-            "http": 8000,
-            "ws": 9000,
-            "https": 8443
-        },
-        "host": "10.10.10.100",
-        "paths": {
-            "query": "/query",
-            "subscribe": "/subscribe",
-            "securePath": "/secure",
-            "register": "/oauth/register",
-            "tokenRequest": "/oauth/token",
-            "update": "/update"
-        }
-    },
-    "namespaces": {
-        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-        "wot": "http://wot.arces.unibo.it/sepa#",
-        "td": "http://wot.arces.unibo.it/ontology/web_of_things#",
-        "dul": "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#",
-        "xsd": "http://www.w3.org/2001/XMLSchema",
-        "ire": "http://w3c.github.io/wot/w3c-wot-td-ire.owl#",
-        "rdfs": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-    },
-    "updates": {},
     "queries": {
         "wilbur": "smith",
         "francesco": "ciao"
+    },
+    "parameters": {
+        "ports": {
+            "https": 8443,
+            "wss": 9443,
+            "http": 8000,
+            "ws": 9000
+        },
+        "host": "10.10.10.100",
+        "paths": {
+            "securePath": "/secure",
+            "query": "/query",
+            "update": "/update",
+            "register": "/oauth/register",
+            "tokenRequest": "/oauth/token",
+            "subscribe": "/subscribe"
+        }
+    },
+    "updates": {},
+    "namespaces": {
+        "td": "http://wot.arces.unibo.it/ontology/web_of_things#",
+        "dul": "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#",
+        "wot": "http://wot.arces.unibo.it/sepa#",
+        "xsd": "http://www.w3.org/2001/XMLSchema",
+        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        "rdfs": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        "ire": "http://w3c.github.io/wot/w3c-wot-td-ire.owl#"
     }
 }
