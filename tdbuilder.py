@@ -25,6 +25,7 @@
 from shutil import copy
 import xml.etree.ElementTree as etree
 import json
+import sys
 
 TD_template = "./thing_description.jsap"
 TD_complete = "./thing_description2.jsap"
@@ -37,9 +38,12 @@ ns = {	"owl"			:"http://www.w3.org/2002/07/owl#",
 		
 def jsap_build(entry,jsap_level,json_data,jsap_file):
 	entry_data = entry.replace("\n","").split(":",1)
-	print("{}-----{}".format(entry_data[0],entry_data[1]))
-	j_key = entry[1:-1]
-	j_object = json.loads(entry_data[1])
+	j_key = entry_data[0][1:-1]
+	try:
+		j_object = json.loads(entry_data[1])
+	except:
+		print("Error while parsing {}\n{}:\n{}".format(entry,j_key,sys.exc_info()[1]))
+		sys.exit(1)
 	json_data[jsap_level][j_key]=j_object
 	jsap_file.seek(0)
 	json.dump(json_data,jsap_file,indent=4)
@@ -57,12 +61,10 @@ def main(args):
 			#print("{} {}".format(annotation_type.tag,annotation_type.attrib))
 			annotation_type_string = annotation_type.attrib["{}{}".format("{"+ns["rdf"]+"}","resource")]
 			#print(annotation_type_string)
-			if (annotation_type_string==(sepa_annotations+"discovery")) or (annotation_type_string==(sepa_annotations+"query")):
+			if (annotation_type_string==(ns["web_of_things"]+"discovery")) or (annotation_type_string==(ns["web_of_things"]+"query")):
 				queries.append(element.attrib["{}{}".format("{"+ns["rdf"]+"}","about")].replace(ns["web_of_things"],"web_of_things:"))
-			elif annotation_type_string==(sepa_annotations+"update"):
+			elif (annotation_type_string==(ns["web_of_things"]+"delete")) or (annotation_type_string==(ns["web_of_things"]+"update")):
 				updates.append(element.attrib["{}{}".format("{"+ns["rdf"]+"}","about")].replace(ns["web_of_things"],"web_of_things:"))
-	
-	
 	
 	with open(TD_complete,"r+") as jsap:
 		data = json.load(jsap)
@@ -71,10 +73,8 @@ def main(args):
 				jsap_build(item.text,"queries",data,jsap)
 		for element in updates:
 			for item in root.findall(".//"+element,ns):
-				print(item.text)
 				jsap_build(item.text,"updates",data,jsap)
 	return 0
 
 if __name__ == '__main__':
-    import sys
     sys.exit(main(sys.argv))
