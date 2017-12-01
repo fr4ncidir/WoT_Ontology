@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  senza nome.py
+#  tdbuilder.py
 #  
 #  Copyright 2017 Francesco Antoniazzi <francesco.antoniazzi@unibo.it>
 #  
@@ -27,10 +27,13 @@ import xml.etree.ElementTree as etree
 import json
 import sys
 import datetime
+import logging
+import argparse
 
 TD_template = "./thing_description.jsap"
 TD_complete = "./thing_description2.jsap"
-sepa_annotations = "http://www.semanticweb.org/francesco/ontologies/2017/9/sepa_annotations#"
+
+logging.basicConfig(format="%(levelname)s %(asctime)-15s %(message)s",level=logging.INFO)
 
 ns = {	"owl"			:"http://www.w3.org/2002/07/owl#",
 		"web_of_things"	:"http://wot.arces.unibo.it/ontology/web_of_things#",
@@ -43,8 +46,9 @@ def jsap_build(entry,jsap_level,json_data,jsap_file):
 	try:
 		j_object = json.loads(entry_data[1])
 	except:
-		print("Error while parsing {}\n{}:\n{}".format(entry,j_key,sys.exc_info()[1]))
+		logging.critical("Error while parsing {}\n{}:\n{}".format(entry,j_key,sys.exc_info()[1]))
 		sys.exit(1)
+	logging.info("Added {} to JSAP".format(j_key))
 	json_data[jsap_level][j_key]=j_object
 	jsap_file.seek(0)
 	json.dump(json_data,jsap_file,indent=4)
@@ -53,15 +57,22 @@ def jsap_build(entry,jsap_level,json_data,jsap_file):
 def main(args):
 	copy(TD_template,TD_complete)
 	
-	tree = etree.parse("./td.owl")
+	if len(args)<2:
+		logging.critical("Missing argument: owl file")
+		return 1
+	
+	try:
+		tree = etree.parse(args[1])
+	except:
+		logging.critical("Error while parsing {}\n{}".format(args[1],sys.exc_info()[1]))
+		return 1
+	logging.info("Building jsap from {} ontology".format(args[1]))
 	root = tree.getroot()
 	queries = []
 	updates = []
 	for element in root.findall("owl:AnnotationProperty",ns):
 		for annotation_type in element.findall("rdfs:subPropertyOf",ns):
-			#print("{} {}".format(annotation_type.tag,annotation_type.attrib))
 			annotation_type_string = annotation_type.attrib["{}{}".format("{"+ns["rdf"]+"}","resource")]
-			#print(annotation_type_string)
 			if (annotation_type_string==(ns["web_of_things"]+"discovery")) or (annotation_type_string==(ns["web_of_things"]+"query")):
 				queries.append(element.attrib["{}{}".format("{"+ns["rdf"]+"}","about")].replace(ns["web_of_things"],"web_of_things:"))
 			elif (annotation_type_string==(ns["web_of_things"]+"delete")) or (annotation_type_string==(ns["web_of_things"]+"update")):
@@ -79,4 +90,5 @@ def main(args):
 	return 0
 
 if __name__ == '__main__':
-    sys.exit(main(sys.argv))
+	logging.info("Welcome to the JSAP generator!")
+	sys.exit(main(sys.argv))
