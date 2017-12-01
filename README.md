@@ -2,11 +2,11 @@
 Web Of Things Thing Ontology
 
 This repository contains
-- [x] the thing description ontology as imagined by the WoT group of ARCES (Università di Bologna) in progress
-- [x] a tool ontology for communication protocols (to be extended in the future, of course, or to be removed... who knows)
-- [x] a tool ontology for annotations (to be extended in the future, of course, or to be removed... who knows)
+- [x] the thing description ontology as imagined by the WoT group of ARCES (Università di Bologna)
+It contains annotations in JSAP compliant format useful for define WoT applications.
+- [x] a python script generating TD JSAP from the ontology.
 
-This repository will contain
+This repository will contain hopefully
 - [ ] a tool to create Thing Descriptions on-the-go by smart humans
 
 Please have a look in http://wot.arces.unibo.it

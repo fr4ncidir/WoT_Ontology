@@ -28,7 +28,6 @@ import json
 import sys
 import datetime
 import logging
-import argparse
 
 TD_template = "./thing_description.jsap"
 TD_complete = "./thing_description2.jsap"
