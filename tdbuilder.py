@@ -26,6 +26,7 @@ from shutil import copy
 import xml.etree.ElementTree as etree
 import json
 import sys
+import datetime
 
 TD_template = "./thing_description.jsap"
 TD_complete = "./thing_description2.jsap"
@@ -68,6 +69,7 @@ def main(args):
 	
 	with open(TD_complete,"r+") as jsap:
 		data = json.load(jsap)
+		data["creation_time"]="{:%Y-%m-%d %H:%M:%S}".format(datetime.datetime.now())
 		for element in queries:
 			for item in root.findall(".//"+element,ns):
 				jsap_build(item.text,"queries",data,jsap)
