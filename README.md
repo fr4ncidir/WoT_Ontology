@@ -16,6 +16,7 @@ F. Serena, M. Poveda-Villalon, and R. Garcia-Castro, “Semantic discovery in th
 
 # FAQs
 
-- [ ] I found an error in a SPARQL and I don't know how to correct it
+- [ ] _I found an error in a SPARQL and I don't know how to correct it._
+
 Just open the ontology in Protégé and modify the SPARQL. Then, run the python script tdbuilder.py to update the jsap.
 Remember to push the corrections! :)
