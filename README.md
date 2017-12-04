@@ -13,3 +13,9 @@ Please have a look in http://wot.arces.unibo.it
 
 This ontology takes origin from the work in the following paper:   
 F. Serena, M. Poveda-Villalon, and R. Garcia-Castro, “Semantic discovery in the web of things.”
+
+# FAQs
+
+- [ ] I found an error in a SPARQL and I don't know how to correct it
+Just open the ontology in Protégé and modify the SPARQL. Then, run the python script tdbuilder.py to update the jsap.
+Remember to push the corrections! :)
