@@ -373,6 +373,22 @@ francesco.antoniazzi@unibo.it</owl:versionInfo>
     
 
 
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#hasEventInstance -->
+
+    <owl:ObjectProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#hasEventInstance">
+        <rdfs:domain>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#Event"/>
+                    <rdf:Description rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#PropertyChangedEvent"/>
+                </owl:unionOf>
+            </owl:Class>
+        </rdfs:domain>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#EventInstance"/>
+    </owl:ObjectProperty>
+    
+
+
     <!-- http://wot.arces.unibo.it/ontology/web_of_things#hasInputData -->
 
     <owl:ObjectProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#hasInputData">
@@ -390,7 +406,7 @@ francesco.antoniazzi@unibo.it</owl:versionInfo>
             <owl:Class>
                 <owl:unionOf rdf:parseType="Collection">
                     <rdf:Description rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#ActionInstance"/>
-                    <rdf:Description rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#Event"/>
+                    <rdf:Description rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#EventInstance"/>
                 </owl:unionOf>
             </owl:Class>
         </rdfs:domain>
@@ -442,6 +458,16 @@ francesco.antoniazzi@unibo.it</owl:versionInfo>
             </rdfs:Datatype>
         </rdfs:range>
         <rdfs:isDefinedBy rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#</rdfs:isDefinedBy>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#hasCompletionTimeStamp -->
+
+    <owl:DatatypeProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#hasCompletionTimeStamp">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#hasTimeStamp"/>
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#ActionInstance"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTimeStamp"/>
     </owl:DatatypeProperty>
     
 
@@ -546,14 +572,7 @@ francesco.antoniazzi@unibo.it</owl:versionInfo>
     <!-- http://wot.arces.unibo.it/ontology/web_of_things#hasTimeStamp -->
 
     <owl:DatatypeProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#hasTimeStamp">
-        <rdfs:domain>
-            <owl:Class>
-                <owl:unionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#Event"/>
-                    <rdf:Description rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#OutputData"/>
-                </owl:unionOf>
-            </owl:Class>
-        </rdfs:domain>
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#EventInstance"/>
         <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTimeStamp"/>
         <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Identifies when an OutputData is ready or when an Event is thrown</rdfs:comment>
     </owl:DatatypeProperty>
@@ -620,6 +639,14 @@ OPTIONAL {?thing td:hasAction ?action. ?action td:hasName ?oldName}}&quot;, &quo
         <delete_event rdf:datatype="http://wot.arces.unibo.it/ontology/web_of_things#SPARQL_jsap">&quot;DELETE_EVENT&quot;:{&quot;sparql&quot;:&quot;DELETE {?thing td:hasEvent ?event. ?event td:hasName ?name. ?event rdf:type td:Event} WHERE {?thing rdf:type td:Thing}&quot;, &quot;forcedBindings&quot;:{&quot;thing&quot;:{&quot;type&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;},&quot;thing&quot;:{&quot;event&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;}}}</delete_event>
         <get_event_notification rdf:datatype="http://wot.arces.unibo.it/ontology/web_of_things#SPARQL_jsap">&quot;GET_EVENT_NOTIFICATION&quot;:{&quot;sparql&quot;:&quot;SELECT ?event_time ?output ?output_time ?value WHERE { ?event rdf:type td:Event. ?event td:hasTimeStamp ?event_time. OPTIONAL{?event td:hasOutputData ?output. ?output td:hasTimeStamp ?output_time. ?output dul:hasDataValue ?value}}&quot;, &quot;forcedBindings&quot;:{ &quot;event&quot;:{&quot;type&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;}}}</get_event_notification>
         <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A Thing may be able to signal the occurrence of particular Events</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#EventInstance -->
+
+    <owl:Class rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#EventInstance">
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">An Event, when is thrown, creates a new instance of Event. It may have an output.</rdfs:comment>
     </owl:Class>
     
 

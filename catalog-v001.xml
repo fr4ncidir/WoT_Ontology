@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <catalog prefer="public" xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
     <group id="Folder Repository, directory=, recursive=true, Auto-Update=true, version=2" prefer="public" xml:base="">
-        <uri id="Automatically generated entry, Timestamp=1512570823442" name="http://wot.arces.unibo.it/ontology/web_of_things" uri="td.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1512571513981" name="http://wot.arces.unibo.it/ontology/web_of_things" uri="td.owl"/>
     </group>
 </catalog>
