@@ -27,7 +27,7 @@
     },
     "updates": {
         "POST_ACTION_INSTANCE_NO_INPUT": {
-            "sparql": "INSERT {?action td:hasActionInstance ?instance. ?instance td:hasRequestTimeStamp ?request. ?instance rdf:type td:ActionInstance} WHERE {?action rdf:type td:Action. BIND(now() AS ?request)}",
+            "sparql": "INSERT {?action wot:hasActionInstance ?instance. ?instance wot:hasRequestTimeStamp ?request. ?instance rdf:type wot:ActionInstance} WHERE {?action rdf:type td:Action. BIND(now() AS ?request)}",
             "forcedBindings": {
                 "action": {
                     "type": "uri",
@@ -40,7 +40,7 @@
             }
         },
         "POST_ACTION_INSTANCE_WITH_INPUT": {
-            "sparql": "INSERT {?action td:hasActionInstance ?instance. ?instance td:hasRequestTimeStamp ?request. ?instance rdf:type td:ActionInstance. ?instance td:hasInputData ?inputData. ?inputData dul:hasDataValue ?value} WHERE {?action rdf:type td:Action. BIND(now() AS ?request). BIND(IRI(CONCAT('td:input_',STR(NOW()))) as ?inputData)}",
+            "sparql": "INSERT {?action wot:hasActionInstance ?instance. ?instance wot:hasRequestTimeStamp ?request. ?instance rdf:type wot:ActionInstance. ?instance wot:hasInputData ?inputData. ?inputData dul:hasDataValue ?value} WHERE {?action rdf:type td:Action. BIND(now() AS ?request). BIND(IRI(CONCAT('wot:input_',STR(NOW()))) as ?inputData)}",
             "forcedBindings": {
                 "action": {
                     "type": "uri",
@@ -57,7 +57,7 @@
             }
         },
         "ADD_CONFIRMATION_TIMESTAMP": {
-            "sparql": "INSERT {?instance rdf:type td:ActionInstance. ?instance td:hasConfirmationTimeStamp ?time} WHERE {BIND(now() AS ?time)}",
+            "sparql": "INSERT {?instance rdf:type wot:ActionInstance. ?instance wot:hasConfirmationTimeStamp ?time} WHERE {BIND(now() AS ?time)}",
             "forcedBindings": {
                 "instance": {
                     "type": "uri",
@@ -66,7 +66,7 @@
             }
         },
         "ADD_DATASCHEMA": {
-            "sparql": "DELETE {?property td:hasDataSchema ?oldDataSchema} INSERT {?property td:hasDataSchema ?newDataSchema} WHERE {?property rdf:type td:Property}",
+            "sparql": "DELETE {?property wot:hasDataSchema ?oldDataSchema} INSERT {?property wot:hasDataSchema ?newDataSchema} WHERE {?property rdf:type td:Property}",
             "forcedBindings": {
                 "property": {
                     "type": "uri",
@@ -79,7 +79,7 @@
             }
         },
         "ADD_INPUT_DATASCHEMA": {
-            "sparql": "DELETE {?action td:hasInputDataSchema ?oldDataSchema} INSERT {?action td:hasInputDataSchema ?newDataSchema} WHERE {?action rdf:type td:Action}",
+            "sparql": "DELETE {?action wot:hasInputDataSchema ?oldDataSchema} INSERT {?action wot:hasInputDataSchema ?newDataSchema} WHERE {?action rdf:type td:Action}",
             "forcedBindings": {
                 "action": {
                     "type": "uri",
@@ -92,7 +92,7 @@
             }
         },
         "ADD_OUTPUT_DATASCHEMA": {
-            "sparql": "DELETE {?item td:hasOutputDataSchema ?oldDataSchema} INSERT {?item td:hasOutputDataSchema ?newDataSchema} WHERE {{?item rdf:type td:Action} UNION {?item rdf:type }}",
+            "sparql": "DELETE {?item wot:hasOutputDataSchema ?oldDataSchema} INSERT {?item wot:hasOutputDataSchema ?newDataSchema} WHERE {{?item rdf:type td:Action} UNION {?item rdf:type }}",
             "forcedBindings": {
                 "property": {
                     "type": "uri",
@@ -105,7 +105,7 @@
             }
         },
         "ADD_EVENT": {
-            "sparql": "INSERT DATA {?thing td:hasEvent ?event. ?event rdf:type td:Event . ?event td:hasName ?eName . ?event td:hasOutputDataSchema ?outDataSchema }",
+            "sparql": "INSERT DATA {?thing td:hasEvent ?event. ?event rdf:type td:Event . ?event td:hasName ?eName . ?event wot:hasOutputDataSchema ?outDataSchema }",
             "forcedBindings": {
                 "event": {
                     "type": "uri",
@@ -139,7 +139,7 @@
             }
         },
         "ADD_NEW_ACTION": {
-            "sparql": "INSERT {?thing td:hasAction ?action. ?action rdf:type td:Action . ?action td:hasName ?newName . ?action td:hasInputDataSchema ?newInDataSchema . ?action td:hasOutputDataSchema ?newOutDataSchema } WHERE { ?thing rdf:type td:Thing }",
+            "sparql": "INSERT {?thing td:hasAction ?action. ?action rdf:type td:Action . ?action td:hasName ?newName . ?action wot:hasInputDataSchema ?newInDataSchema . ?action wot:hasOutputDataSchema ?newOutDataSchema } WHERE { ?thing rdf:type td:Thing }",
             "forcedBindings": {
                 "thing": {
                     "type": "uri",
@@ -177,7 +177,7 @@
             }
         },
         "ADD_OUTPUT_DATA": {
-            "sparql": "DELETE {?item td:hasOutputData ?oldOutput. ?oldOutput td:hasTimestamp ?oldTimeStamp. ?oldOutput dul:hasDataValue ?oldValue} INSERT {?item td:hasOutputData ?newOutput. ?newOutput td:hasTimestamp ?newTimeStamp. ?newOutput dul:hasDataValue ?newValue} WHERE { {{?item rdf:type td:ActionInstance} UNION {?item rdf:type td:Event}}. OPTIONAL{?item td:hasOutputData ?oldOutput. ?oldOutput td:hasTimestamp ?oldTimeStamp. ?oldOutput dul:hasDataValue ?oldValue}. BIND(now() AS ?newTimeStamp)}",
+            "sparql": "DELETE {?item wot:hasOutputData ?oldOutput. ?oldOutput wot:hasTimeStamp ?oldTimeStamp. ?oldOutput dul:hasDataValue ?oldValue} INSERT {?item wot:hasOutputData ?newOutput. ?newOutput wot:hasTimeStamp ?newTimeStamp. ?newOutput dul:hasDataValue ?newValue} WHERE { {{?item rdf:type wot:ActionInstance} UNION {?item rdf:type td:Event}}. OPTIONAL{?item wot:hasOutputData ?oldOutput. ?oldOutput wot:hasTimeStamp ?oldTimeStamp. ?oldOutput dul:hasDataValue ?oldValue}. BIND(now() AS ?newTimeStamp)}",
             "forcedBindings": {
                 "item": {
                     "type": "uri",
@@ -194,7 +194,7 @@
             }
         },
         "ADD_PROPERTY": {
-            "sparql": "DELETE {?thing td:hasProperty ?property. ?property rdf:type td:Property. ?property td:hasName ?oldName. ?property td:hasStability ?oldStability. ?property td:isWritable ?oldWritable. ?property dul:hasDataValue ?oldValue . ?property td:hasDataSchema ?oldDataSchema} INSERT {?thing td:hasProperty ?property. ?property rdf:type td:Property. ?property td:hasName ?newName. ?property td:hasStability ?newStability. ?property td:isWritable ?newWritable. ?property dul:hasDataValue ?newValue . ?property td:hasDataSchema ?newDataSchema } WHERE {?thing rdf:type td:Thing . OPTIONAL {?thing td:hasProperty ?property. ?property td:hasDataSchema ?oldDataSchema . ?property rdf:type td:Property. ?property td:hasName ?oldName. ?property td:hasStability ?oldStability. ?property td:isWritable ?oldWritable. ?property dul:hasDataValue ?oldValue}}",
+            "sparql": "DELETE {?thing td:hasProperty ?property. ?property rdf:type td:Property. ?property td:hasName ?oldName. ?property td:hasStability ?oldStability. ?property td:isWritable ?oldWritable. ?property dul:hasDataValue ?oldValue . ?property wot:hasDataSchema ?oldDataSchema} INSERT {?thing td:hasProperty ?property. ?property rdf:type td:Property. ?property td:hasName ?newName. ?property td:hasStability ?newStability. ?property td:isWritable ?newWritable. ?property dul:hasDataValue ?newValue . ?property wot:hasDataSchema ?newDataSchema } WHERE {?thing rdf:type td:Thing . OPTIONAL {?thing td:hasProperty ?property. ?property wot:hasDataSchema ?oldDataSchema . ?property rdf:type td:Property. ?property td:hasName ?oldName. ?property td:hasStability ?oldStability. ?property td:isWritable ?oldWritable. ?property dul:hasDataValue ?oldValue}}",
             "forcedBindings": {
                 "thing": {
                     "type": "uri",
@@ -244,7 +244,7 @@
             }
         },
         "DELETE_ACTION_INSTANCE": {
-            "sparql": "DELETE {?action td:hasActionInstance ?instance. ?instance td:hasRequestTimeStamp ?request. ?instance td:hasConfirmationTimeStamp ?confirmation. ?instance td:hasCompletionTimeStamp ?completion. ?instance rdf:type td:ActionInstance.?instance td:hasInputData ?inputData. ?inputData dul:hasDataValue ?value} WHERE {?action rdf:type td:Action . ?action td:hasActionInstance ?instance . OPTIONAL {?instance td:hasInputData ?inputData. ?inputData dul:hasDataValue ?value}}",
+            "sparql": "DELETE {?action wot:hasActionInstance ?instance. ?instance wot:hasRequestTimeStamp ?request. ?instance wot:hasConfirmationTimeStamp ?confirmation. ?instance wot:hasCompletionTimeStamp ?completion. ?instance rdf:type wot:ActionInstance.?instance wot:hasInputData ?inputData. ?inputData dul:hasDataValue ?value} WHERE {?action rdf:type td:Action . ?action wot:hasActionInstance ?instance . OPTIONAL {?instance wot:hasInputData ?inputData. ?inputData dul:hasDataValue ?value}}",
             "forcedBindings": {
                 "action": {
                     "type": "uri",
@@ -257,7 +257,7 @@
             }
         },
         "DELETE_EVENT": {
-            "sparql": "DELETE { ?thing td:hasEvent ?event . ?event td:hasName ?name . ?event rdf:type td:Event . ?event td:hasOutputDataSchema ?outDataSchema . ?thing td:hasEventInstance ?instance . ?instance td:hasTimeStamp ?timestamp . ?instance td:hasOutputData ?data . ?data td:hasDataValue ?value . } WHERE { ?thing rdf:type td:Thing OPTIONAL { ?thing td:hasEventInstance ?instance . ?instance td:hasTimeStamp ?timestamp OPTIONAL { ?instance td:hasOutputData ?data . ?data td:hasDataValue ?value}}}",
+            "sparql": "DELETE { ?thing td:hasEvent ?event . ?event td:hasName ?name . ?event rdf:type td:Event . ?event wot:hasOutputDataSchema ?outDataSchema . ?thing wot:hasEventInstance ?instance . ?instance wot:hasTimeStamp ?timestamp . ?instance wot:hasOutputData ?data . ?data td:hasDataValue ?value . } WHERE { ?thing rdf:type td:Thing OPTIONAL { ?thing wot:hasEventInstance ?instance . ?instance wot:hasTimeStamp ?timestamp OPTIONAL { ?instance wot:hasOutputData ?data . ?data td:hasDataValue ?value}}}",
             "forcedBindings": {
                 "thing": {
                     "type": "uri",
@@ -279,7 +279,7 @@
             }
         },
         "DELETE_PROPERTY": {
-            "sparql": "DELETE {?thing td:hasProperty ?property. ?property rdf:type td:Property. ?property td:hasName ?name. ?property td:hasStability ?stability. ?property td:isWritable ?writable. ?property dul:hasDataValue ?value  . ?property td:hasDataSchema ?dataSchema } WHERE {?thing rdf:type td:Thing . ?thing td:hasProperty ?property }",
+            "sparql": "DELETE {?thing td:hasProperty ?property. ?property rdf:type td:Property. ?property td:hasName ?name. ?property td:hasStability ?stability. ?property td:isWritable ?writable. ?property dul:hasDataValue ?value  . ?property wot:hasDataSchema ?dataSchema } WHERE {?thing rdf:type td:Thing . ?thing td:hasProperty ?property }",
             "forcedBindings": {
                 "thing": {
                     "type": "uri",
@@ -303,10 +303,10 @@
     },
     "queries": {
         "ALL_DATASCHEMA_DISCOVERY": {
-            "sparql": "SELECT ?item ?itemType ?dataSchema ?inputDS ?outputDS WHERE {OPTIONAL{?item td:hasDataSchema ?dataSchema}. OPTIONAL{?item td:hasInputDataSchema ?inputDS}. OPTIONAL{?item td:hasOutputDataSchema ?outputDS}. ?item rdf:type ?itemType}"
+            "sparql": "SELECT ?item ?itemType ?dataSchema ?inputDS ?outputDS WHERE {OPTIONAL{?item wot:hasDataSchema ?dataSchema}. OPTIONAL{?item wot:hasInputDataSchema ?inputDS}. OPTIONAL{?item wot:hasOutputDataSchema ?outputDS}. ?item rdf:type ?itemType}"
         },
         "GET_ACTION_REQUEST": {
-            "sparql": "SELECT ?action ?instance ?request ?inputData ?value WHERE {?thing td:hasAction ?action. ?action td:hasActionInstance ?instance.?instance td:hasRequestTimeStamp ?request. ?instance rdf:type td:ActionInstance. OPTIONAL {?instance td:hasInputData ?inputData. ?inputData dul:hasDataValue ?value}}",
+            "sparql": "SELECT ?action ?instance ?request ?inputData ?value WHERE {?thing td:hasAction ?action. ?action wot:hasActionInstance ?instance.?instance wot:hasRequestTimeStamp ?request. ?instance rdf:type wot:ActionInstance. OPTIONAL {?instance wot:hasInputData ?inputData. ?inputData dul:hasDataValue ?value}}",
             "forcedBindings": {
                 "thing": {
                     "type": "uri",
@@ -328,7 +328,7 @@
             }
         },
         "GET_CONFIRMATION_TIMESTAMP": {
-            "sparql": "SELECT ?confirmation WHERE {?instance rdf:type td:ActionInstance. ?instance td:hasConfirmationTimeStamp ?time}",
+            "sparql": "SELECT ?confirmation WHERE {?instance rdf:type wot:ActionInstance. ?instance wot:hasConfirmationTimeStamp ?time}",
             "forcedBindings": {
                 "instance": {
                     "type": "uri",
@@ -337,7 +337,7 @@
             }
         },
         "LIST_ACTIONS": {
-            "sparql": "SELECT ?thing ?action ?aName ?outDataSchema ?inDataSchema WHERE { ?thing rdf:type td:Thing . ?thing td:hasAction ?action . ?action td:hasName ?aName . ?action td:hasOutputDataSchema ?outDataSchema . ?action td:hasInputDataSchema ?inDataSchema } ",
+            "sparql": "SELECT ?thing ?action ?aName ?outDataSchema ?inDataSchema WHERE { ?thing rdf:type td:Thing . ?thing td:hasAction ?action . ?action td:hasName ?aName . ?action wot:hasOutputDataSchema ?outDataSchema . ?action wot:hasInputDataSchema ?inDataSchema } ",
             "forcedBindings": {
                 "thing": {
                     "type": "uri",
@@ -355,7 +355,7 @@
             }
         },
         "LIST_EVENTS": {
-            "sparql": "SELECT ?thing ?event ?eName ?outDataSchema WHERE { ?thing rdf:type td:Thing . ?thing td:hasEvent ?event . ?event td:hasName ?eName . ?event td:hasOutputDataSchema ?outDataSchema }",
+            "sparql": "SELECT ?thing ?event ?eName ?outDataSchema WHERE { ?thing rdf:type td:Thing . ?thing td:hasEvent ?event . ?event td:hasName ?eName . ?event wot:hasOutputDataSchema ?outDataSchema }",
             "forcedBindings": {
                 "thing": {
                     "type": "uri",
@@ -385,5 +385,5 @@
             "sparql": "SELECT ?thing WHERE {?thing rdf:type td:Thing}"
         }
     },
-    "creation_time": "2017-12-07 12:50:59"
+    "creation_time": "2017-12-07 18:14:33"
 }
