@@ -29,8 +29,8 @@ import sys
 import datetime
 import logging
 
-TD_template = "./thing_description.jsap"
-TD_complete = "./thing_description2.jsap"
+TD_template = "./skeleton.jsap"
+TD_complete = "./thing_description.jsap"
 
 logging.basicConfig(format="%(levelname)s %(asctime)-15s %(message)s",level=logging.INFO)
 
