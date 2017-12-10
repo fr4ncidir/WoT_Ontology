@@ -68,11 +68,11 @@ def main(args):
 	updates = []
 	for element in root.findall("owl:AnnotationProperty",ns):
 		for annotation_type in element.findall("rdfs:subPropertyOf",ns):
-			annotation_type_string = annotation_type.attrib["{}{}".format("{"+ns["rdf"]+"}","resource")]
+			annotation_type_string = annotation_type.attrib["{}resource".format("{"+ns["rdf"]+"}")]
 			if (annotation_type_string==(ns["web_of_things"]+"discovery")) or (annotation_type_string==(ns["web_of_things"]+"query")):
-				queries.append(element.attrib["{}{}".format("{"+ns["rdf"]+"}","about")].replace(ns["web_of_things"],"web_of_things:"))
+				queries.append(element.attrib["{}about".format("{"+ns["rdf"]+"}")].replace(ns["web_of_things"],"web_of_things:"))
 			elif (annotation_type_string==(ns["web_of_things"]+"delete")) or (annotation_type_string==(ns["web_of_things"]+"update")):
-				updates.append(element.attrib["{}{}".format("{"+ns["rdf"]+"}","about")].replace(ns["web_of_things"],"web_of_things:"))
+				updates.append(element.attrib["{}about".format("{"+ns["rdf"]+"}")].replace(ns["web_of_things"],"web_of_things:"))
 	
 	with open(TD_complete,"r+") as jsap:
 		data = json.load(jsap)
