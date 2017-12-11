@@ -66,6 +66,10 @@ def main(args):
 	root = tree.getroot()
 	queries = []
 	updates = []
+	
+	ontology = root.find("owl:Ontology",ns)
+	versionIRI = ontology.find("owl:versionIRI",ns).attrib["{}resource".format("{"+ns["rdf"]+"}")]
+		
 	for element in root.findall("owl:AnnotationProperty",ns):
 		for annotation_type in element.findall("rdfs:subPropertyOf",ns):
 			annotation_type_string = annotation_type.attrib["{}resource".format("{"+ns["rdf"]+"}")]
@@ -77,6 +81,7 @@ def main(args):
 	with open(TD_complete,"r+") as jsap:
 		data = json.load(jsap)
 		data["creation_time"]="{:%Y-%m-%d %H:%M:%S}".format(datetime.now())
+		data["ontology_version"]=versionIRI
 		for element in queries:
 			for item in root.findall(".//"+element,ns):
 				jsap_build(item.text,"queries",data,jsap)
