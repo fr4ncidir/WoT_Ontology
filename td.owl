@@ -363,7 +363,7 @@ francesco.antoniazzi@unibo.it</owl:versionInfo>
     <owl:ObjectProperty rdf:about="dul:hasComponent">
         <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Thing"/>
         <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Thing"/>
-        <rdfs:isDefinedBy rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#</rdfs:isDefinedBy>
+        <rdfs:isDefinedBy rdf:resource="http://www.ontologydesignpatterns.org/ont/dul/DUL.owl"/>
     </owl:ObjectProperty>
     
 
@@ -508,7 +508,7 @@ francesco.antoniazzi@unibo.it</owl:versionInfo>
                 </owl:unionOf>
             </rdfs:Datatype>
         </rdfs:range>
-        <rdfs:isDefinedBy rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#</rdfs:isDefinedBy>
+        <rdfs:isDefinedBy rdf:resource="http://www.ontologydesignpatterns.org/ont/dul/DUL.owl"/>
     </owl:DatatypeProperty>
     
 
