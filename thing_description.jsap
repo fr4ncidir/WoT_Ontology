@@ -1,420 +1,433 @@
 {
-    "updates": {
-        "DELETE_PROPERTY_CHANGED_EVENT": {
-            "forcedBindings": {
-                "thing": {
-                    "event": "uri",
-                    "value": ""
-                }
-            },
-            "sparql": "DELETE {?thing td:hasEvent ?event. ?event td:hasName ?name. ?event rdf:type td:Event. ?event rdf:type td:PropertyChangedEvent} WHERE {?thing rdf:type td:Thing}"
-        },
-        "DELETE_EVENT": {
-            "forcedBindings": {
-                "event": {
-                    "value": "",
-                    "type": "uri"
-                },
-                "thing": {
-                    "value": "",
-                    "type": "uri"
-                }
-            },
-            "sparql": "DELETE { ?thing td:hasEvent ?event . ?event td:hasName ?name . ?event rdf:type td:Event . ?event wot:hasOutputDataSchema ?outDataSchema . ?thing wot:hasEventInstance ?instance . ?instance wot:hasTimeStamp ?timestamp . ?instance wot:hasOutputData ?data . ?data td:hasDataValue ?value . } WHERE { ?thing rdf:type td:Thing OPTIONAL { ?thing wot:hasEventInstance ?instance . ?instance wot:hasTimeStamp ?timestamp OPTIONAL { ?instance wot:hasOutputData ?data . ?data td:hasDataValue ?value}}}"
-        },
-        "ADD_DATASCHEMA": {
-            "forcedBindings": {
-                "newDataSchema": {
-                    "value": "",
-                    "type": "literal"
-                },
-                "property": {
-                    "value": "",
-                    "type": "uri"
-                }
-            },
-            "sparql": "DELETE {?property wot:hasDataSchema ?oldDataSchema} INSERT {?property wot:hasDataSchema ?newDataSchema} WHERE {?property rdf:type td:Property}"
-        },
-        "ADD_OUTPUT_DATA": {
-            "forcedBindings": {
-                "newOutput": {
-                    "value": "",
-                    "type": "uri"
-                },
-                "newValue": {
-                    "value": "",
-                    "type": "literal"
-                },
-                "item": {
-                    "value": "",
-                    "type": "uri"
-                }
-            },
-            "sparql": "DELETE {?item wot:hasOutputData ?oldOutput. ?oldOutput wot:hasTimeStamp ?oldTimeStamp. ?oldOutput dul:hasDataValue ?oldValue} INSERT {?item wot:hasOutputData ?newOutput. ?newOutput wot:hasTimeStamp ?newTimeStamp. ?newOutput dul:hasDataValue ?newValue} WHERE { {{?item rdf:type wot:ActionInstance} UNION {?item rdf:type td:Event}}. OPTIONAL{?item wot:hasOutputData ?oldOutput. ?oldOutput wot:hasTimeStamp ?oldTimeStamp. ?oldOutput dul:hasDataValue ?oldValue}. BIND(now() AS ?newTimeStamp)}"
-        },
-        "ADD_OUTPUT_DATASCHEMA": {
-            "forcedBindings": {
-                "newDataSchema": {
-                    "value": "",
-                    "type": "literal"
-                },
-                "property": {
-                    "value": "",
-                    "type": "uri"
-                }
-            },
-            "sparql": "DELETE {?item wot:hasOutputDataSchema ?oldDataSchema} INSERT {?item wot:hasOutputDataSchema ?newDataSchema} WHERE {{?item rdf:type td:Action} UNION {?item rdf:type }}"
-        },
-        "ADD_CONFIRMATION_TIMESTAMP": {
-            "forcedBindings": {
-                "instance": {
-                    "value": "",
-                    "type": "uri"
-                }
-            },
-            "sparql": "INSERT {?instance rdf:type wot:ActionInstance. ?instance wot:hasConfirmationTimeStamp ?time} WHERE {BIND(now() AS ?time)}"
-        },
-        "ADD_EVENT": {
-            "forcedBindings": {
-                "outDataSchema": {
-                    "value": "",
-                    "type": "literal"
-                },
-                "eName": {
-                    "value": "",
-                    "type": "literal"
-                },
-                "event": {
-                    "value": "",
-                    "type": "uri"
-                },
-                "thing": {
-                    "value": "",
-                    "type": "uri"
-                }
-            },
-            "sparql": "INSERT DATA {?thing td:hasEvent ?event. ?event rdf:type td:Event . ?event td:hasName ?eName . ?event wot:hasOutputDataSchema ?outDataSchema }"
-        },
-        "ADD_FORPROPERTY": {
-            "forcedBindings": {
-                "item": {
-                    "value": "",
-                    "type": "uri"
-                },
-                "property": {
-                    "value": "",
-                    "type": "uri"
-                }
-            },
-            "sparql": "INSERT {?item td:forProperty ?property} WHERE {?property rdf:type td:Property. {?item rdf:type td:Action} UNION {?item rdf:type td:Event}}"
-        },
-        "DELETE_FORPROPERTY": {
-            "forcedBindings": {
-                "item": {
-                    "value": "",
-                    "type": "uri"
-                }
-            },
-            "sparql": "DELETE {?item td:forProperty ?property} WHERE {?property rdf:type td:Property. {?item rdf:type td:Action} UNION {?item rdf:type td:Event}}"
-        },
-        "ADD_PROPERTY_CHANGED_EVENT": {
-            "forcedBindings": {
-                "eName": {
-                    "value": "",
-                    "type": "literal"
-                },
-                "event": {
-                    "value": "",
-                    "type": "uri"
-                },
-                "thing": {
-                    "value": "",
-                    "type": "uri"
-                }
-            },
-            "sparql": "INSERT DATA {?thing td:hasEvent ?event. ?event rdf:type td:Event. ?event rdf:type td:PropertyChangedEvent. ?event td:hasName ?eName} "
-        },
-        "DELETE_PROPERTY": {
-            "forcedBindings": {
-                "property": {
-                    "value": "",
-                    "type": "uri"
-                },
-                "thing": {
-                    "value": "",
-                    "type": "uri"
-                }
-            },
-            "sparql": "DELETE {?thing td:hasProperty ?property. ?property rdf:type td:Property. ?property td:hasName ?name. ?property td:hasStability ?stability. ?property td:isWritable ?writable. ?property dul:hasDataValue ?value  . ?property wot:hasDataSchema ?dataSchema } WHERE {?thing rdf:type td:Thing . ?thing td:hasProperty ?property }"
-        },
-        "DELETE_ACTION_INSTANCE": {
-            "forcedBindings": {
-                "instance": {
-                    "value": "",
-                    "type": "uri"
-                },
-                "action": {
-                    "value": "",
-                    "type": "uri"
-                }
-            },
-            "sparql": "DELETE {?action wot:hasActionInstance ?instance. ?instance wot:hasRequestTimeStamp ?request. ?instance wot:hasConfirmationTimeStamp ?confirmation. ?instance wot:hasCompletionTimeStamp ?completion. ?instance rdf:type wot:ActionInstance.?instance wot:hasInputData ?inputData. ?inputData dul:hasDataValue ?value} WHERE {?action rdf:type td:Action . ?action wot:hasActionInstance ?instance . OPTIONAL {?instance wot:hasInputData ?inputData. ?inputData dul:hasDataValue ?value}}"
-        },
-        "POST_ACTION_INSTANCE_NO_INPUT": {
-            "forcedBindings": {
-                "instance": {
-                    "value": "",
-                    "type": "uri"
-                },
-                "action": {
-                    "value": "",
-                    "type": "uri"
-                }
-            },
-            "sparql": "INSERT {?action wot:hasActionInstance ?instance. ?instance wot:hasRequestTimeStamp ?request. ?instance rdf:type wot:ActionInstance} WHERE {?action rdf:type td:Action. BIND(now() AS ?request)}"
-        },
-        "POST_ACTION_INSTANCE_WITH_INPUT": {
-            "forcedBindings": {
-                "instance": {
-                    "value": "",
-                    "type": "uri"
-                },
-                "value": {
-                    "value": "",
-                    "type": "literal"
-                },
-                "action": {
-                    "value": "",
-                    "type": "uri"
-                }
-            },
-            "sparql": "INSERT {?action wot:hasActionInstance ?instance. ?instance wot:hasRequestTimeStamp ?request. ?instance rdf:type wot:ActionInstance. ?instance wot:hasInputData ?inputData. ?inputData dul:hasDataValue ?value} WHERE {?action rdf:type td:Action. BIND(now() AS ?request). BIND(IRI(CONCAT('wot:input_',STR(NOW()))) as ?inputData)}"
-        },
-        "ADD_INPUT_DATASCHEMA": {
-            "forcedBindings": {
-                "newDataSchema": {
-                    "value": "",
-                    "type": "literal"
-                },
-                "action": {
-                    "value": "",
-                    "type": "uri"
-                }
-            },
-            "sparql": "DELETE {?action wot:hasInputDataSchema ?oldDataSchema} INSERT {?action wot:hasInputDataSchema ?newDataSchema} WHERE {?action rdf:type td:Action}"
-        },
-        "POST_NEW_EVENT_WITH_OUTPUT": {
-            "forcedBindings": {
-                "newDataValue": {
-                    "value": "",
-                    "type": "literal"
-                },
-                "event": {
-                    "value": "",
-                    "type": "uri"
-                },
-                "thing": {
-                    "value": "",
-                    "type": "uri"
-                }
-            },
-            "sparql": "DELETE {?event wot:hasEventInstance ?oldInstance.?oldInstance rdf:type wot:EventInstance. ?oldInstance wot:hasTimeStamp ?oldTimeStamp. ?oldInstance wot:hasOutputData ?oldOutputData. ?oldOutputData rdf:type wot:OutputData. ?oldOutputData dul:hasDataValue ?oldDataValue} INSERT { ?event wot:hasEventInstance ?newInstance. ?newInstance rdf:type wot:EventInstance. ?newInstance wot:hasTimeStamp ?newTimeStamp. ?newInstance wot:hasOutputData ?newOutputData. ?newOutputData rdf:type wot:OutputData. ?newOutputData dul:hasDataValue ?newDataValue}  WHERE { ?thing td:hasEvent ?event. ?event rdf:type td:Event. BIND(now() AS ?newTimeStamp). BIND(IRI(CONCAT('wot:instance_',STR(NOW()))) as ?newInstance). BIND(IRI(CONCAT('wot:output_',STR(NOW()))) as ?newOutputData). OPTIONAL{ ?event wot:hasEventInstance ?oldInstance. ?oldInstance rdf:type wot:EventInstance. ?oldInstance wot:hasTimeStamp ?oldTimeStamp. ?oldInstance wot:hasOutputData ?oldOutputData. ?oldOutputData rdf:type wot:OutputData. ?oldOutputData dul:hasDataValue ?oldDataValue}}"
-        },
-        "ADD_NEW_THING": {
-            "forcedBindings": {
-                "name": {
-                    "value": "",
-                    "type": "literal"
-                },
-                "thing": {
-                    "value": "",
-                    "type": "uri"
-                }
-            },
-            "sparql": "INSERT DATA {?thing rdf:type td:Thing. ?thing td:hasName ?name}"
-        },
-        "POST_NEW_EVENT_WITHOUT_OUTPUT": {
-            "forcedBindings": {
-                "event": {
-                    "value": "",
-                    "type": "uri"
-                },
-                "thing": {
-                    "value": "",
-                    "type": "uri"
-                }
-            },
-            "sparql": "DELETE {?event wot:hasEventInstance ?oldInstance. ?oldInstance rdf:type wot:EventInstance. ?oldInstance wot:hasTimeStamp ?oldTimeStamp} INSERT { ?event wot:hasEventInstance ?newInstance. ?newInstance rdf:type wot:EventInstance. ?newInstance wot:hasTimeStamp ?newTimeStamp} WHERE {?thing td:hasEvent ?event. ?event rdf:type td:Event. BIND(now() AS ?newTimeStamp). BIND(IRI(CONCAT('wot:instance_',STR(NOW()))) as ?newInstance). OPTIONAL{ ?event wot:hasEventInstance ?oldInstance. ?oldInstance rdf:type wot:EventInstance. ?oldInstance wot:hasTimeStamp ?oldTimeStamp}}"
-        },
-        "ADD_PROPERTY": {
-            "forcedBindings": {
-                "newWritable": {
-                    "value": "",
-                    "type": "literal"
-                },
-                "property": {
-                    "value": "",
-                    "type": "uri"
-                },
-                "thing": {
-                    "value": "",
-                    "type": "uri"
-                },
-                "newDataSchema": {
-                    "value": "",
-                    "type": "literal"
-                },
-                "newName": {
-                    "value": "",
-                    "type": "literal"
-                },
-                "newValue": {
-                    "value": "",
-                    "type": "literal"
-                },
-                "newStability": {
-                    "value": "",
-                    "type": "literal"
-                }
-            },
-            "sparql": "DELETE {?thing td:hasProperty ?property. ?property rdf:type td:Property. ?property td:hasName ?oldName. ?property td:hasStability ?oldStability. ?property td:isWritable ?oldWritable. ?property dul:hasDataValue ?oldValue . ?property wot:hasDataSchema ?oldDataSchema} INSERT {?thing td:hasProperty ?property. ?property rdf:type td:Property. ?property td:hasName ?newName. ?property td:hasStability ?newStability. ?property td:isWritable ?newWritable. ?property dul:hasDataValue ?newValue . ?property wot:hasDataSchema ?newDataSchema } WHERE {?thing rdf:type td:Thing . OPTIONAL {?thing td:hasProperty ?property. ?property wot:hasDataSchema ?oldDataSchema . ?property rdf:type td:Property. ?property td:hasName ?oldName. ?property td:hasStability ?oldStability. ?property td:isWritable ?oldWritable. ?property dul:hasDataValue ?oldValue}}"
-        },
-        "ADD_NEW_ACTION": {
-            "forcedBindings": {
-                "newOutDataSchema": {
-                    "value": "",
-                    "type": "literal"
-                },
-                "newInDataSchema": {
-                    "value": "",
-                    "type": "literal"
-                },
-                "aName": {
-                    "value": "",
-                    "type": "literal"
-                },
-                "thing": {
-                    "value": "",
-                    "type": "uri"
-                },
-                "action": {
-                    "value": "",
-                    "type": "uri"
-                }
-            },
-            "sparql": "INSERT {?thing td:hasAction ?action. ?action rdf:type td:Action . ?action td:hasName ?newName . ?action wot:hasInputDataSchema ?newInDataSchema . ?action wot:hasOutputDataSchema ?newOutDataSchema } WHERE { ?thing rdf:type td:Thing }"
-        }
-    },
     "parameters": {
-        "paths": {
-            "tokenRequest": "/oauth/token",
-            "securePath": "/secure",
-            "subscribe": "/subscribe",
-            "query": "/query",
-            "update": "/update",
-            "register": "/oauth/register"
-        },
-        "host": "10.10.10.100",
+        "host": "localhost",
         "ports": {
             "http": 8000,
             "https": 8443,
             "ws": 9000,
             "wss": 9443
+        },
+        "paths": {
+            "query": "/query",
+            "update": "/update",
+            "subscribe": "/subscribe",
+            "register": "/oauth/register",
+            "tokenRequest": "/oauth/token",
+            "securePath": "/secure"
         }
     },
     "namespaces": {
+        "wot": "http://wot.arces.unibo.it/sepa#",
+        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        "dul": "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#",
         "ire": "http://w3c.github.io/wot/w3c-wot-td-ire.owl#",
         "rdfs": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-        "xsd": "http://www.w3.org/2001/XMLSchema",
-        "dul": "http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#",
         "td": "http://wot.arces.unibo.it/ontology/web_of_things#",
-        "wot": "http://wot.arces.unibo.it/sepa#",
-        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+        "xsd": "http://www.w3.org/2001/XMLSchema"
     },
-    "creation_time": "2017-12-15 17:24:35",
-    "queries": {
-        "GET_ACTION_REQUEST": {
+    "updates": {
+        "POST_ACTION_INSTANCE_NO_INPUT": {
+            "sparql": "INSERT {?action wot:hasActionInstance ?instance. ?instance wot:hasRequestTimeStamp ?request. ?instance rdf:type wot:ActionInstance} WHERE {?action rdf:type td:Action. BIND(now() AS ?request)}",
             "forcedBindings": {
-                "thing": {
-                    "value": "",
-                    "type": "uri"
+                "action": {
+                    "type": "uri",
+                    "value": ""
+                },
+                "instance": {
+                    "type": "uri",
+                    "value": ""
                 }
-            },
-            "sparql": "SELECT ?action ?instance ?request ?inputData ?value WHERE {?thing td:hasAction ?action. ?action wot:hasActionInstance ?instance.?instance wot:hasRequestTimeStamp ?request. ?instance rdf:type wot:ActionInstance. OPTIONAL {?instance wot:hasInputData ?inputData. ?inputData dul:hasDataValue ?value}}"
+            }
         },
-        "LIST_PROPERTIES": {
+        "POST_ACTION_INSTANCE_WITH_INPUT": {
+            "sparql": "INSERT {?action wot:hasActionInstance ?instance. ?instance wot:hasRequestTimeStamp ?request. ?instance rdf:type wot:ActionInstance. ?instance wot:hasInputData ?inputData. ?inputData dul:hasDataValue ?value} WHERE {?action rdf:type td:Action. BIND(now() AS ?request). BIND(IRI(CONCAT('wot:input_',STR(NOW()))) as ?inputData)}",
             "forcedBindings": {
-                "thing": {
-                    "value": "",
-                    "type": "uri"
+                "action": {
+                    "type": "uri",
+                    "value": ""
+                },
+                "instance": {
+                    "type": "uri",
+                    "value": ""
+                },
+                "value": {
+                    "type": "literal",
+                    "value": ""
                 }
-            },
-            "sparql": "SELECT ?property ?pName ?pValue WHERE { ?thing rdf:type td:Thing . ?thing td:hasProperty ?property . ?property td:hasName ?pName . ?property td:hasStability ?stability . ?property td:isWritable ?writable . ?property dul:hasDataValue ?pValue } "
+            }
         },
-        "GET_EVENT_NOTIFICATION": {
+        "ADD_CONFIRMATION_TIMESTAMP": {
+            "sparql": "INSERT {?instance rdf:type wot:ActionInstance. ?instance wot:hasConfirmationTimeStamp ?time} WHERE {BIND(now() AS ?time)}",
+            "forcedBindings": {
+                "instance": {
+                    "type": "uri",
+                    "value": ""
+                }
+            }
+        },
+        "ADD_DATASCHEMA": {
+            "sparql": "DELETE {?property wot:hasDataSchema ?oldDataSchema} INSERT {?property wot:hasDataSchema ?newDataSchema} WHERE {?property rdf:type td:Property}",
+            "forcedBindings": {
+                "property": {
+                    "type": "uri",
+                    "value": ""
+                },
+                "newDataSchema": {
+                    "type": "literal",
+                    "value": ""
+                }
+            }
+        },
+        "ADD_INPUT_DATASCHEMA": {
+            "sparql": "DELETE {?action wot:hasInputDataSchema ?oldDataSchema} INSERT {?action wot:hasInputDataSchema ?newDataSchema} WHERE {?action rdf:type td:Action}",
+            "forcedBindings": {
+                "action": {
+                    "type": "uri",
+                    "value": ""
+                },
+                "newDataSchema": {
+                    "type": "literal",
+                    "value": ""
+                }
+            }
+        },
+        "ADD_OUTPUT_DATASCHEMA": {
+            "sparql": "DELETE {?item wot:hasOutputDataSchema ?oldDataSchema} INSERT {?item wot:hasOutputDataSchema ?newDataSchema} WHERE {{?item rdf:type td:Action} UNION {?item rdf:type }}",
+            "forcedBindings": {
+                "property": {
+                    "type": "uri",
+                    "value": ""
+                },
+                "newDataSchema": {
+                    "type": "literal",
+                    "value": ""
+                }
+            }
+        },
+        "ADD_EVENT": {
+            "sparql": "INSERT DATA {?thing td:hasEvent ?event. ?event rdf:type td:Event . ?event td:hasName ?eName . ?event wot:hasOutputDataSchema ?outDataSchema }",
             "forcedBindings": {
                 "event": {
-                    "value": "",
-                    "type": "uri"
+                    "type": "uri",
+                    "value": ""
                 },
                 "thing": {
-                    "value": "",
-                    "type": "uri"
+                    "type": "uri",
+                    "value": ""
+                },
+                "eName": {
+                    "type": "literal",
+                    "value": ""
+                },
+                "outDataSchema": {
+                    "type": "literal",
+                    "value": ""
                 }
-            },
-            "sparql": "SELECT ?timestamp ?value WHERE { ?thing td:hasEvent ?event . ?event rdf:type td:Event. ?event wot:hasEventInstance ?instance . ?instance wot:hasTimeStamp ?timestamp . OPTIONAL{?instance wot:hasOutputData ?output. ?output dul:hasDataValue ?value}}"
+            }
         },
-        "LIST_EVENTS": {
+        "POST_NEW_EVENT_WITH_OUTPUT": {
+            "sparql": "DELETE {?event wot:hasEventInstance ?oldInstance.?oldInstance rdf:type wot:EventInstance. ?oldInstance wot:hasTimeStamp ?oldTimeStamp. ?oldInstance wot:hasOutputData ?oldOutputData. ?oldOutputData rdf:type wot:OutputData. ?oldOutputData dul:hasDataValue ?oldDataValue} INSERT { ?event wot:hasEventInstance ?newInstance. ?newInstance rdf:type wot:EventInstance. ?newInstance wot:hasTimeStamp ?newTimeStamp. ?newInstance wot:hasOutputData ?newOutputData. ?newOutputData rdf:type wot:OutputData. ?newOutputData dul:hasDataValue ?newDataValue}  WHERE { ?thing td:hasEvent ?event. ?event rdf:type td:Event. BIND(now() AS ?newTimeStamp). BIND(IRI(CONCAT('wot:instance_',STR(NOW()))) as ?newInstance). BIND(IRI(CONCAT('wot:output_',STR(NOW()))) as ?newOutputData). OPTIONAL{ ?event wot:hasEventInstance ?oldInstance. ?oldInstance rdf:type wot:EventInstance. ?oldInstance wot:hasTimeStamp ?oldTimeStamp. ?oldInstance wot:hasOutputData ?oldOutputData. ?oldOutputData rdf:type wot:OutputData. ?oldOutputData dul:hasDataValue ?oldDataValue}}",
             "forcedBindings": {
                 "thing": {
-                    "value": "",
-                    "type": "uri"
+                    "type": "uri",
+                    "value": ""
+                },
+                "event": {
+                    "type": "uri",
+                    "value": ""
+                },
+                "newDataValue": {
+                    "type": "literal",
+                    "value": ""
                 }
-            },
-            "sparql": "SELECT ?thing ?event ?eName ?outDataSchema WHERE { ?thing rdf:type td:Thing . ?thing td:hasEvent ?event . ?event td:hasName ?eName . ?event wot:hasOutputDataSchema ?outDataSchema }"
+            }
         },
+        "POST_NEW_EVENT_WITHOUT_OUTPUT": {
+            "sparql": "DELETE {?event wot:hasEventInstance ?oldInstance. ?oldInstance rdf:type wot:EventInstance. ?oldInstance wot:hasTimeStamp ?oldTimeStamp} INSERT { ?event wot:hasEventInstance ?newInstance. ?newInstance rdf:type wot:EventInstance. ?newInstance wot:hasTimeStamp ?newTimeStamp} WHERE {?thing td:hasEvent ?event. ?event rdf:type td:Event. BIND(now() AS ?newTimeStamp). BIND(IRI(CONCAT('wot:instance_',STR(NOW()))) as ?newInstance). OPTIONAL{ ?event wot:hasEventInstance ?oldInstance. ?oldInstance rdf:type wot:EventInstance. ?oldInstance wot:hasTimeStamp ?oldTimeStamp}}",
+            "forcedBindings": {
+                "event": {
+                    "type": "uri",
+                    "value": ""
+                },
+                "thing": {
+                    "type": "uri",
+                    "value": ""
+                }
+            }
+        },
+        "ADD_FORPROPERTY": {
+            "sparql": "INSERT {?item td:forProperty ?property} WHERE {?property rdf:type td:Property. {?item rdf:type td:Action} UNION {?item rdf:type td:Event}}",
+            "forcedBindings": {
+                "item": {
+                    "type": "uri",
+                    "value": ""
+                },
+                "property": {
+                    "type": "uri",
+                    "value": ""
+                }
+            }
+        },
+        "ADD_NESTED_THING": {
+            "sparql": "INSERT DATA {?thingFather dul:hasComponent ?thing}",
+            "forcedBindings": {
+                "thingFather": {
+                    "type": "uri",
+                    "value": ""
+                },
+                "thing": {
+                    "type": "uri",
+                    "value": ""
+                }
+            }
+        },
+        "ADD_NEW_ACTION": {
+            "sparql": "INSERT {?thing td:hasAction ?action. ?action rdf:type td:Action . ?action td:hasName ?newName . ?action wot:hasInputDataSchema ?newInDataSchema . ?action wot:hasOutputDataSchema ?newOutDataSchema } WHERE { ?thing rdf:type td:Thing }",
+            "forcedBindings": {
+                "thing": {
+                    "type": "uri",
+                    "value": ""
+                },
+                "action": {
+                    "type": "uri",
+                    "value": ""
+                },
+                "aName": {
+                    "type": "literal",
+                    "value": ""
+                },
+                "newInDataSchema": {
+                    "type": "literal",
+                    "value": ""
+                },
+                "newOutDataSchema": {
+                    "type": "literal",
+                    "value": ""
+                }
+            }
+        },
+        "ADD_NEW_THING": {
+            "sparql": "INSERT DATA {?thing rdf:type td:Thing. ?thing td:hasName ?name}",
+            "forcedBindings": {
+                "thing": {
+                    "type": "uri",
+                    "value": ""
+                },
+                "name": {
+                    "type": "literal",
+                    "value": ""
+                }
+            }
+        },
+        "ADD_OUTPUT_DATA": {
+            "sparql": "DELETE {?item wot:hasOutputData ?oldOutput. ?oldOutput wot:hasTimeStamp ?oldTimeStamp. ?oldOutput dul:hasDataValue ?oldValue} INSERT {?item wot:hasOutputData ?newOutput. ?newOutput wot:hasTimeStamp ?newTimeStamp. ?newOutput dul:hasDataValue ?newValue} WHERE { {{?item rdf:type wot:ActionInstance} UNION {?item rdf:type td:Event}}. OPTIONAL{?item wot:hasOutputData ?oldOutput. ?oldOutput wot:hasTimeStamp ?oldTimeStamp. ?oldOutput dul:hasDataValue ?oldValue}. BIND(now() AS ?newTimeStamp)}",
+            "forcedBindings": {
+                "item": {
+                    "type": "uri",
+                    "value": ""
+                },
+                "newOutput": {
+                    "type": "uri",
+                    "value": ""
+                },
+                "newValue": {
+                    "type": "literal",
+                    "value": ""
+                }
+            }
+        },
+        "ADD_PROPERTY": {
+            "sparql": "DELETE {?thing td:hasProperty ?property. ?property rdf:type td:Property. ?property td:hasName ?oldName. ?property td:hasStability ?oldStability. ?property td:isWritable ?oldWritable. ?property dul:hasDataValue ?oldValue . ?property wot:hasDataSchema ?oldDataSchema} INSERT {?thing td:hasProperty ?property. ?property rdf:type td:Property. ?property td:hasName ?newName. ?property td:hasStability ?newStability. ?property td:isWritable ?newWritable. ?property dul:hasDataValue ?newValue . ?property wot:hasDataSchema ?newDataSchema } WHERE {?thing rdf:type td:Thing . OPTIONAL {?thing td:hasProperty ?property. ?property wot:hasDataSchema ?oldDataSchema . ?property rdf:type td:Property. ?property td:hasName ?oldName. ?property td:hasStability ?oldStability. ?property td:isWritable ?oldWritable. ?property dul:hasDataValue ?oldValue}}",
+            "forcedBindings": {
+                "thing": {
+                    "type": "uri",
+                    "value": ""
+                },
+                "property": {
+                    "type": "uri",
+                    "value": ""
+                },
+                "newName": {
+                    "type": "literal",
+                    "value": ""
+                },
+                "newStability": {
+                    "type": "literal",
+                    "value": ""
+                },
+                "newWritable": {
+                    "type": "literal",
+                    "value": ""
+                },
+                "newDataSchema": {
+                    "type": "literal",
+                    "value": ""
+                },
+                "newValue": {
+                    "type": "literal",
+                    "value": ""
+                }
+            }
+        },
+        "ADD_PROPERTY_CHANGED_EVENT": {
+            "sparql": "INSERT DATA {?thing td:hasEvent ?event. ?event rdf:type td:Event. ?event rdf:type td:PropertyChangedEvent. ?event td:hasName ?eName} ",
+            "forcedBindings": {
+                "event": {
+                    "type": "uri",
+                    "value": ""
+                },
+                "thing": {
+                    "type": "uri",
+                    "value": ""
+                },
+                "eName": {
+                    "type": "literal",
+                    "value": ""
+                }
+            }
+        },
+        "DELETE_ACTION_INSTANCE": {
+            "sparql": "DELETE {?action wot:hasActionInstance ?instance. ?instance wot:hasRequestTimeStamp ?request. ?instance wot:hasConfirmationTimeStamp ?confirmation. ?instance wot:hasCompletionTimeStamp ?completion. ?instance rdf:type wot:ActionInstance.?instance wot:hasInputData ?inputData. ?inputData dul:hasDataValue ?value} WHERE {?action rdf:type td:Action . ?action wot:hasActionInstance ?instance . OPTIONAL {?instance wot:hasInputData ?inputData. ?inputData dul:hasDataValue ?value}}",
+            "forcedBindings": {
+                "action": {
+                    "type": "uri",
+                    "value": ""
+                },
+                "instance": {
+                    "type": "uri",
+                    "value": ""
+                }
+            }
+        },
+        "DELETE_EVENT": {
+            "sparql": "DELETE { ?thing td:hasEvent ?event . ?event td:hasName ?name . ?event rdf:type td:Event . ?event wot:hasOutputDataSchema ?outDataSchema . ?thing wot:hasEventInstance ?instance . ?instance wot:hasTimeStamp ?timestamp . ?instance wot:hasOutputData ?data . ?data td:hasDataValue ?value . } WHERE { ?thing rdf:type td:Thing OPTIONAL { ?thing wot:hasEventInstance ?instance . ?instance wot:hasTimeStamp ?timestamp OPTIONAL { ?instance wot:hasOutputData ?data . ?data td:hasDataValue ?value}}}",
+            "forcedBindings": {
+                "thing": {
+                    "type": "uri",
+                    "value": ""
+                },
+                "event": {
+                    "type": "uri",
+                    "value": ""
+                }
+            }
+        },
+        "DELETE_FORPROPERTY": {
+            "sparql": "DELETE {?item td:forProperty ?property} WHERE {?property rdf:type td:Property. {?item rdf:type td:Action} UNION {?item rdf:type td:Event}}",
+            "forcedBindings": {
+                "item": {
+                    "type": "uri",
+                    "value": ""
+                }
+            }
+        },
+        "DELETE_PROPERTY": {
+            "sparql": "DELETE {?thing td:hasProperty ?property. ?property rdf:type td:Property. ?property td:hasName ?name. ?property td:hasStability ?stability. ?property td:isWritable ?writable. ?property dul:hasDataValue ?value  . ?property wot:hasDataSchema ?dataSchema } WHERE {?thing rdf:type td:Thing . ?thing td:hasProperty ?property }",
+            "forcedBindings": {
+                "thing": {
+                    "type": "uri",
+                    "value": ""
+                },
+                "property": {
+                    "type": "uri",
+                    "value": ""
+                }
+            }
+        },
+        "DELETE_PROPERTY_CHANGED_EVENT": {
+            "sparql": "DELETE {?thing td:hasEvent ?event. ?event td:hasName ?name. ?event rdf:type td:Event. ?event rdf:type td:PropertyChangedEvent} WHERE {?thing rdf:type td:Thing}",
+            "forcedBindings": {
+                "thing": {
+                    "event": "uri",
+                    "value": ""
+                }
+            }
+        }
+    },
+    "queries": {
         "ALL_DATASCHEMA_DISCOVERY": {
             "sparql": "SELECT ?item ?itemType ?dataSchema ?inputDS ?outputDS WHERE {OPTIONAL{?item wot:hasDataSchema ?dataSchema}. OPTIONAL{?item wot:hasInputDataSchema ?inputDS}. OPTIONAL{?item wot:hasOutputDataSchema ?outputDS}. ?item rdf:type ?itemType}"
         },
-        "ALL_THINGS": {
-            "sparql": "SELECT ?thing WHERE {?thing rdf:type td:Thing}"
-        },
-        "GET_THING_BY_NAME": {
-            "forcedBindings": {
-                "name": {
-                    "value": "",
-                    "type": "literal"
-                }
-            },
-            "sparql": "SELECT ?thing WHERE {?thing rdf:type td:Thing. ?thing td:hasName ?name}"
-        },
-        "LIST_ACTIONS": {
+        "GET_ACTION_REQUEST": {
+            "sparql": "SELECT ?action ?instance ?request ?inputData ?value WHERE {?thing td:hasAction ?action. ?action wot:hasActionInstance ?instance.?instance wot:hasRequestTimeStamp ?request. ?instance rdf:type wot:ActionInstance. OPTIONAL {?instance wot:hasInputData ?inputData. ?inputData dul:hasDataValue ?value}}",
             "forcedBindings": {
                 "thing": {
-                    "value": "",
-                    "type": "uri"
+                    "type": "uri",
+                    "value": ""
                 }
-            },
-            "sparql": "SELECT ?thing ?action ?aName ?outDataSchema ?inDataSchema WHERE { ?thing rdf:type td:Thing . ?thing td:hasAction ?action . ?action td:hasName ?aName . ?action wot:hasOutputDataSchema ?outDataSchema . ?action wot:hasInputDataSchema ?inDataSchema } "
+            }
+        },
+        "GET_EVENT_NOTIFICATION": {
+            "sparql": "SELECT ?timestamp ?value WHERE { ?thing td:hasEvent ?event . ?event rdf:type td:Event. ?event wot:hasEventInstance ?instance . ?instance wot:hasTimeStamp ?timestamp . OPTIONAL{?instance wot:hasOutputData ?output. ?output dul:hasDataValue ?value}}",
+            "forcedBindings": {
+                "thing": {
+                    "type": "uri",
+                    "value": ""
+                },
+                "event": {
+                    "type": "uri",
+                    "value": ""
+                }
+            }
         },
         "GET_CONFIRMATION_TIMESTAMP": {
+            "sparql": "SELECT ?confirmation WHERE {?instance rdf:type wot:ActionInstance. ?instance wot:hasConfirmationTimeStamp ?time}",
             "forcedBindings": {
                 "instance": {
-                    "value": "",
-                    "type": "uri"
+                    "type": "uri",
+                    "value": ""
                 }
-            },
-            "sparql": "SELECT ?confirmation WHERE {?instance rdf:type wot:ActionInstance. ?instance wot:hasConfirmationTimeStamp ?time}"
+            }
+        },
+        "LIST_ACTIONS": {
+            "sparql": "SELECT ?thing ?action ?aName ?outDataSchema ?inDataSchema WHERE { ?thing rdf:type td:Thing . ?thing td:hasAction ?action . ?action td:hasName ?aName . ?action wot:hasOutputDataSchema ?outDataSchema . ?action wot:hasInputDataSchema ?inDataSchema } ",
+            "forcedBindings": {
+                "thing": {
+                    "type": "uri",
+                    "value": ""
+                }
+            }
+        },
+        "GET_THING_BY_NAME": {
+            "sparql": "SELECT ?thing WHERE {?thing rdf:type td:Thing. ?thing td:hasName ?name}",
+            "forcedBindings": {
+                "name": {
+                    "type": "literal",
+                    "value": ""
+                }
+            }
+        },
+        "LIST_EVENTS": {
+            "sparql": "SELECT ?thing ?event ?eName ?outDataSchema WHERE { ?thing rdf:type td:Thing . ?thing td:hasEvent ?event . ?event td:hasName ?eName . ?event wot:hasOutputDataSchema ?outDataSchema }",
+            "forcedBindings": {
+                "thing": {
+                    "type": "uri",
+                    "value": ""
+                }
+            }
+        },
+        "LIST_PROPERTIES": {
+            "sparql": "SELECT ?property ?pName ?pValue WHERE { ?thing rdf:type td:Thing . ?thing td:hasProperty ?property . ?property td:hasName ?pName . ?property td:hasStability ?stability . ?property td:isWritable ?writable . ?property dul:hasDataValue ?pValue } ",
+            "forcedBindings": {
+                "thing": {
+                    "type": "uri",
+                    "value": ""
+                }
+            }
         },
         "NESTED_THINGS": {
+            "sparql": "SELECT ?thingSon WHERE {?thingFather rdf:type td:Thing. ?thingFather dul:hasComponent ?thingSon}",
             "forcedBindings": {
                 "thingFather": {
-                    "value": "",
-                    "type": "uri"
+                    "type": "uri",
+                    "value": ""
                 }
-            },
-            "sparql": "SELECT ?thingSon WHERE {?thingFather rdf:type td:Thing. ?thingFather dul:hasComponent ?thingSon}"
+            }
+        },
+        "ALL_THINGS": {
+            "sparql": "SELECT ?thing WHERE {?thing rdf:type td:Thing}"
         }
     },
+    "creation_time": "2017-12-28 18:12:16",
     "ontology_version": "http://wot.arces.unibo.it/ontology/web_of_things/1.0.1"
 }

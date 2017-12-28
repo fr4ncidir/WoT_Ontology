@@ -1,6 +1,6 @@
 {
    "parameters":{
-      "host":"10.10.10.100",
+      "host":"localhost",
       "ports":{
          "http":8000,
          "https":8443,
