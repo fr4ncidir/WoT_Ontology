@@ -55,7 +55,7 @@ class WebThing:
 		if not isinstance(newaction,Action):
 			raise TypeError
 		self.__actions.append(newaction)
-		logger.debug("Added Action {}({})".format(newaction.getName(),newAction.getUri()))
+		logger.debug("Added Action {}({})".format(newaction.getName(),newaction.getUri()))
 		return len(self.__actions)
 		
 	def add_event(self,newevent):
@@ -92,11 +92,13 @@ class WebThing:
 		kp = LowLevelKP.LowLevelKP(jpar_path,self.jsap_path,10)
 		
 		# first step: declare the thing
+		logger.debug("Calling ADD_NEW_THING for {}({})".format(self.name,self.uri))
 		sparql = kp.jsapHandler.getUpdate("ADD_NEW_THING",self.getForcedBindings())
 		kp.update(sparql,secure)
 		
 		# second step: add properties
 		for item in self.__properties:
+			logger.debug("Adding property {}({}) to {}({})".format(item.getName(),item.getUri(),self.name,self.uri))
 			sparql = kp.jsapHandler.getUpdate("ADD_PROPERTY",item.getForcedBindings())
 			kp.update(sparql,secure)
 		
@@ -106,21 +108,25 @@ class WebThing:
 				update = "ADD_PROPERTY_CHANGED_EVENT"
 			else:
 				update = "ADD_EVENT"
+			logger.debug("Adding event {}({}) to {}({})".format(item.getName(),item.getUri(),self.name,self.uri))
 			sparql = kp.jsapHandler.getUpdate(update,item.getForcedBindings())
 			kp.update(sparql,secure)
 		
 		# fourth step: add actions
 		for item in self.__actions:
+			logger.debug("Adding action {}({}) to {}({})".format(item.getName(),item.getUri(),self.name,self.uri))
 			sparql = kp.jsapHandler.getUpdate("ADD_NEW_ACTION",item.getForcedBindings())
 			kp.update(sparql,secure)
 		
 		# fifth step: include forProperties
-		for item in self.__forProperties:
-			sparql = kp.jsapHandler.getUpdate("ADD_FORPROPERTY",{"item" : item[0],"property" : item[1]})
+		for (origin,destination) in self.__forProperties:
+			logger.debug("Connecting {}-{}({}) to Property {}({})".format(type(origin).__name__,origin.getName(),origin.getUri(),destination.getName(),destination.getUri()))
+			sparql = kp.jsapHandler.getUpdate("ADD_FORPROPERTY",{"item" : origin.getUri(),"property" : destination.getUri()})
 			kp.update(sparql,secure)
 		
 		# sixth step: include subThings
 		for item in self.__sub_things:
+			logger.debug("Nesting {}({}) into {}({})".format(item.getName(),item.getUri(),self.name,self.uri))
 			sparql = kp.jsapHandler.getUpdate("ADD_NESTED_THING",{"thingFather" : self.uri,"thing" : item.getUri()})
 			kp.update(sparql,secure)
 			
@@ -131,11 +137,12 @@ class Action:
 	instances = 0
 	
 	def __init__(self,thing,name="Action{}".format(instances),uri=str(uuid4()),in_dataschema="",out_dataschema=""):
-		self.thing = thing
+		self.thing = thing.getUri()
 		self.name = name
 		self.uri = uri
 		self.in_dataschema = in_dataschema
 		self.out_dataschema = out_dataschema
+		Action.instances += 1
 		
 	def getForcedBindings(self):
 		forcedBindings = {
@@ -159,12 +166,13 @@ class Event:
 	"Event class object, as defined by in WoT Arces research group"
 	instances = 0
 	
-	def __init__(self,thing,name="Event{}".format(instances),uri=str(uuid4),out_dataschema="",PCFlag=False):
-		self.thing = thing
+	def __init__(self,thing,name="Event{}".format(instances),uri=str(uuid4()),out_dataschema="",PCFlag=False):
+		self.thing = thing.getUri()
 		self.name = name
 		self.uri = uri
 		self.out_dataschema = out_dataschema
 		self.pc_flag = PCFlag
+		Event.instances += 1
 		
 	def isPropertyChangedEvent():
 		return self.pc_flag
@@ -183,14 +191,15 @@ class Property:
 	"Property class object, as defined by in WoT Arces research group"
 	instances = 0
 	
-	def __init__(self,thing,name="Property{}".format(instances),uri=str(uuid4),dataschema="",writable=True,stability=0,value=""):
-		self.thing = thing
+	def __init__(self,thing,name="Property{}".format(instances),uri=str(uuid4()),dataschema="",writable=True,stability=0,value=""):
+		self.thing = thing.getUri()
 		self.name = name
 		self.uri = uri
 		self.dataschema = dataschema
 		self.writable = writable
 		self.stability = stability
 		self.value = value
+		Property.instances += 1
 		
 	def getForcedBindings(self):
 		return {
@@ -215,6 +224,17 @@ if __name__ == '__main__':
 	import sys
 	TD = "C:/Users/Francesco/Documents/Work/WoT_Ontology/thing_description.jsap"
 	JPAR = "C:/Users/Francesco/Desktop/constance/constance.jpar"
-	wt = WebThing(TD,"mything","wot:mything")
+	
+	wt = WebThing(TD,name="Riscaldamento",uri="wot:RoomHeater")
+	consumo = Property(wt,"Consumo",uri="wot:Consumo",dataschema="float",writable=False,value="0")
+	accendi = Action(wt,name="AccendiRiscaldamento",uri="wot:AccendiRiscaldamento")
+	spegni = Action(wt,name="SpegniRiscaldamento",uri="wot:SpegniRiscaldamento")
+	
+	wt.add_property(consumo)
+	wt.add_action(accendi)
+	wt.add_action(spegni)
+	wt.add_forProperty(accendi,consumo)
+	wt.add_forProperty(spegni,consumo)
+	
 	wt.post(JPAR)
 	sys.exit(1)
