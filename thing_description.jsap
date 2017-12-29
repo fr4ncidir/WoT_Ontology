@@ -56,6 +56,28 @@
                 }
             }
         },
+        "ADD_COMPLETION_TIMESTAMP_WITH_OUTPUT": {
+            "sparql": "INSERT {?instance rdf:type wot:ActionInstance. ?instance wot:hasConfirmationTimeStamp ?time. ?instance wot:hasOutputData ?outputData. ?outputData rdf:type wot:OutputData. ?outputData dul:hasDataValue ?value} WHERE {BIND(now() AS ?time). BIND(IRI(CONCAT('wot:output_',STR(NOW()))) AS ?outputData) }",
+            "forcedBindings": {
+                "instance": {
+                    "type": "uri",
+                    "value": ""
+                },
+                "value": {
+                    "type": "literal",
+                    "value": ""
+                }
+            }
+        },
+        "ADD_COMPLETION_TIMESTAMP_NO_OUTPUT": {
+            "sparql": "INSERT {?instance rdf:type wot:ActionInstance. ?instance wot:hasCompletionTimeStamp ?time} WHERE {BIND(now() AS ?time)}",
+            "forcedBindings": {
+                "instance": {
+                    "type": "uri",
+                    "value": ""
+                }
+            }
+        },
         "ADD_CONFIRMATION_TIMESTAMP": {
             "sparql": "INSERT {?instance rdf:type wot:ActionInstance. ?instance wot:hasConfirmationTimeStamp ?time} WHERE {BIND(now() AS ?time)}",
             "forcedBindings": {
@@ -219,23 +241,6 @@
                 }
             }
         },
-        "ADD_OUTPUT_DATA": {
-            "sparql": "DELETE {?item wot:hasOutputData ?oldOutput. ?oldOutput wot:hasTimeStamp ?oldTimeStamp. ?oldOutput dul:hasDataValue ?oldValue} INSERT {?item wot:hasOutputData ?newOutput. ?newOutput wot:hasTimeStamp ?newTimeStamp. ?newOutput dul:hasDataValue ?newValue} WHERE { {{?item rdf:type wot:ActionInstance} UNION {?item rdf:type td:Event}}. OPTIONAL{?item wot:hasOutputData ?oldOutput. ?oldOutput wot:hasTimeStamp ?oldTimeStamp. ?oldOutput dul:hasDataValue ?oldValue}. BIND(now() AS ?newTimeStamp)}",
-            "forcedBindings": {
-                "item": {
-                    "type": "uri",
-                    "value": ""
-                },
-                "newOutput": {
-                    "type": "uri",
-                    "value": ""
-                },
-                "newValue": {
-                    "type": "literal",
-                    "value": ""
-                }
-            }
-        },
         "ADD_PROPERTY": {
             "sparql": "DELETE {?thing td:hasProperty ?property. ?property rdf:type td:Property. ?property td:hasName ?oldName. ?property td:hasStability ?oldStability. ?property td:isWritable ?oldWritable. ?property dul:hasDataValue ?oldValue . ?property wot:hasDataSchema ?oldDataSchema} INSERT {?thing td:hasProperty ?property. ?property rdf:type td:Property. ?property td:hasName ?newName. ?property td:hasStability ?newStability. ?property td:isWritable ?newWritable. ?property dul:hasDataValue ?newValue . ?property wot:hasDataSchema ?newDataSchema } WHERE {?thing rdf:type td:Thing . OPTIONAL {?thing td:hasProperty ?property. ?property wot:hasDataSchema ?oldDataSchema . ?property rdf:type td:Property. ?property td:hasName ?oldName. ?property td:hasStability ?oldStability. ?property td:isWritable ?oldWritable. ?property dul:hasDataValue ?oldValue}}",
             "forcedBindings": {
@@ -370,6 +375,23 @@
                 }
             }
         },
+        "GET_ACTION_COMPLETION_AND_OUTPUT": {
+            "sparql": "SELECT ?timestamp ?value WHERE { ?thing td:hasAction ?action . ?action rdf:type td:Action. ?action wot:hasActionInstance ?instance . ?instance wot:hasCompletionTimeStamp ?timestamp . OPTIONAL{?instance wot:hasOutputData ?output. ?output dul:hasDataValue ?value}}",
+            "forcedBindings": {
+                "thing": {
+                    "type": "uri",
+                    "value": ""
+                },
+                "action": {
+                    "type": "uri",
+                    "value": ""
+                },
+                "instance": {
+                    "type": "uri",
+                    "value": ""
+                }
+            }
+        },
         "GET_CONFIRMATION_TIMESTAMP": {
             "sparql": "SELECT ?confirmation WHERE {?instance rdf:type wot:ActionInstance. ?instance wot:hasConfirmationTimeStamp ?time}",
             "forcedBindings": {
@@ -428,6 +450,6 @@
             "sparql": "SELECT ?thing WHERE {?thing rdf:type td:Thing}"
         }
     },
-    "creation_time": "2017-12-28 18:12:16",
+    "creation_time": "2017-12-29 14:08:59",
     "ontology_version": "http://wot.arces.unibo.it/ontology/web_of_things/1.0.1"
 }
