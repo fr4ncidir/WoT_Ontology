@@ -33,8 +33,9 @@ class WebThing:
 	"WebThing class object, as defined by in WoT Arces research group"
 	instances = 0
 	
-	def __init__(self, jsap_path, name="WT{}".format(instances), uri=str(uuid4())):
+	def __init__(self, jsap_path, jpar_path, name="WT{}".format(instances), uri=str(uuid4())):
 		self.jsap_path = jsap_path
+		self.jpar_path = jpar_path
 		self.name = name
 		self.uri = uri
 		self.__properties = [] 		# list of Property
@@ -88,8 +89,8 @@ class WebThing:
 	def getForcedBindings(self):
 		return {"thing" : self.uri,"name" : self.name }
 	
-	def post(self,jpar_path,secure=False):
-		kp = LowLevelKP.LowLevelKP(jpar_path,self.jsap_path,10)
+	def post(self,secure=False):
+		kp = LowLevelKP.LowLevelKP(self.jpar_path,self.jsap_path,10)
 		
 		# first step: declare the thing
 		logger.debug("Calling ADD_NEW_THING for {}({})".format(self.name,self.uri))
@@ -130,6 +131,17 @@ class WebThing:
 			sparql = kp.jsapHandler.getUpdate("ADD_NESTED_THING",{"thingFather" : self.uri,"thing" : item.getUri()})
 			kp.update(sparql,secure)
 			
+	def subscribeToEvent(self,thingUri,eventUri,handler):
+		kp = LowLevelKP.LowLevelKP(self.jpar_path,self.jsap_path,10)
+		sparql = kp.jsapHandler.getQuery("GET_EVENT_NOTIFICATION",{"thing" : thingUri,"event" : eventUri})
+		kp.subscribe(sparql, "Event_{}_Notification".format(eventUri), handler, False)
+		
+	def askForAction(self,actionUri,instanceUri,input_value=None,output=False):
+		if input_value is None:
+			pass
+		else:
+			pass
+			
 		
 		
 class Action:
@@ -161,6 +173,12 @@ class Action:
 		
 	def getUri(self):
 		return self.uri
+	
+	def listenForRequest():
+		pass
+	
+	def execute():
+		pass
 
 class Event:
 	"Event class object, as defined by in WoT Arces research group"
@@ -186,6 +204,9 @@ class Event:
 		if self.out_dataschema!="" and self.pc_flag==False:
 			forcedBindings["outDataSchema"] = self.out_dataschema	
 		return forcedBindings
+		
+	def throwNewEvent():
+		pass
 	
 class Property:
 	"Property class object, as defined by in WoT Arces research group"
