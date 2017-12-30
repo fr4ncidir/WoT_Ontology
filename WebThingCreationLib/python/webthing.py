@@ -26,7 +26,7 @@ from sepy import JSAPObject,LowLevelKP
 from uuid import uuid4
 import logging
 
-logging.basicConfig(format="%(levelname)s %(asctime)-15s %(message)s",level=logging.DEBUG)
+logging.basicConfig(format="%(levelname)s %(asctime)-15s %(message)s",level=logging.INFO)
 logger = logging.getLogger("sepaLogger")
 
 class WebThing:
@@ -50,35 +50,35 @@ class WebThing:
 		if not isinstance(newproperty,Property):
 			raise TypeError
 		self.__properties.append(newproperty)
-		logger.debug("Added Property {}({})".format(newproperty.getName(),newproperty.getUri()))
+		logger.info("Added Property {}({})".format(newproperty.getName(),newproperty.getUri()))
 		return len(self.__properties)
 		
 	def add_action(self,newaction):
 		if not isinstance(newaction,Action):
 			raise TypeError
 		self.__actions.append(newaction)
-		logger.debug("Added Action {}({})".format(newaction.getName(),newaction.getUri()))
+		logger.info("Added Action {}({})".format(newaction.getName(),newaction.getUri()))
 		return len(self.__actions)
 		
 	def add_event(self,newevent):
 		if not isinstance(newevent,Event):
 			raise TypeError
 		self.__events.append(newevent)
-		logger.debug("Added Event {}({})".format(newevent.getName(),newevent.getUri()))
+		logger.info("Added Event {}({})".format(newevent.getName(),newevent.getUri()))
 		return len(self.__events)
 	
 	def add_sub_thing(self,subthing):
 		if not isinstance(subthing,WebThing):
 			raise TypeError
 		self.__sub_things.append(subthing)
-		logger.debug("Added SubThing {}({})".format(subthing.getName(),subthing.getUri()))
+		logger.info("Added SubThing {}({})".format(subthing.getName(),subthing.getUri()))
 		return len(self.__sub_things)
 		
 	def add_forProperty(self,origin,destination):
 		if not ((isinstance(origin,Action) or isinstance(origin,Event)) and (isinstance(destination,Property))):
 			raise TypeError
 		self.__forProperties.append((origin,destination))
-		logger.debug("Added forProperty connection between {}({}) and {}({})".format(origin.getName(),origin.getUri(),destination.getName(),destination.getUri()))
+		logger.info("Added forProperty connection between {}({}) and {}({})".format(origin.getName(),origin.getUri(),destination.getName(),destination.getUri()))
 		return len(self.__forProperties)
 		
 	def getName(self):
@@ -87,18 +87,21 @@ class WebThing:
 	def getUri(self):
 		return self.uri
 		
+	def getKP(self):
+		return self.kp
+		
 	def getForcedBindings(self):
 		return {"thing" : self.uri,"name" : self.name }
 	
 	def post(self,secure=False):
 		# first step: declare the thing
-		logger.debug("Calling ADD_NEW_THING for {}({})".format(self.name,self.uri))
+		logger.info("Calling ADD_NEW_THING for {}({})".format(self.name,self.uri))
 		sparql = self.kp.jsapHandler.getUpdate("ADD_NEW_THING",self.getForcedBindings())
 		self.kp.update(sparql,secure)
 		
 		# second step: add properties
 		for item in self.__properties:
-			logger.debug("Adding property {}({}) to {}({})".format(item.getName(),item.getUri(),self.name,self.uri))
+			logger.info("Adding property {}({}) to {}({})".format(item.getName(),item.getUri(),self.name,self.uri))
 			sparql = self.kp.jsapHandler.getUpdate("ADD_PROPERTY",item.getForcedBindings())
 			self.kp.update(sparql,secure)
 		
@@ -108,30 +111,30 @@ class WebThing:
 				update = "ADD_PROPERTY_CHANGED_EVENT"
 			else:
 				update = "ADD_EVENT"
-			logger.debug("Adding event {}({}) to {}({})".format(item.getName(),item.getUri(),self.name,self.uri))
+			logger.info("Adding event {}({}) to {}({})".format(item.getName(),item.getUri(),self.name,self.uri))
 			sparql = self.kp.jsapHandler.getUpdate(update,item.getForcedBindings())
 			self.kp.update(sparql,secure)
 		
 		# fourth step: add actions
 		for item in self.__actions:
-			logger.debug("Adding action {}({}) to {}({})".format(item.getName(),item.getUri(),self.name,self.uri))
+			logger.info("Adding action {}({}) to {}({})".format(item.getName(),item.getUri(),self.name,self.uri))
 			sparql = self.kp.jsapHandler.getUpdate("ADD_NEW_ACTION",item.getForcedBindings())
 			self.kp.update(sparql,secure)
 		
 		# fifth step: include forProperties
 		for (origin,destination) in self.__forProperties:
-			logger.debug("Connecting {}-{}({}) to Property {}({})".format(type(origin).__name__,origin.getName(),origin.getUri(),destination.getName(),destination.getUri()))
+			logger.info("Connecting {}-{}({}) to Property {}({})".format(type(origin).__name__,origin.getName(),origin.getUri(),destination.getName(),destination.getUri()))
 			sparql = self.kp.jsapHandler.getUpdate("ADD_FORPROPERTY",{"item" : origin.getUri(),"property" : destination.getUri()})
 			self.kp.update(sparql,secure)
 		
 		# sixth step: include subThings
 		for item in self.__sub_things:
-			logger.debug("Nesting {}({}) into {}({})".format(item.getName(),item.getUri(),self.name,self.uri))
+			logger.info("Nesting {}({}) into {}({})".format(item.getName(),item.getUri(),self.name,self.uri))
 			sparql = self.kp.jsapHandler.getUpdate("ADD_NESTED_THING",{"thingFather" : self.uri,"thing" : item.getUri()})
 			self.kp.update(sparql,secure)
 			
 	def listenForActionRequests(self,handler,secure=False):
-		logger.debug("Subscribing to Action requests for WebThing {}".format(self.uri))
+		logger.info("Subscribing to Action requests for WebThing {}".format(self.uri))
 		sparql = self.kp.jsapHandler.getQuery("GET_ACTION_REQUEST",{"thing" : self.uri})
 		spuid = self.kp.subscribe(sparql, "ActionRequest_{}_Notification".format(self.uri), handler, secure)
 					
@@ -140,15 +143,15 @@ class Action:
 	"Action class object, as defined by in WoT Arces research group"
 	instances = 0
 	
-	class DefaultActionHandler:
+	class DefaultActionCompletionHandler:
 		def __init__(self):
 			pass
 		def handle(self, added, removed):
-			print("Added: {}".format(added))
-			print("Removed: {}".format(removed))
+			for item in added:
+				logger.info("DefaultActionCompletionHandler: {} timestamp received".format(item["timestamp"]["value"]))
 	
 	def __init__(self,thing,name="Action{}".format(instances),uri=str(uuid4()),in_dataschema="",out_dataschema=""):
-		self.thing = thing.getUri()
+		self.thing = thing
 		self.name = name
 		self.uri = uri
 		self.in_dataschema = in_dataschema
@@ -157,7 +160,7 @@ class Action:
 		
 	def getForcedBindings(self):
 		forcedBindings = {
-			"thing" : self.thing,
+			"thing" : self.thing.getUri(),
 			"aName" : self.name,
 			"action" : self.uri }
 		
@@ -174,26 +177,47 @@ class Action:
 		return self.uri
 	
 	@staticmethod
-	def askForAction(jpar,jsap,thingUri,actionUri,instanceUri="wot:"+str(uuid4()),input_value=None,output_handler=DefaultActionHandler,secure=False):
+	def askForAction(jpar,jsap,thingUri,actionUri,instanceUri="wot:"+str(uuid4()),input_value=None,output_handler=DefaultActionCompletionHandler(),secure=False):
 		kp = LowLevelKP.LowLevelKP(jpar,jsap,10)
-		logger.debug("Subscribing to instance {} of Action {} completion and output (WebThing {})".format(instanceUri,actionUri,thingUri))
+		logger.info("Subscribing to instance {} of Action {} completion and output (WebThing {})".format(instanceUri,actionUri,thingUri))
 		sparql = kp.jsapHandler.getQuery("GET_ACTION_COMPLETION_AND_OUTPUT",{"thing" : thingUri,"action" : actionUri,"instance" : instanceUri})
 		spuid = kp.subscribe(sparql, "CompletionOutput_{}_Notification".format(instanceUri), output_handler, secure)
 		if input_value is None:
-			logger.debug("Requesting instance {} for Action {} (WebThing {}) - no input given".format(instanceUri,actionUri,thingUri))
+			logger.info("Requesting instance {} for Action {} (WebThing {}) - no input given".format(instanceUri,actionUri,thingUri))
 			sparql = kp.jsapHandler.getUpdate("POST_ACTION_INSTANCE_NO_INPUT",{"action" : actionUri,"instance" : instanceUri})
-			kp.update(sparql,secure)
 		else:
-			logger.debug("Requesting instance {} for Action {} (WebThing {}) - input: {}".format(instanceUri,actionUri,thingUri,input_value))
+			logger.info("Requesting instance {} for Action {} (WebThing {}) - input: {}".format(instanceUri,actionUri,thingUri,input_value))
 			sparql = kp.jsapHandler.getUpdate("POST_ACTION_INSTANCE_WITH_INPUT",{"action" : actionUri,"instance" : instanceUri,"value" : input_value})
-			kp.update(sparql,secure)
+		kp.update(sparql,secure)
+		return instanceUri
+			
+	@staticmethod
+	def waitActionConfirmation(jpar,jsap,instanceUri,handler,secure=False):
+		kp = LowLevelKP.LowLevelKP(jpar,jsap,10)
+		logger.info("Subscribing to confirmation timestamp for ActionInstance {}".format(instanceUri))
+		sparql = kp.jsapHandler.getQuery("GET_CONFIRMATION_TIMESTAMP",{"instance" : instanceUri})
+		spuid = kp.subscribe(sparql, "ActionConfirmation_{}_Notification".format(instanceUri), handler, secure)
+		
+	def postActionConfirmation(self,instanceUri,secure=False):
+		logger.info("Posting confirmation for {} Action {} (WebThing {})".format(instanceUri,self.uri,self.thing.getUri()))
+		sparql = self.thing.getKP().jsapHandler.getUpdate("ADD_CONFIRMATION_TIMESTAMP",{"instance" : instanceUri})
+		self.thing.getKP().update(sparql,secure)
+		
+	def postActionCompletion(self,instanceUri,output_value=None,secure=False):
+		if output_value is None:
+			logger.info("Posting completion for {} Action {} (WebThing {}) - no output given".format(instanceUri,self.uri,self.thing.getUri()))
+			sparql = self.thing.getKP().jsapHandler.getUpdate("ADD_COMPLETION_TIMESTAMP_NO_OUTPUT",{"instance" : instanceUri})
+		else:
+			logger.info("Posting completion for {} Action {} (WebThing {}) - output: {}".format(instanceUri,self.uri,self.thing.getUri(),output_value))
+			sparql = self.thing.getKP().jsapHandler.getUpdate("ADD_COMPLETION_TIMESTAMP_WITH_OUTPUT",{"instance" : instanceUri,"value" : output_value})
+		self.thing.getKP().update(sparql,secure)
 
 class Event:
 	"Event class object, as defined by in WoT Arces research group"
 	instances = 0
 	
 	def __init__(self,thing,name="Event{}".format(instances),uri=str(uuid4()),out_dataschema="",PCFlag=False):
-		self.thing = thing.getUri()
+		self.thing = thing
 		self.name = name
 		self.uri = uri
 		self.out_dataschema = out_dataschema
@@ -205,7 +229,7 @@ class Event:
 		
 	def getForcedBindings(self):
 		forcedBindings = {
-			"thing" : self.thing,
+			"thing" : self.thing.getUri(),
 			"eName" : self.name,
 			"event" : self.uri }
 		
@@ -213,13 +237,19 @@ class Event:
 			forcedBindings["outDataSchema"] = self.out_dataschema	
 		return forcedBindings
 		
-	def throwNewEvent():
-		pass
+	def throwNewEvent(self,output_value=None,secure=False):
+		if output_value is None:
+			logger.info("Throwing new event instance (autogen URI) for Event {} (WebThing {}) - no output given".format(self.uri,self.thing.getUri()))
+			sparql = kp.jsapHandler.getUpdate("POST_NEW_EVENT_WITHOUT_OUTPUT",{"event" : self.uri,"thing" : self.thing.getUri()})
+		else:
+			logger.info("Throwing new event instance (autogen URI) for Event {} (WebThing {}) - output: {}".format(self.uri,self.thing.getUri(),output_value))
+			sparql = kp.jsapHandler.getUpdate("POST_NEW_EVENT_WITH_OUTPUT",{"event" : self.uri,"thing" : self.thing.getUri(), "newDataValue" : output_value})
+		kp.update(sparql,secure)
 		
 	@staticmethod
 	def subscribeToEvent(jpar,jsap,thingUri,eventUri,handler,secure=False):
 		kp = LowLevelKP.LowLevelKP(jpar,jsap,10)
-		logger.debug("Subscribing to event {} (WebThing {})".format(eventUri,thingUri))
+		logger.info("Subscribing to event {} (WebThing {})".format(eventUri,thingUri))
 		sparql = self.kp.jsapHandler.getQuery("GET_EVENT_NOTIFICATION",{"thing" : thingUri,"event" : eventUri})
 		kp.subscribe(sparql, "Event_{}_Notification".format(eventUri), handler, secure)
 	
@@ -252,39 +282,3 @@ class Property:
 		
 	def getUri(self):
 		return self.uri
-		
-	
-class Handler:
-	def __init__(self):
-		pass
-	def handle(self, added, removed):
-		print("----Added: {}".format(added))
-		print("----Removed: {}".format(removed))
-
-if __name__ == '__main__':
-	import sys
-	JSAP = "C:/Users/Francesco/Documents/Work/WoT_Ontology/thing_description.jsap"
-	JPAR = "C:/Users/Francesco/Desktop/constance/constance.jpar"
-	
-	wt = WebThing(JSAP,JPAR,name="Riscaldamento",uri="wot:RoomHeater")
-	consumo = Property(wt,"Consumo",uri="wot:Consumo",dataschema="float",writable=False,value="0")
-	accendi = Action(wt,name="AccendiRiscaldamento",uri="wot:AccendiRiscaldamento")
-	spegni = Action(wt,name="SpegniRiscaldamento",uri="wot:SpegniRiscaldamento")
-	
-	wt.add_property(consumo)
-	wt.add_action(accendi)
-	wt.add_action(spegni)
-	wt.add_forProperty(accendi,consumo)
-	wt.add_forProperty(spegni,consumo)
-	
-	
-	wt.post()
-	wt.listenForActionRequests(Handler())
-	Action.askForAction(JPAR,JSAP,wt.getUri(),accendi.getUri())
-		
-	while True:
-		try:
-			pass
-		except KeyboardInterrupt:
-			print("CTRL-C pressed! Bye!")
-			sys.exit(0)

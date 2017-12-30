@@ -393,7 +393,7 @@
             }
         },
         "GET_CONFIRMATION_TIMESTAMP": {
-            "sparql": "SELECT ?confirmation WHERE {?instance rdf:type wot:ActionInstance. ?instance wot:hasConfirmationTimeStamp ?time}",
+            "sparql": "SELECT ?timestamp WHERE {?instance rdf:type wot:ActionInstance. ?instance wot:hasConfirmationTimeStamp ?timestamp}",
             "forcedBindings": {
                 "instance": {
                     "type": "uri",
@@ -450,6 +450,6 @@
             "sparql": "SELECT ?thing WHERE {?thing rdf:type td:Thing}"
         }
     },
-    "creation_time": "2017-12-29 14:08:59",
-    "ontology_version": "http://wot.arces.unibo.it/ontology/web_of_things/1.0.1"
+    "creation_time": "2017-12-30 17:24:08",
+    "ontology_version": "http://wot.arces.unibo.it/ontology/web_of_things/1.0.2"
 }
