@@ -27,16 +27,29 @@ from wot_init import *
 
 logging.basicConfig(format="%(levelname)s %(asctime)-15s %(message)s",level=LOGLEVEL)
 
+subid = ""
+kp = None
+
 class ConfirmationHandler:
 	def __init__(self):
 		pass
 	def handle(self, added, removed):
 		for item in added:
 			logging.info("Action Confirmation handler: {} timestamp received".format(item["timestamp"]["value"]))
+			kp.unsubscribe(subid,False)
 
 def main(args):
-	instance = Action.askForAction(JPAR,JSAP,"wot:Heater","wot:AccendiRiscaldamento")
-	Action.waitActionConfirmation(JPAR,JSAP,instance,ConfirmationHandler())
+	global kp
+	global subid
+	while True:
+		input("Accendo il riscaldamento? ")
+		instance = "wot:IstanzaAccendi"
+		kp,subid = Action.waitActionConfirmation(JPAR,JSAP,instance,ConfirmationHandler())
+		Action.askForAction(JPAR,JSAP,"wot:Heater","wot:AccendiRiscaldamento",instanceUri=instance)
+		input("Spengo il riscaldamento? ")
+		instance = "wot:IstanzaSpegni"
+		kp,subid = Action.waitActionConfirmation(JPAR,JSAP,instance,ConfirmationHandler())
+		instance = Action.askForAction(JPAR,JSAP,"wot:Heater","wot:SpegniRiscaldamento",instanceUri=instance)
 
 if __name__ == '__main__':
 	import sys
@@ -45,6 +58,7 @@ if __name__ == '__main__':
 		try:
 			pass
 		except KeyboardInterrupt:
+			kp.unsubscribe(subid,False)
 			print("CTRL-C pressed! Bye!")
 			sys.exit(0)
 

@@ -293,6 +293,16 @@ francesco.antoniazzi@unibo.it</owl:versionInfo>
     
 
 
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#get_property_value_change -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#get_property_value_change">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#query"/>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#SPARQL_jsap"/>
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Property"/>
+    </owl:AnnotationProperty>
+    
+
+
     <!-- http://wot.arces.unibo.it/ontology/web_of_things#get_thing_actions -->
 
     <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#get_thing_actions">
@@ -365,6 +375,16 @@ francesco.antoniazzi@unibo.it</owl:versionInfo>
 
     <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#update">
         <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#SPARQL_jsap"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#update_property_value -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#update_property_value">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#update"/>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#SPARQL_jsap"/>
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Property"/>
     </owl:AnnotationProperty>
     
 
@@ -773,6 +793,8 @@ francesco.antoniazzi@unibo.it</owl:versionInfo>
 &quot;newDataSchema&quot;:{&quot;type&quot;:&quot;literal&quot;,&quot;value&quot;:&quot;&quot;}, &quot;newValue&quot;:{&quot;type&quot;:&quot;literal&quot;,&quot;value&quot;:&quot;&quot;}}}</add_properties>
         <delete_properties rdf:datatype="http://wot.arces.unibo.it/ontology/web_of_things#SPARQL_jsap">&quot;DELETE_PROPERTY&quot;:{ &quot;sparql&quot;:&quot;
 DELETE {?thing td:hasProperty ?property. ?property rdf:type td:Property. ?property td:hasName ?name. ?property td:hasStability ?stability. ?property td:isWritable ?writable. ?property dul:hasDataValue ?value  . ?property wot:hasDataSchema ?dataSchema } WHERE {?thing rdf:type td:Thing . ?thing td:hasProperty ?property }&quot;, &quot;forcedBindings&quot;:{&quot;thing&quot;:{&quot;type&quot;:&quot;uri&quot;, &quot;value&quot;:&quot;&quot;}, &quot;property&quot;:{&quot;type&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;}}}</delete_properties>
+        <get_property_value_change rdf:datatype="http://wot.arces.unibo.it/ontology/web_of_things#SPARQL_jsap">&quot;PROPERTY_VALUE_CHANGE&quot;:{&quot;sparql&quot;:&quot;SELECT ?value WHERE {?property rdf:type td:Property. ?property dul:hasDataValue ?value}&quot;,&quot;forcedBindings&quot;:{&quot;property&quot;:{&quot;type&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;}}}</get_property_value_change>
+        <update_property_value rdf:datatype="http://wot.arces.unibo.it/ontology/web_of_things#SPARQL_jsap">&quot;UPDATE_PROPERTY_VALUE&quot;:{&quot;sparql&quot;:&quot;DELETE {?property dul:hasDataValue ?oldValue} INSERT {?property dul:hasDataValue ?newValue} WHERE {?property rdf:type td:Property. ?property dul:hasDataValue ?oldValue}&quot;,&quot;forcedBindings&quot;:{&quot;property&quot;:{&quot;type&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;},&quot;newValue&quot;:{&quot;type&quot;:&quot;literal&quot;,&quot;value&quot;:&quot;&quot;}}}</update_property_value>
         <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A Thing may have some internal parameters, called Properties. They may be static (i.e. they cannot be modified), or dynamic (i.e. there is an Action which can change it as side effect)</rdfs:comment>
     </owl:Class>
     

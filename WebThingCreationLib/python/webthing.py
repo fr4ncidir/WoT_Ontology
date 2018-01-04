@@ -196,7 +196,7 @@ class Action:
 		kp = LowLevelKP.LowLevelKP(jpar,jsap,10)
 		logger.info("Subscribing to confirmation timestamp for ActionInstance {}".format(instanceUri))
 		sparql = kp.jsapHandler.getQuery("GET_CONFIRMATION_TIMESTAMP",{"instance" : instanceUri})
-		spuid = kp.subscribe(sparql, "ActionConfirmation_{}_Notification".format(instanceUri), handler, secure)
+		return (kp,kp.subscribe(sparql, "ActionConfirmation_{}_Notification".format(instanceUri), handler, secure))
 		
 	def postActionConfirmation(self,instanceUri,secure=False):
 		logger.info("Posting confirmation for {} Action {} (WebThing {})".format(instanceUri,self.uri,self.thing.getUri()))
@@ -282,3 +282,10 @@ class Property:
 		
 	def getUri(self):
 		return self.uri
+		
+	@staticmethod
+	def subscribeToValueChange(propertyUri,handler,secure=False):
+		kp = LowLevelKP.LowLevelKP(jpar,jsap,10)
+		logger.info("Subscribing to property {} value change".format(propertyUri))
+		sparql = self.kp.jsapHandler.getQuery("GET_EVENT_NOTIFICATION",{"thing" : thingUri,"event" : eventUri})
+		return (kp,kp.subscribe(sparql, "Property_{}_value_subscription".format(propertyUri), handler, secure))

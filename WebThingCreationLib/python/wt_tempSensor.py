@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  wt_heater.py
+#  wt_tempSensor.py
 #  
 #  Copyright 2017 Francesco Antoniazzi <francesco.antoniazzi@unibo.it>
 #  
@@ -28,13 +28,13 @@ from webthing import *
 
 logging.basicConfig(format="%(levelname)s %(asctime)-15s %(message)s",level=LOGLEVEL)
 
-ACCENDI_RISCALDAMENTO = "AccendiRiscaldamento"
-SPEGNI_RISCALDAMENTO = "SpegniRiscaldamento"
+LEGGI_TEMPERATURA = "LeggiTemperatura"
+NUOVA_TEMPERATURA = "NuovaTemperatura"
 
-wt = WebThing(JSAP,JPAR,name="Riscaldamento",uri="wot:Heater")
-consumo = Property(wt,"Consumo",uri="wot:Consumo",dataschema="float",writable=False,value="0")
-accendi = Action(wt,name="AccendiRiscaldamento",uri="wot:AccendiRiscaldamento")
-spegni = Action(wt,name="SpegniRiscaldamento",uri="wot:SpegniRiscaldamento")
+wt = WebThing(JSAP,JPAR,name="Termometro",uri="wot:Thermometer")
+temperatura = Property(wt,"Temperatura",uri="wot:Temperatura",dataschema="float",writable=False,value="15")
+leggi = Action(wt,name="LeggiTemperatura",uri="wot:LeggiTemperatura")
+comunica = Event(wt,name="3sTemperatura",uri="wot:3sTemperatura",out_dataschema="float")
 
 class ActionRequestHandler:
 	def __init__(self):
@@ -55,11 +55,11 @@ class ActionRequestHandler:
 if __name__ == '__main__':
 	import sys
 	
-	wt.add_property(consumo)
-	wt.add_action(accendi)
-	wt.add_action(spegni)
-	wt.add_forProperty(accendi,consumo)
-	wt.add_forProperty(spegni,consumo)
+	wt.add_property(temperatura)
+	wt.add_action(leggi)
+	wt.add_event(comunica)
+	wt.add_forProperty(leggi,temperatura)
+	wt.add_forProperty(comunica,temperatura)
 	
 	wt.post()
 	
