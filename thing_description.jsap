@@ -472,6 +472,6 @@
             "sparql": "SELECT ?thing WHERE {?thing rdf:type td:Thing}"
         }
     },
-    "creation_time": "2018-01-05 12:47:22",
+    "creation_time": "2018-01-05 13:07:21",
     "ontology_version": "http://wot.arces.unibo.it/ontology/web_of_things/1.0.2"
 }
