@@ -22,6 +22,8 @@
 #  
 #  
 
+import colorama
+from colorama import Fore, Style
 import logging
 from wot_init import *
 from webthing import *
@@ -40,16 +42,20 @@ class ActionRequestHandler:
 	def __init__(self):
 		pass
 	def handle(self, added, removed):
-		print("Added: {}",added)
-		print("Removed: {}",removed)
 		for item in added:
 			if item["action"]["value"]=="{}{}".format(WOT,ACCENDI_RISCALDAMENTO):
 				print("Riscaldamento acceso alle {}".format(item["request"]["value"]))
 				accendi.postActionConfirmation(item["instance"]["value"])
+				logger.info("Updating property {} value to {}".format(consumo.getName(),"50"))
+				sparql = wt.getKP().jsapHandler.getUpdate("UPDATE PROPERTY VALUE",{"property" : consumo.getUri(), "newValue" : "50"})
+				wt.getKP().update(sparql,secure)
 				accendi.postActionCompletion(item["instance"]["value"])
 			elif item["action"]["value"]=="{}{}".format(WOT,SPEGNI_RISCALDAMENTO):
 				print("Riscaldamento spento alle {}".format(item["request"]["value"]))
 				spegni.postActionConfirmation(item["instance"]["value"])
+				logger.info("Updating property {} value to {}".format(consumo.getName(),"0"))
+				sparql = wt.getKP().jsapHandler.getUpdate("UPDATE PROPERTY VALUE",{"property" : consumo.getUri(), "newValue" : "0"})
+				wt.getKP().update(sparql,secure)
 				spegni.postActionCompletion(item["instance"]["value"])
 
 if __name__ == '__main__':
@@ -65,7 +71,8 @@ if __name__ == '__main__':
 	
 	wt.listenForActionRequests(ActionRequestHandler())
 	
-	print("Waiting for action requests...")
+	colorama.init()
+	print(Fore.RED + "Waiting for action requests..." + Style.RESET_ALL)
 		
 	while True:
 		try:

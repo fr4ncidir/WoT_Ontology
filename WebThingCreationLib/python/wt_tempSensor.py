@@ -22,9 +22,12 @@
 #  
 #  
 
+import colorama
+from colorama import Fore, Style
 import logging
 from wot_init import *
 from webthing import *
+from time import sleep
 
 logging.basicConfig(format="%(levelname)s %(asctime)-15s %(message)s",level=LOGLEVEL)
 
@@ -32,7 +35,7 @@ LEGGI_TEMPERATURA = "LeggiTemperatura"
 NUOVA_TEMPERATURA = "NuovaTemperatura"
 
 wt = WebThing(JSAP,JPAR,name="Termometro",uri="wot:Thermometer")
-temperatura = Property(wt,"Temperatura",uri="wot:Temperatura",dataschema="float",writable=False,value="15")
+temperatura = Property(wt,"Temperatura",uri="wot:Temperatura",dataschema="float",writable=False,value="15.0")
 leggi = Action(wt,name="LeggiTemperatura",uri="wot:LeggiTemperatura")
 comunica = Event(wt,name="3sTemperatura",uri="wot:3sTemperatura",out_dataschema="float")
 
@@ -40,17 +43,13 @@ class ActionRequestHandler:
 	def __init__(self):
 		pass
 	def handle(self, added, removed):
-		print("Added: {}",added)
-		print("Removed: {}",removed)
 		for item in added:
-			if item["action"]["value"]=="{}{}".format(WOT,ACCENDI_RISCALDAMENTO):
-				print("Riscaldamento acceso alle {}".format(item["request"]["value"]))
-				accendi.postActionConfirmation(item["instance"]["value"])
-				accendi.postActionCompletion(item["instance"]["value"])
-			elif item["action"]["value"]=="{}{}".format(WOT,SPEGNI_RISCALDAMENTO):
-				print("Riscaldamento spento alle {}".format(item["request"]["value"]))
-				spegni.postActionConfirmation(item["instance"]["value"])
-				spegni.postActionCompletion(item["instance"]["value"])
+			print(item)
+
+def get_actual_value():
+	# in questa funzione ci dovrebbe essere la comunicazione fisica con
+	# il sensore per ricavare la temperatura
+	return temperatura.value
 
 if __name__ == '__main__':
 	import sys
@@ -65,11 +64,13 @@ if __name__ == '__main__':
 	
 	wt.listenForActionRequests(ActionRequestHandler())
 	
-	print("Waiting for action requests...")
-		
+	colorama.init()
+	print(Fore.RED + "Waiting for action requests..." + Style.RESET_ALL)
+	
 	while True:
 		try:
-			pass
+			sleep(5)
+			comunica.throwNewEvent(output_value=get_actual_value())
 		except KeyboardInterrupt:
 			print("CTRL-C pressed! Bye!")
 			sys.exit(0)

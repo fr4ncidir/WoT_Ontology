@@ -214,7 +214,7 @@
                     "type": "uri",
                     "value": ""
                 },
-                "aName": {
+                "newName": {
                     "type": "literal",
                     "value": ""
                 },
@@ -347,6 +347,19 @@
                     "value": ""
                 }
             }
+        },
+        "UPDATE_PROPERTY_VALUE": {
+            "sparql": "DELETE {?property dul:hasDataValue ?oldValue} INSERT {?property dul:hasDataValue ?newValue} WHERE {?property rdf:type td:Property. ?property dul:hasDataValue ?oldValue}",
+            "forcedBindings": {
+                "property": {
+                    "type": "uri",
+                    "value": ""
+                },
+                "newValue": {
+                    "type": "literal",
+                    "value": ""
+                }
+            }
         }
     },
     "queries": {
@@ -401,8 +414,17 @@
                 }
             }
         },
+        "PROPERTY_VALUE_CHANGE": {
+            "sparql": "SELECT ?value WHERE {?property rdf:type td:Property. ?property dul:hasDataValue ?value}",
+            "forcedBindings": {
+                "property": {
+                    "type": "uri",
+                    "value": ""
+                }
+            }
+        },
         "LIST_ACTIONS": {
-            "sparql": "SELECT ?thing ?action ?aName ?outDataSchema ?inDataSchema WHERE { ?thing rdf:type td:Thing . ?thing td:hasAction ?action . ?action td:hasName ?aName . ?action wot:hasOutputDataSchema ?outDataSchema . ?action wot:hasInputDataSchema ?inDataSchema } ",
+            "sparql": "SELECT ?action ?aName ?outDataSchema ?inDataSchema WHERE { ?thing rdf:type td:Thing . ?thing td:hasAction ?action . ?action td:hasName ?aName . ?action wot:hasOutputDataSchema ?outDataSchema . ?action wot:hasInputDataSchema ?inDataSchema } ",
             "forcedBindings": {
                 "thing": {
                     "type": "uri",
@@ -420,7 +442,7 @@
             }
         },
         "LIST_EVENTS": {
-            "sparql": "SELECT ?thing ?event ?eName ?outDataSchema WHERE { ?thing rdf:type td:Thing . ?thing td:hasEvent ?event . ?event td:hasName ?eName . ?event wot:hasOutputDataSchema ?outDataSchema }",
+            "sparql": "SELECT ?event ?eName ?outDataSchema WHERE { ?thing rdf:type td:Thing . ?thing td:hasEvent ?event . ?event td:hasName ?eName . ?event wot:hasOutputDataSchema ?outDataSchema }",
             "forcedBindings": {
                 "thing": {
                     "type": "uri",
@@ -450,6 +472,6 @@
             "sparql": "SELECT ?thing WHERE {?thing rdf:type td:Thing}"
         }
     },
-    "creation_time": "2017-12-30 17:24:08",
+    "creation_time": "2018-01-05 12:47:22",
     "ontology_version": "http://wot.arces.unibo.it/ontology/web_of_things/1.0.2"
 }

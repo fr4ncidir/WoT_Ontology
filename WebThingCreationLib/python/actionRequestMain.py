@@ -21,7 +21,8 @@
 #  MA 02110-1301, USA.
 #  
 #  
-
+import colorama
+from colorama import Fore, Style
 from webthing import *
 from wot_init import *
 
@@ -41,15 +42,25 @@ class ConfirmationHandler:
 def main(args):
 	global kp
 	global subid
-	while True:
-		input("Accendo il riscaldamento? ")
-		instance = "wot:IstanzaAccendi"
-		kp,subid = Action.waitActionConfirmation(JPAR,JSAP,instance,ConfirmationHandler())
-		Action.askForAction(JPAR,JSAP,"wot:Heater","wot:AccendiRiscaldamento",instanceUri=instance)
-		input("Spengo il riscaldamento? ")
-		instance = "wot:IstanzaSpegni"
-		kp,subid = Action.waitActionConfirmation(JPAR,JSAP,instance,ConfirmationHandler())
-		instance = Action.askForAction(JPAR,JSAP,"wot:Heater","wot:SpegniRiscaldamento",instanceUri=instance)
+	
+	# discovery things available
+	for item in WebThing.discoveryThings(JPAR,JSAP):
+		print(item["thing"]["value"])
+		print(Action.getActionList(JPAR,JSAP,item["thing"]["value"]))
+	
+	colorama.init()
+	
+	# while True:
+		# print(Fore.RED + "Accendo il riscaldamento? " + Style.RESET_ALL)
+		# input()
+		# instance = "wot:IstanzaAccendi"
+		# kp,subid = Action.waitActionConfirmation(JPAR,JSAP,instance,ConfirmationHandler())
+		# Action.askForAction(JPAR,JSAP,"wot:Heater","wot:AccendiRiscaldamento",instanceUri=instance)
+		# print(Fore.RED + "Spengo il riscaldamento? " + Style.RESET_ALL)
+		# input()
+		# instance = "wot:IstanzaSpegni"
+		# kp,subid = Action.waitActionConfirmation(JPAR,JSAP,instance,ConfirmationHandler())
+		# instance = Action.askForAction(JPAR,JSAP,"wot:Heater","wot:SpegniRiscaldamento",instanceUri=instance)
 
 if __name__ == '__main__':
 	import sys
