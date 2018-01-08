@@ -25,7 +25,6 @@
 from sepy import JSAPObject,LowLevelKP
 from uuid import uuid4
 import logging
-import json
 
 logging.basicConfig(format="%(levelname)s %(asctime)-15s %(message)s",level=logging.INFO)
 logger = logging.getLogger("sepaLogger")
@@ -138,6 +137,7 @@ class WebThing:
 		logger.info("Subscribing to Action requests for WebThing {}".format(self.uri))
 		sparql = self.kp.jsapHandler.getQuery("GET_ACTION_REQUEST",{"thing" : self.uri})
 		spuid = self.kp.subscribe(sparql, "ActionRequest_{}_Notification".format(self.uri), handler, secure)
+		return (self.kp,spuid)
 					
 	@staticmethod
 	def discoveryThings(jpar,jsap,secure=False):
@@ -146,17 +146,26 @@ class WebThing:
 		status,results = kp.query(sparql,secure)
 		return results["results"]["bindings"]
 		
-class Action:
-	"Action class object, as defined by in WoT Arces research group"
-	instances = 0
-	
-	class DefaultActionCompletionHandler:
-		def __init__(self):
-			pass
+class DefaultActionCompletionHandler:
+		def __init__(self,kp,secure):
+			self.kp = kp
+			self.secure = secure
+		def setSubID(self,subid):
+			self.subid = subid
 		def handle(self, added, removed):
 			for item in added:
 				logger.info("DefaultActionCompletionHandler: {} timestamp received".format(item["timestamp"]["value"]))
+				try:
+					logger.info("DefaultActionCompletionHandler: {} output received".format(item["value"]["value"]))
+				except Exception:
+					pass
+			print("CIAO!")
+			self.kp.unsubscribe(subid,secure)
 	
+class Action:
+	"Action class object, as defined by in WoT Arces research group"
+	instances = 0
+
 	def __init__(self,thing,name="Action{}".format(instances),uri=str(uuid4()),in_dataschema="",out_dataschema=""):
 		self.thing = thing
 		self.name = name
@@ -181,11 +190,14 @@ class Action:
 		return self.uri
 	
 	@staticmethod
-	def askForAction(jpar,jsap,thingUri,actionUri,instanceUri="wot:"+str(uuid4()),input_value=None,output_handler=DefaultActionCompletionHandler(),secure=False):
+	def askForAction(jpar,jsap,thingUri,actionUri,instanceUri="wot:"+str(uuid4()),input_value=None,output_handler=None,secure=False):
 		kp = LowLevelKP.LowLevelKP(jpar,jsap,10)
 		logger.info("Subscribing to instance {} of Action {} completion and output (WebThing {})".format(instanceUri,actionUri,thingUri))
 		sparql = kp.jsapHandler.getQuery("GET_ACTION_COMPLETION_AND_OUTPUT",{"thing" : thingUri,"action" : actionUri,"instance" : instanceUri})
+		if output_handler is None:
+			output_handler = DefaultActionCompletionHandler(kp,secure)
 		spuid = kp.subscribe(sparql, "CompletionOutput_{}_Notification".format(instanceUri), output_handler, secure)
+		output_handler.setSubID(spuid)
 		if input_value is None:
 			logger.info("Requesting instance {} for Action {} (WebThing {}) - no input given".format(instanceUri,actionUri,thingUri))
 			sparql = kp.jsapHandler.getUpdate("POST_ACTION_INSTANCE_NO_INPUT",{"action" : actionUri,"instance" : instanceUri})
@@ -224,7 +236,7 @@ class Action:
 		else:
 			sparql = kp.jsapHandler.getQuery("LIST_ACTIONS",{"thing" : thingUri})
 		status,results = kp.query(sparql,secure)
-		return results
+		return results["results"]["bindings"]
 		
 
 class Event:
@@ -273,6 +285,16 @@ class Event:
 		logger.info("Subscribing to event {} (WebThing {})".format(eventUri,thingUri))
 		sparql = self.kp.jsapHandler.getQuery("GET_EVENT_NOTIFICATION",{"thing" : thingUri,"event" : eventUri})
 		kp.subscribe(sparql, "Event_{}_Notification".format(eventUri), handler, secure)
+		
+	@staticmethod
+	def getEventList(jpar,jsap,thingUri=None,secure=False):
+		kp = LowLevelKP.LowLevelKP(jpar,jsap,10)
+		if thingUri is None:
+			sparql = kp.jsapHandler.getQuery("LIST_EVENTS",{})
+		else:
+			sparql = kp.jsapHandler.getQuery("LIST_EVENTS",{"thing" : thingUri})
+		status,results = kp.query(sparql,secure)
+		return results["results"]["bindings"]
 	
 class Property:
 	"Property class object, as defined by in WoT Arces research group"
@@ -310,3 +332,13 @@ class Property:
 		logger.info("Subscribing to property {} value change".format(propertyUri))
 		sparql = self.kp.jsapHandler.getQuery("GET_EVENT_NOTIFICATION",{"thing" : thingUri,"event" : eventUri})
 		return (kp,kp.subscribe(sparql, "Property_{}_value_subscription".format(propertyUri), handler, secure))
+		
+	@staticmethod
+	def getPropertyList(jpar,jsap,thingUri=None,secure=False):
+		kp = LowLevelKP.LowLevelKP(jpar,jsap,10)
+		if thingUri is None:
+			sparql = kp.jsapHandler.getQuery("LIST_PROPERTIES",{})
+		else:
+			sparql = kp.jsapHandler.getQuery("LIST_PROPERTIES",{"thing" : thingUri})
+		status,results = kp.query(sparql,secure)
+		return results["results"]["bindings"]

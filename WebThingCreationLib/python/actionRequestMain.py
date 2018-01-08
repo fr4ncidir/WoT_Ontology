@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  wt_tempSensor.py
+#  actionRequestMain.py
 #  
 #  Copyright 2017 Francesco Antoniazzi <francesco.antoniazzi@unibo.it>
 #  
@@ -22,6 +22,7 @@
 #  
 #  
 import colorama
+import rlcompleter,readline
 from colorama import Fore, Style
 from webthing import *
 from wot_init import *
@@ -37,39 +38,87 @@ class ConfirmationHandler:
 	def handle(self, added, removed):
 		for item in added:
 			logging.info("Action Confirmation handler: {} timestamp received".format(item["timestamp"]["value"]))
-			kp.unsubscribe(subid,False)
+			try:
+				kp.unsubscribe(subid,False)
+			except Exception:
+				pass
+
+class ActionCompleter(object):  # Custom completer
+	def __init__(self, options):
+		self.options = sorted(options)
+	def complete(self, text, state):
+		if state == 0:  # on first trigger, build possible matches
+			if text:  # cache matches (entries that start with entered text)
+				self.matches = [s for s in self.options if s and s.startswith(text)]
+			else:  # no text entered, all matches possible
+				self.matches = self.options[:]
+		# return match indexed by state
+		try: 
+			return self.matches[state]
+		except IndexError:
+			return None
 
 def main(args):
 	global kp
 	global subid
 	
-	# discovery things available
-	for item in WebThing.discoveryThings(JPAR,JSAP):
-		print(item["thing"]["value"])
-		print(Action.getActionList(JPAR,JSAP,item["thing"]["value"]))
+	thing_action_map = {}
+	action_names = []
 	
 	colorama.init()
 	
-	# while True:
-		# print(Fore.RED + "Accendo il riscaldamento? " + Style.RESET_ALL)
-		# input()
-		# instance = "wot:IstanzaAccendi"
-		# kp,subid = Action.waitActionConfirmation(JPAR,JSAP,instance,ConfirmationHandler())
-		# Action.askForAction(JPAR,JSAP,"wot:Heater","wot:AccendiRiscaldamento",instanceUri=instance)
-		# print(Fore.RED + "Spengo il riscaldamento? " + Style.RESET_ALL)
-		# input()
-		# instance = "wot:IstanzaSpegni"
-		# kp,subid = Action.waitActionConfirmation(JPAR,JSAP,instance,ConfirmationHandler())
-		# instance = Action.askForAction(JPAR,JSAP,"wot:Heater","wot:SpegniRiscaldamento",instanceUri=instance)
+	while True:
+		# discovery things available
+		web_things = WebThing.discoveryThings(JPAR,JSAP)
+		for item in web_things:
+			print("{}WEBTHING: {}".format(Fore.RED,item["thing"]["value"]))
+			for action in Action.getActionList(JPAR,JSAP,item["thing"]["value"]):
+				print("{}\tACTION: {}".format(Fore.GREEN,action["aName"]["value"]))
+				thing_action_map[action["aName"]["value"]] = (item["thing"]["value"],action["inDataSchema"]["value"])
+				action_names.append(action["aName"]["value"])
+			for event in Event.getEventList(JPAR,JSAP,item["thing"]["value"]):
+				print("{}\tEVENT: {}".format(Fore.YELLOW,event["eName"]["value"]))
+			for propert in Property.getPropertyList(JPAR,JSAP,item["thing"]["value"]):
+				print("{}\tPROPERTY: {} (value: {}){}".format(Fore.MAGENTA,propert["pName"]["value"],propert["pValue"]["value"],Fore.RESET))
+		if len(web_things)==0:
+			print("No webthing was found!")
+			return 0
+		else:
+			break
+	
+	completer = ActionCompleter(action_names)
+	readline.set_completer(completer.complete)
+	readline.parse_and_bind("tab: complete")
+	
+	if len(action_names)==0:
+		print("No actions to be called!")
+		return 0
+	else:
+		while True:
+			try:
+				print("Write the name of the action you want to call: ")
+				action_name = input()
+				if action_name in thing_action_map:
+					instance = "wot:{}".format(uuid4())
+					kp,subid = Action.waitActionConfirmation(JPAR,JSAP,instance,ConfirmationHandler())
+					if action["inDataSchema"]["value"]!="":
+						print("Required input with format:\n{}".format(action["inDataSchema"]["value"]))
+						print("Please insert input:")
+						myActionInput = input()
+					else:
+						myActionInput = None
+					Action.askForAction(JPAR,JSAP,thing_action_map[action_name][0],action_name,input_value=myActionInput,instanceUri=instance)
+				else:
+					logging.error("{}: Unknown action name".format(action_name))
+			except KeyboardInterrupt:
+				print("CTRL-C pressed! Bye!")
+				try:
+					kp.unsubscribe(subid,False)
+				except Exception:
+					pass
+				return 0
 
 if __name__ == '__main__':
 	import sys
-	main(sys.argv)
-	while True:
-		try:
-			pass
-		except KeyboardInterrupt:
-			kp.unsubscribe(subid,False)
-			print("CTRL-C pressed! Bye!")
-			sys.exit(0)
+	sys.exit(main(sys.argv))
 

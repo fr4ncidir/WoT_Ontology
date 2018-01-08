@@ -69,7 +69,7 @@ if __name__ == '__main__':
 	
 	wt.post()
 	
-	wt.listenForActionRequests(ActionRequestHandler())
+	kp,subid = wt.listenForActionRequests(ActionRequestHandler())
 	
 	colorama.init()
 	print(Fore.RED + "Waiting for action requests..." + Style.RESET_ALL)
@@ -79,4 +79,5 @@ if __name__ == '__main__':
 			pass
 		except KeyboardInterrupt:
 			print("CTRL-C pressed! Bye!")
+			kp.unsubscribe(subid,False)
 			sys.exit(0)
