@@ -28,7 +28,7 @@ import logging
 from wot_init import *
 from webthing import *
 
-logging.basicConfig(format="%(levelname)s %(asctime)-15s %(message)s",level=LOGLEVEL)
+logging.basicConfig(format=LOGFORMAT,level=LOGLEVEL)
 
 ACCENDI_RISCALDAMENTO = "AccendiRiscaldamento"
 SPEGNI_RISCALDAMENTO = "SpegniRiscaldamento"
@@ -47,15 +47,15 @@ class ActionRequestHandler:
 				print("Riscaldamento acceso alle {}".format(item["request"]["value"]))
 				accendi.postActionConfirmation(item["instance"]["value"])
 				logger.info("Updating property {} value to {}".format(consumo.getName(),"50"))
-				sparql = wt.getKP().jsapHandler.getUpdate("UPDATE PROPERTY VALUE",{"property" : consumo.getUri(), "newValue" : "50"})
-				wt.getKP().update(sparql,secure)
+				sparql = wt.getKP().jsapHandler.getUpdate("UPDATE_PROPERTY_VALUE",{"property" : consumo.getUri(), "newValue" : "50"})
+				wt.getKP().update(sparql,False)
 				accendi.postActionCompletion(item["instance"]["value"])
 			elif item["action"]["value"]=="{}{}".format(WOT,SPEGNI_RISCALDAMENTO):
 				print("Riscaldamento spento alle {}".format(item["request"]["value"]))
 				spegni.postActionConfirmation(item["instance"]["value"])
 				logger.info("Updating property {} value to {}".format(consumo.getName(),"0"))
 				sparql = wt.getKP().jsapHandler.getUpdate("UPDATE PROPERTY VALUE",{"property" : consumo.getUri(), "newValue" : "0"})
-				wt.getKP().update(sparql,secure)
+				wt.getKP().update(sparql,False)
 				spegni.postActionCompletion(item["instance"]["value"])
 
 if __name__ == '__main__':

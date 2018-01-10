@@ -29,7 +29,7 @@ from wot_init import *
 from webthing import *
 from time import sleep
 
-logging.basicConfig(format="%(levelname)s %(asctime)-15s %(message)s",level=LOGLEVEL)
+logging.basicConfig(format=LOGFORMAT,level=LOGLEVEL)
 
 LEGGI_TEMPERATURA = "LeggiTemperatura"
 NUOVA_TEMPERATURA = "NuovaTemperatura"

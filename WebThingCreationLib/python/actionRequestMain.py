@@ -27,7 +27,7 @@ from colorama import Fore, Style
 from webthing import *
 from wot_init import *
 
-logging.basicConfig(format="%(levelname)s %(asctime)-15s %(message)s",level=LOGLEVEL)
+logging.basicConfig(format=LOGFORMAT,level=LOGLEVEL)
 
 subid = ""
 kp = None
@@ -36,6 +36,8 @@ class ConfirmationHandler:
 	def __init__(self):
 		pass
 	def handle(self, added, removed):
+		global kp
+		global subid
 		for item in added:
 			logging.info("Action Confirmation handler: {} timestamp received".format(item["timestamp"]["value"]))
 			try:
@@ -74,7 +76,7 @@ def main(args):
 			print("{}WEBTHING: {}".format(Fore.RED,item["thing"]["value"]))
 			for action in Action.getActionList(JPAR,JSAP,item["thing"]["value"]):
 				print("{}\tACTION: {}".format(Fore.GREEN,action["aName"]["value"]))
-				thing_action_map[action["aName"]["value"]] = (item["thing"]["value"],action["inDataSchema"]["value"])
+				thing_action_map[action["aName"]["value"]] = (item["thing"]["value"],action["action"]["value"],action["inDataSchema"]["value"])
 				action_names.append(action["aName"]["value"])
 			for event in Event.getEventList(JPAR,JSAP,item["thing"]["value"]):
 				print("{}\tEVENT: {}".format(Fore.YELLOW,event["eName"]["value"]))
@@ -101,13 +103,13 @@ def main(args):
 				if action_name in thing_action_map:
 					instance = "wot:{}".format(uuid4())
 					kp,subid = Action.waitActionConfirmation(JPAR,JSAP,instance,ConfirmationHandler())
-					if action["inDataSchema"]["value"]!="":
+					if thing_action_map[action_name][2]!="":
 						print("Required input with format:\n{}".format(action["inDataSchema"]["value"]))
 						print("Please insert input:")
 						myActionInput = input()
 					else:
 						myActionInput = None
-					Action.askForAction(JPAR,JSAP,thing_action_map[action_name][0],action_name,input_value=myActionInput,instanceUri=instance)
+					Action.askForAction(JPAR,JSAP,thing_action_map[action_name][0],thing_action_map[action_name][1],input_value=myActionInput,instanceUri=instance)
 				else:
 					logging.error("{}: Unknown action name".format(action_name))
 			except KeyboardInterrupt:

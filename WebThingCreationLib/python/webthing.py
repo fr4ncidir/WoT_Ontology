@@ -26,7 +26,7 @@ from sepy import JSAPObject,LowLevelKP
 from uuid import uuid4
 import logging
 
-logging.basicConfig(format="%(levelname)s %(asctime)-15s %(message)s",level=logging.INFO)
+logging.basicConfig(format="%(filename)s-%(funcName)s-%(levelname)s %(asctime)-15s %(message)s",level=logging.INFO)
 logger = logging.getLogger("sepaLogger")
 
 class WebThing:
@@ -159,8 +159,7 @@ class DefaultActionCompletionHandler:
 					logger.info("DefaultActionCompletionHandler: {} output received".format(item["value"]["value"]))
 				except Exception:
 					pass
-			print("CIAO!")
-			self.kp.unsubscribe(subid,secure)
+			self.kp.unsubscribe(self.subid,self.secure)
 	
 class Action:
 	"Action class object, as defined by in WoT Arces research group"

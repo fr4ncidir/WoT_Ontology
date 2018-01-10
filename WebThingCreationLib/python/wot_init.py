@@ -25,6 +25,7 @@
 import logging
 
 LOGLEVEL = logging.INFO
+LOGFORMAT = "%(filename)s-%(funcName)s-%(levelname)s %(asctime)-15s %(message)s"
 
 JSAP = "C:/Users/Francesco/Documents/Work/WoT_Ontology/thing_description.jsap"
 JPAR = "C:/Users/Francesco/Desktop/constance/constance.jpar"
