@@ -24,8 +24,30 @@
 
 
 def main(args):
-    return 0
+	# Before: get informations about the environment
+	web_things = WebThing.discoveryThings(JPAR,JSAP)
+	actions = 
+	
+	# First step: setup of preferences
+	web_things = WebThing.discoveryThings(JPAR,JSAP)
+	for item in web_things:
+		print("{}WEBTHING: {}".format(Fore.RED,item["thing"]["value"]))
+		for action in Action.getActionList(JPAR,JSAP,item["thing"]["value"]):
+			print("{}\tACTION: {}".format(Fore.GREEN,action["aName"]["value"]))
+			thing_action_map[action["aName"]["value"]] = (item["thing"]["value"],action["action"]["value"],action["inDataSchema"]["value"])
+			action_names.append(action["aName"]["value"])
+		for event in Event.getEventList(JPAR,JSAP,item["thing"]["value"]):
+			print("{}\tEVENT: {}".format(Fore.YELLOW,event["eName"]["value"]))
+		for propert in Property.getPropertyList(JPAR,JSAP,item["thing"]["value"]):
+			print("{}\tPROPERTY: {} (value: {}){}".format(Fore.MAGENTA,propert["pName"]["value"],propert["pValue"]["value"],Fore.RESET))
+	
+	# Second step: subscription to ambient variables
+	
+	# Third step: identification of the problem
+	
+	# Fourth step: identification of the device and the action
+	return 0
 
 if __name__ == '__main__':
-    import sys
-    sys.exit(main(sys.argv))
+	import sys
+	sys.exit(main(sys.argv))
