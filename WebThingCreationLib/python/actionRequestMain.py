@@ -66,21 +66,21 @@ def main(args):
 	
 	thing_action_map = {}
 	action_names = []
-	
+	jsap_obj = JSAPObject.JSAPObject(JSAP)
 	colorama.init()
 	
 	while True:
 		# discovery things available
-		web_things = WebThing.discoveryThings(JPAR,JSAP)
+		web_things = WebThing.discoveryThings(jsap_obj)
 		for item in web_things:
 			print("{}WEBTHING: {}".format(Fore.RED,item["thing"]["value"]))
-			for action in Action.getActionList(JPAR,JSAP,item["thing"]["value"]):
+			for action in Action.getActionList(jsap_obj,item["thing"]["value"]):
 				print("{}\tACTION: {}".format(Fore.GREEN,action["aName"]["value"]))
 				thing_action_map[action["aName"]["value"]] = (item["thing"]["value"],action["action"]["value"],action["inDataSchema"]["value"])
 				action_names.append(action["aName"]["value"])
-			for event in Event.getEventList(JPAR,JSAP,item["thing"]["value"]):
+			for event in Event.getEventList(jsap_obj,item["thing"]["value"]):
 				print("{}\tEVENT: {}".format(Fore.YELLOW,event["eName"]["value"]))
-			for propert in Property.getPropertyList(JPAR,JSAP,item["thing"]["value"]):
+			for propert in Property.getPropertyList(jsap_obj,item["thing"]["value"]):
 				print("{}\tPROPERTY: {} (value: {}){}".format(Fore.MAGENTA,propert["pName"]["value"],propert["pValue"]["value"],Fore.RESET))
 		if len(web_things)==0:
 			print("No webthing was found!")
@@ -102,14 +102,14 @@ def main(args):
 				action_name = input()
 				if action_name in thing_action_map:
 					instance = "wot:{}".format(uuid4())
-					kp,subid = Action.waitActionConfirmation(JPAR,JSAP,instance,ConfirmationHandler())
+					kp,subid = Action.waitActionConfirmation(jsap_obj,instance,ConfirmationHandler())
 					if thing_action_map[action_name][2]!="":
 						print("Required input with format:\n{}".format(action["inDataSchema"]["value"]))
 						print("Please insert input:")
 						myActionInput = input()
 					else:
 						myActionInput = None
-					Action.askForAction(JPAR,JSAP,thing_action_map[action_name][0],thing_action_map[action_name][1],input_value=myActionInput,instanceUri=instance)
+					Action.askForAction(jsap_obj,thing_action_map[action_name][0],thing_action_map[action_name][1],input_value=myActionInput,instanceUri=instance)
 				else:
 					logging.error("{}: Unknown action name".format(action_name))
 			except KeyboardInterrupt:

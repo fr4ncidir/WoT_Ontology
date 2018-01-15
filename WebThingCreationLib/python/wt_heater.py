@@ -33,7 +33,7 @@ logging.basicConfig(format=LOGFORMAT,level=LOGLEVEL)
 ACCENDI_RISCALDAMENTO = "AccendiRiscaldamento"
 SPEGNI_RISCALDAMENTO = "SpegniRiscaldamento"
 
-wt = WebThing(JSAP,JPAR,name="Riscaldamento",uri="wot:Heater")
+wt = WebThing(JSAP,name="Riscaldamento",uri="wot:Heater")
 consumo = Property(wt,"Consumo",uri="wot:Consumo",dataschema="float",writable=False,value="0")
 accendi = Action(wt,name="AccendiRiscaldamento",uri="wot:AccendiRiscaldamento")
 spegni = Action(wt,name="SpegniRiscaldamento",uri="wot:SpegniRiscaldamento")
@@ -47,15 +47,15 @@ class ActionRequestHandler:
 				print("Riscaldamento acceso alle {}".format(item["request"]["value"]))
 				accendi.postActionConfirmation(item["instance"]["value"])
 				logger.info("Updating property {} value to {}".format(consumo.getName(),"50"))
-				sparql = wt.getKP().jsapHandler.getUpdate("UPDATE_PROPERTY_VALUE",{"property" : consumo.getUri(), "newValue" : "50"})
-				wt.getKP().update(sparql,False)
+				sparql = wt.getJSAPObject().getUpdate("UPDATE_PROPERTY_VALUE",{"property" : consumo.getUri(), "newValue" : "50"})
+				wt.getKP().update(wt.getJSAPObject().updateUri,sparql)
 				accendi.postActionCompletion(item["instance"]["value"])
 			elif item["action"]["value"]=="{}{}".format(WOT,SPEGNI_RISCALDAMENTO):
 				print("Riscaldamento spento alle {}".format(item["request"]["value"]))
 				spegni.postActionConfirmation(item["instance"]["value"])
 				logger.info("Updating property {} value to {}".format(consumo.getName(),"0"))
 				sparql = wt.getKP().jsapHandler.getUpdate("UPDATE PROPERTY VALUE",{"property" : consumo.getUri(), "newValue" : "0"})
-				wt.getKP().update(sparql,False)
+				wt.getKP().update(wt.getJSAPObject().updateUri,sparql)
 				spegni.postActionCompletion(item["instance"]["value"])
 
 if __name__ == '__main__':
