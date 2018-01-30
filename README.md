@@ -1,13 +1,14 @@
-# WoT_Ontology
+# WoT Ontology Cocktail🍸
 Web Of Things Thing Ontology
 
 This repository contains
-- [x] the thing description ontology as imagined by the WoT group of ARCES (Università di Bologna)
-It contains annotations in JSAP compliant format useful for define WoT applications.
+- [x] the thing description ontology as imagined by the WoT group of ARCES (Università di Bologna). It contains annotations in JSAP compliant format useful to define WoT applications.
 - [x] a python script generating TD JSAP from the ontology.
+- [x] a framework called Cocktail🍸 to create Things on-the-go by smart humans that know Python
 
 This repository will contain hopefully
-- [ ] a tool to create Thing Descriptions on-the-go by smart humans
+- [ ] Cocktail🍸 APIs in other languages
+- [ ] Cocktail🍸 documentation
 
 Please have a look in http://wot.arces.unibo.it
 
