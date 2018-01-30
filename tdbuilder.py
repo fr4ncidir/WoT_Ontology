@@ -26,11 +26,12 @@ from shutil import copy
 import xml.etree.ElementTree as etree
 import json
 import sys
-import datetime
+from datetime import datetime
 import logging
+import argparse
 
-TD_template = "./thing_description.jsap"
-TD_complete = "./thing_description2.jsap"
+TD_template = "./skeleton.jsap"
+TD_complete = "./thing_description.jsap"
 
 logging.basicConfig(format="%(levelname)s %(asctime)-15s %(message)s",level=logging.INFO)
 
@@ -56,30 +57,31 @@ def jsap_build(entry,jsap_level,json_data,jsap_file):
 def main(args):
 	copy(TD_template,TD_complete)
 	
-	if len(args)<2:
-		logging.critical("Missing argument: owl file")
-		return 1
-	
 	try:
-		tree = etree.parse(args[1])
+		tree = etree.parse(args["owl-file"])
 	except:
-		logging.critical("Error while parsing {}\n{}".format(args[1],sys.exc_info()[1]))
+		logging.critical("Error while parsing {}\n{}".format(args["owl-file"],sys.exc_info()[1]))
 		return 1
-	logging.info("Building jsap from {} ontology".format(args[1]))
+	logging.info("Building jsap from {} ontology".format(args["owl-file"]))
 	root = tree.getroot()
 	queries = []
 	updates = []
+	
+	ontology = root.find("owl:Ontology",ns)
+	versionIRI = ontology.find("owl:versionIRI",ns).attrib["{}resource".format("{"+ns["rdf"]+"}")]
+		
 	for element in root.findall("owl:AnnotationProperty",ns):
 		for annotation_type in element.findall("rdfs:subPropertyOf",ns):
-			annotation_type_string = annotation_type.attrib["{}{}".format("{"+ns["rdf"]+"}","resource")]
+			annotation_type_string = annotation_type.attrib["{}resource".format("{"+ns["rdf"]+"}")]
 			if (annotation_type_string==(ns["web_of_things"]+"discovery")) or (annotation_type_string==(ns["web_of_things"]+"query")):
-				queries.append(element.attrib["{}{}".format("{"+ns["rdf"]+"}","about")].replace(ns["web_of_things"],"web_of_things:"))
+				queries.append(element.attrib["{}about".format("{"+ns["rdf"]+"}")].replace(ns["web_of_things"],"web_of_things:"))
 			elif (annotation_type_string==(ns["web_of_things"]+"delete")) or (annotation_type_string==(ns["web_of_things"]+"update")):
-				updates.append(element.attrib["{}{}".format("{"+ns["rdf"]+"}","about")].replace(ns["web_of_things"],"web_of_things:"))
+				updates.append(element.attrib["{}about".format("{"+ns["rdf"]+"}")].replace(ns["web_of_things"],"web_of_things:"))
 	
 	with open(TD_complete,"r+") as jsap:
 		data = json.load(jsap)
-		data["creation_time"]="{:%Y-%m-%d %H:%M:%S}".format(datetime.datetime.now())
+		data["creation_time"]="{:%Y-%m-%d %H:%M:%S}".format(datetime.now())
+		data["ontology_version"]=versionIRI
 		for element in queries:
 			for item in root.findall(".//"+element,ns):
 				jsap_build(item.text,"queries",data,jsap)
@@ -89,5 +91,8 @@ def main(args):
 	return 0
 
 if __name__ == '__main__':
-	logging.info("Welcome to the JSAP generator!")
-	sys.exit(main(sys.argv))
+	parser = argparse.ArgumentParser(description="OWL ontology to JSAP parser")
+	parser.add_argument("owl-file")
+	args = vars(parser.parse_args())
+	logging.info("Welcome to the JSAP generator!\n\n")
+	sys.exit(main(args))

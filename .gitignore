@@ -1,1 +1,3 @@
-/.project
+catalog-v001.xml
+./WebThingCreationLib/python/__pycache__
+*.pyc

@@ -1,0 +1,32 @@
+{
+   "parameters":{
+      "host":"localhost",
+      "ports":{
+         "http":8000,
+         "https":8443,
+         "ws":9000,
+         "wss":9443
+      },
+      "paths":{
+         "query":"/query",
+         "update":"/update",
+         "subscribe":"/subscribe",
+         "register":"/oauth/register",
+         "tokenRequest":"/oauth/token",
+         "securePath":"/secure"
+      }
+   },
+   "namespaces":{
+      "wot":"http://wot.arces.unibo.it/sepa#",
+      "rdf":"http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+      "dul":"http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#",
+      "ire":"http://w3c.github.io/wot/w3c-wot-td-ire.owl#",
+      "rdfs":"http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+      "td":"http://wot.arces.unibo.it/ontology/web_of_things#",
+      "xsd":"http://www.w3.org/2001/XMLSchema"
+   },
+   "updates":{
+   },
+   "queries":{
+   }
+}
