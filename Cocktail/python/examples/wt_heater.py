@@ -22,6 +22,9 @@
 #  
 #  
 
+import sys
+sys.path.append("../")
+
 import colorama
 from colorama import Fore, Style
 import logging
@@ -59,8 +62,6 @@ class ActionRequestHandler:
 				spegni.postActionCompletion(item["instance"]["value"])
 
 if __name__ == '__main__':
-	import sys
-	
 	wt.add_property(consumo)
 	wt.add_action(accendi)
 	wt.add_action(spegni)

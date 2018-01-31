@@ -21,6 +21,9 @@
 #  MA 02110-1301, USA.
 #  
 #  
+import sys
+sys.path.append("../")
+
 import colorama
 import rlcompleter,readline
 from colorama import Fore, Style
@@ -121,6 +124,5 @@ def main(args):
 				return 0
 
 if __name__ == '__main__':
-	import sys
 	sys.exit(main(sys.argv))
 

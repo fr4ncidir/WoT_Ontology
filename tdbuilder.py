@@ -55,6 +55,7 @@ def jsap_build(entry,jsap_level,json_data,jsap_file):
 	jsap_file.truncate()
 
 def main(args):
+	
 	copy(TD_template,TD_complete)
 	
 	try:
