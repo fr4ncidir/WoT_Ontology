@@ -85,6 +85,7 @@ class WebThing:
 		return len(self.__forProperties)
 		
 	def getProperty(self,name=None):
+		
 		if name is None:
 			return self.__properties
 		else:

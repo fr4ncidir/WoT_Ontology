@@ -17,7 +17,8 @@
 			"name":"Status",
 			"dataschema":"xsd:boolean",
 			"writable":false,
-			"stability":0
+			"stability":0,
+			"start_value":true
 		},
 		{
 			"@type":["td:Action"],

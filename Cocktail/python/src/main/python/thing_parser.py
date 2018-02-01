@@ -22,14 +22,12 @@
 #  
 #  
 
-from pybuilder.utils import read_file
 import json
 from wot_init import *
 from webthing import *
 
-def jsonLD2Thing(path_to_file):
-	ld = read_file(path_to_file)
-	data = json.loads("".join(ld))
+def jsonLD2Thing(jldFileString):
+	data = json.loads(jldFileString)
 	
 	if not "td:Thing" in data["@type"]:
 		return None
@@ -37,8 +35,9 @@ def jsonLD2Thing(path_to_file):
 	
 	for item in data["interaction"]:
 		if "td:Property" in item["@type"]:
-			pr = Property(wt,item["name"],uri="wot{}".format(item["name"]),dataschema=item["dataschema"],writable=item["writable"],stability=item["stability"],value="0")
+			pr = Property(wt,item["name"],uri="wot{}".format(item["name"]),dataschema=item["dataschema"],writable=item["writable"],stability=item["stability"],value=item["start_value"])
 			wt.add_property(pr)
+			
 	for item in data["interaction"]:
 		obj = None
 		
