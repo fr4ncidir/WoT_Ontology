@@ -28,7 +28,11 @@ def generate_things(project, logger):
 
     logger.info("Mixing...")
     src = project.get_property('dir_source_main_python')
-    already_existing_things = remove_already_existing(src,wts)
+
+    already_existing_things = find_already_existing(src,wts)
+    for wt in already_existing_things:
+        wts.remove(wt)
+        
     generate(src,wts)
 
     logger.info("Shaking...")
@@ -36,10 +40,21 @@ def generate_things(project, logger):
 
     logger.info("There you are!")
 
-def remove_already_existing(src,wts):
+def find_already_existing(src,wts):
+    src_files = discover_files(src,'.py')
+    removed = []
+
+    for _file in src_files:
+        name = Path(_file).name
+        has_same_name = lambda wt,file_name=name: ((wt.name + '.py') == file_name)
+        things_found = filter(has_same_name,wts)
+        removed.extend(list(things_found))
+
+    return removed
+
 
 def generate(src,wts):
-
+    pass
 
 def read_web_things(tds):
     wts = []
