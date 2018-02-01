@@ -18,4 +18,5 @@ default_task = "publish"
 def set_properties(project):
     project.depends_on('PyLD')
     project.depends_on('pyfakefs')
+    project.plugin_depends_on("jinja2")
     pass

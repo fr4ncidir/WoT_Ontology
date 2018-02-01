@@ -2,6 +2,7 @@ from pybuilder.core import task,depends,before
 from pybuilder.utils import mkdir,discover_files
 from pathlib import Path
 from pybuilder.errors import PyBuilderException
+from pybuilder_cocktail.generation import generate
 
 @task("cocktail_dependencies", description="Add cocktail dependencies to your Project")
 @before("install_dependencies", only_once=True)
@@ -32,8 +33,8 @@ def generate_things(project, logger):
     already_existing_things = find_already_existing(src,wts)
     for wt in already_existing_things:
         wts.remove(wt)
-        
-    generate(src,wts)
+
+    generate_things(src,wts)
 
     logger.info("Shaking...")
     update(already_existing_things)
@@ -53,8 +54,9 @@ def find_already_existing(src,wts):
     return removed
 
 
-def generate(src,wts):
-    pass
+def generate_things(src,wts):
+    for wt in wts:
+        generate(src,wt)
 
 def read_web_things(tds):
     wts = []
