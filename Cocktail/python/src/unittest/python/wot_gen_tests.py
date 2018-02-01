@@ -3,6 +3,7 @@ from pybuilder.core import Project, Logger,Dependency
 from pybuilder_cocktail import *
 from pyfakefs.fake_filesystem_unittest import Patcher
 import os.path
+import thing_parser
 
 class WotGenTests(TestCase):
     def setUp(self):
@@ -42,3 +43,11 @@ class WotGenTests(TestCase):
         self.assertTrue('\\things\\thing2.jsonld' in r)
         self.assertFalse('\\things\\thing2.json' in r)
         self.assertFalse('\\things\\thing4.txt' in r)
+        
+    def test_jsonLD_parser(self):
+        res = "src\\main\\things\\thing_example.jsonld"
+        self.assertTrue(os.path.exists(res))
+        wt = thing_parser.jsonLD2Thing(res)
+        self.assertTrue(wt.getName()=="MyLamp")
+        self.assertTrue(len(wt.getProperty())==1)
+        self.assertTrue(len(wt.getAction())==2)

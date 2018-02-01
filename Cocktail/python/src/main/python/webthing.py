@@ -34,8 +34,11 @@ class WebThing:
 	"WebThing class object, as defined by in WoT Arces research group"
 	instances = count(1)
 	
-	def __init__(self, jsap_path, name="WT{}".format(instances), uri=str(uuid4())):
-		self.jsap_obj = JSAPObject.JSAPObject(jsap_path)
+	def __init__(self, jsap_path=None, name="WT{}".format(instances), uri=str(uuid4())):
+		if jsap_path is None:
+			self.jsap_obj = None
+		else:
+			self.jsap_obj = JSAPObject.JSAPObject(jsap_path)
 		self.name = name
 		self.uri = uri
 		self.__properties = [] 		# list of Property
@@ -81,6 +84,24 @@ class WebThing:
 		logger.info("Added forProperty connection between {}({}) and {}({})".format(origin.getName(),origin.getUri(),destination.getName(),destination.getUri()))
 		return len(self.__forProperties)
 		
+	def getProperty(self,name=None):
+		if name is None:
+			return self.__properties
+		else:
+			for p in self.__properties:
+				if p.getName()==name:
+					return p
+			return None
+			
+	def getAction(self,name=None):
+		if name is None:
+			return self.__actions
+		else:
+			for a in self.__actions:
+				if a.getName()==name:
+					return a
+			return None
+		
 	def getName(self):
 		return self.name
 		
@@ -95,8 +116,13 @@ class WebThing:
 		
 	def getForcedBindings(self):
 		return {"thing" : self.uri,"name" : self.name }
+		
+	def setJSAP(self,jsap_path):
+		self.jsap_obj = JSAPObject.JSAPObject(jsap_path)
 	
 	def post(self):
+		if self.jsap_obj is None:
+			raise ValueError
 		# first step: declare the thing
 		logger.info("Calling ADD_NEW_THING for {}({})".format(self.name,self.uri))
 		sparql = self.jsap_obj.getUpdate("ADD_NEW_THING",self.getForcedBindings())
