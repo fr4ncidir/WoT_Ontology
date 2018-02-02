@@ -26,6 +26,7 @@ from sepy import JSAPObject,LowLevelKP
 from uuid import uuid4
 from itertools import count
 import logging
+import copy
 
 logging.basicConfig(format="%(filename)s-%(funcName)s-%(levelname)s %(asctime)-15s %(message)s",level=logging.INFO)
 logger = logging.getLogger("sepaLogger")
@@ -41,9 +42,9 @@ class WebThing:
 			self.jsap_obj = JSAPObject.JSAPObject(jsap_path)
 		self._name = name
 		self._uri = uri
-		self.__properties = {} 		# list of Property
-		self.__actions = {} 		# list of Action
-		self.__events = {}			# list of Event
+		self.__properties = {} 		# dict name:property
+		self.__actions = {} 		# dict name:action
+		self.__events = {}			# dict name:event
 		self.__sub_things = []		# list of WebThing
 		self.__forProperties = [] 	# list of pairs (Action | Event,Property)
 		self.kp = LowLevelKP.LowLevelKP()
@@ -54,48 +55,46 @@ class WebThing:
 	def add_property(self,newproperty):
 		if not isinstance(newproperty,Property):
 			raise TypeError
-		if newproperty.getName() in self.__properties:
-			raise ValueError("%s already defined" % newproperty.getName())
-		self.__properties[newproperty.getName()] = newproperty
-		logger.info("Added Property {}({})".format(newproperty.getName(),newproperty.getUri()))
+		if newproperty.name in self.__properties:
+			raise ValueError("%s already defined" % newproperty.name)
+		self.__properties[newproperty.name] = newproperty
+		logger.info("Added Property {}({})".format(newproperty.name,newproperty.uri))
 		return len(self.__properties)
 
 	def add_action(self,newaction):
 		if not isinstance(newaction,Action):
 			raise TypeError
-		if newaction.getName() in self.__actions:
-			raise ValueError("%s already defined" % newaction.getName())
-		self.__actions[newaction.getName()] = newaction
-		logger.info("Added Action {}({})".format(newaction.getName(),newaction.getUri()))
+		if newaction.name in self.__actions:
+			raise ValueError("%s already defined" % newaction.name)
+		self.__actions[newaction.name] = newaction
+		logger.info("Added Action {}({})".format(newaction.name,newaction.uri))
 		return len(self.__actions)
 
 	def add_event(self,newevent):
 		if not isinstance(newevent,Event):
 			raise TypeError
-		if newevent.getName() in self.__events:
-			raise ValueError("%s already defined" % newevent.getName())
-		self.__events[newevent.getName]= newevent
-		logger.info("Added Event {}({})".format(newevent.getName(),newevent.getUri()))
+		if newevent.name in self.__events:
+			raise ValueError("%s already defined" % newevent.name)
+		self.__events[newevent.name]= newevent
+		logger.info("Added Event {}({})".format(newevent.name,newevent.uri))
 		return len(self.__events)
 
 	def add_sub_thing(self,subthing):
 		if not isinstance(subthing,WebThing):
 			raise TypeError
 		self.__sub_things.append(subthing)
-		logger.info("Added SubThing {}({})".format(subthing.getName(),subthing.getUri()))
+		logger.info("Added SubThing {}({})".format(subthing.name,subthing.uri))
 		return len(self.__sub_things)
 
 	def add_forProperty(self,origin,destination):
 		if not ((isinstance(origin,Action) or isinstance(origin,Event)) and (isinstance(destination,Property))):
 			raise TypeError
 		self.__forProperties.append((origin,destination))
-		logger.info("Added forProperty connection between {}({}) and {}({})".format(origin.getName(),origin.getUri(),destination.getName(),destination.getUri()))
+		logger.info("Added forProperty connection between {}({}) and {}({})".format(origin.name,origin.uri,destination.name,destination.uri))
 		return len(self.__forProperties)
 
 	@property
 	def properties(self):
-		logger.info("ciaoooo")
-		logger.info(self.__properties)
 		return copy.deepcopy(self.__properties)
 
 	@property
@@ -105,7 +104,6 @@ class WebThing:
 			return copy.deepcopy(self.__actions)
 		except Exception as e:
 			logger.error(e)
-
 
 	@property
 	def events(self):
@@ -141,7 +139,7 @@ class WebThing:
 
 		# second step: add properties
 		for item in self.__properties:
-			logger.info("Adding property {}({}) to {}({})".format(item.getName(),item.getUri(),self.name,self.uri))
+			logger.info("Adding property {}({}) to {}({})".format(item.name,item.uri,self.name,self.uri))
 			sparql =  self.jsap_obj.getUpdate("ADD_PROPERTY",item.getForcedBindings())
 			self.kp.update(self.jsap_obj.updateUri,sparql)
 
@@ -151,26 +149,26 @@ class WebThing:
 				update = "ADD_PROPERTY_CHANGED_EVENT"
 			else:
 				update = "ADD_EVENT"
-			logger.info("Adding event {}({}) to {}({})".format(item.getName(),item.getUri(),self.name,self.uri))
+			logger.info("Adding event {}({}) to {}({})".format(item.name,item.uri,self.name,self.uri))
 			sparql =  self.jsap_obj.getUpdate(update,item.getForcedBindings())
 			self.kp.update(self.jsap_obj.updateUri,sparql)
 
 		# fourth step: add actions
 		for item in self.__actions:
-			logger.info("Adding action {}({}) to {}({})".format(item.getName(),item.getUri(),self.name,self.uri))
+			logger.info("Adding action {}({}) to {}({})".format(item.name,item.uri,self.name,self.uri))
 			sparql =  self.jsap_obj.getUpdate("ADD_NEW_ACTION",item.getForcedBindings())
 			self.kp.update(self.jsap_obj.updateUri,sparql)
 
 		# fifth step: include forProperties
 		for (origin,destination) in self.__forProperties:
-			logger.info("Connecting {}-{}({}) to Property {}({})".format(type(origin).__name__,origin.getName(),origin.getUri(),destination.getName(),destination.getUri()))
-			sparql =  self.jsap_obj.getUpdate("ADD_FORPROPERTY",{"item" : origin.getUri(),"property" : destination.getUri()})
+			logger.info("Connecting {}-{}({}) to Property {}({})".format(type(origin).__name__,origin.name,origin.uri,destination.name,destination.uri))
+			sparql =  self.jsap_obj.getUpdate("ADD_FORPROPERTY",{"item" : origin.uri,"property" : destination.uri})
 			self.kp.update(self.jsap_obj.updateUri,sparql)
 
 		# sixth step: include subThings
 		for item in self.__sub_things:
-			logger.info("Nesting {}({}) into {}({})".format(item.getName(),item.getUri(),self.name,self.uri))
-			sparql =  self.jsap_obj.getUpdate("ADD_NESTED_THING",{"thingFather" : self.uri,"thing" : item.getUri()})
+			logger.info("Nesting {}({}) into {}({})".format(item.name,item.uri,self.name,self.uri))
+			sparql =  self.jsap_obj.getUpdate("ADD_NESTED_THING",{"thingFather" : self.uri,"thing" : item.uri})
 			self.kp.update(self.jsap_obj.updateUri,sparql)
 
 	def listenForActionRequests(self,handler):
@@ -207,8 +205,8 @@ class Action:
 
 	def __init__(self,thing,name="Action{}".format(instances),uri=str(uuid4()),in_dataschema="",out_dataschema=""):
 		self.thing = thing.uri
-		self.name = name
-		self.uri = uri
+		self._name = name
+		self._uri = uri
 		self.in_dataschema = in_dataschema
 		self.out_dataschema = out_dataschema
 		next(Action.instances)
@@ -216,17 +214,19 @@ class Action:
 	def getForcedBindings(self):
 		forcedBindings = {
 			"thing" : self.thing,
-			"newName" : self.name,
+			"newName" : self._name,
 			"action" : self.uri,
 			"newInDataSchema" : self.in_dataschema,
 			"newOutDataSchema" : self.out_dataschema }
 		return forcedBindings
 
-	def getName(self):
-		return self.name
+	@property
+	def name(self):
+		return self._name
 
-	def getUri(self):
-		return self.uri
+	@property
+	def uri(self):
+		return self._uri
 
 	@staticmethod
 	def askForAction(jsap_obj,thingUri,actionUri,instanceUri="wot:"+str(uuid4()),input_value=None,output_handler=None):
@@ -254,16 +254,16 @@ class Action:
 		return (kp,kp.subscribe(jsap_obj.subscribeUri,sparql, "ActionConfirmation_{}_Notification".format(instanceUri), handler))
 
 	def postActionConfirmation(self,instanceUri,secure=False):
-		logger.info("Posting confirmation for {} Action {} (WebThing {})".format(instanceUri,self.uri,self.thing.getUri()))
+		logger.info("Posting confirmation for {} Action {} (WebThing {})".format(instanceUri,self.uri,self.thing.uri))
 		sparql = self.thing.getJSAPObject().getUpdate("ADD_CONFIRMATION_TIMESTAMP",{"instance" : instanceUri})
 		self.thing.getKP().update(self.thing.getJSAPObject().updateUri,sparql)
 
 	def postActionCompletion(self,instanceUri,output_value=None):
 		if output_value is None:
-			logger.info("Posting completion for {} Action {} (WebThing {}) - no output given".format(instanceUri,self.uri,self.thing.getUri()))
+			logger.info("Posting completion for {} Action {} (WebThing {}) - no output given".format(instanceUri,self.uri,self.thing.uri))
 			sparql = self.thing.getJSAPObject().getUpdate("ADD_COMPLETION_TIMESTAMP_NO_OUTPUT",{"instance" : instanceUri})
 		else:
-			logger.info("Posting completion for {} Action {} (WebThing {}) - output: {}".format(instanceUri,self.uri,self.thing.getUri(),output_value))
+			logger.info("Posting completion for {} Action {} (WebThing {}) - output: {}".format(instanceUri,self.uri,self.thing.uri,output_value))
 			sparql = self.thing.getJSAPObject().getUpdate("ADD_COMPLETION_TIMESTAMP_WITH_OUTPUT",{"instance" : instanceUri,"value" : output_value})
 		self.thing.getKP().update(self.thing.getJSAPObject().updateUri,sparql)
 
@@ -284,8 +284,8 @@ class Event:
 
 	def __init__(self,thing,name="Event{}".format(instances),uri=str(uuid4()),out_dataschema="",PCFlag=False):
 		self.thing = thing.uri
-		self.name = name
-		self.uri = uri
+		self._name = name
+		self._uri = uri
 		self.out_dataschema = out_dataschema
 		self.pc_flag = PCFlag
 		next(Event.instances)
@@ -295,7 +295,7 @@ class Event:
 
 	def getForcedBindings(self):
 		forcedBindings = {
-			"thing" : self.thing.getUri(),
+			"thing" : self.thing.uri,
 			"eName" : self.name,
 			"event" : self.uri }
 
@@ -303,19 +303,21 @@ class Event:
 			forcedBindings["outDataSchema"] = self.out_dataschema
 		return forcedBindings
 
-	def getName(self):
-		return self.name
+	@property
+	def name(self):
+		return self._name
 
-	def getUri(self):
-		return self.uri
+	@property
+	def uri(self):
+		return self._uri
 
 	def throwNewEvent(self,output_value=None):
 		if output_value is None:
-			logger.info("Throwing new event instance (autogen URI) for Event {} (WebThing {}) - no output given".format(self.uri,self.thing.getUri()))
-			sparql = self.thing.getJSAPObject().getUpdate("POST_NEW_EVENT_WITHOUT_OUTPUT",{"event" : self.uri,"thing" : self.thing.getUri()})
+			logger.info("Throwing new event instance (autogen URI) for Event {} (WebThing {}) - no output given".format(self.uri,self.thing.uri))
+			sparql = self.thing.getJSAPObject().getUpdate("POST_NEW_EVENT_WITHOUT_OUTPUT",{"event" : self.uri,"thing" : self.thing.uri})
 		else:
-			logger.info("Throwing new event instance (autogen URI) for Event {} (WebThing {}) - output: {}".format(self.uri,self.thing.getUri(),output_value))
-			sparql = self.thing.getJSAPObject().getUpdate("POST_NEW_EVENT_WITH_OUTPUT",{"event" : self.uri,"thing" : self.thing.getUri(), "newDataValue" : output_value})
+			logger.info("Throwing new event instance (autogen URI) for Event {} (WebThing {}) - output: {}".format(self.uri,self.thing.uri,output_value))
+			sparql = self.thing.getJSAPObject().getUpdate("POST_NEW_EVENT_WITH_OUTPUT",{"event" : self.uri,"thing" : self.thing.uri, "newDataValue" : output_value})
 		self.thing.getKP().update(self.jsap_obj.updateUri,sparql)
 
 	@staticmethod
@@ -341,8 +343,8 @@ class Property:
 
 	def __init__(self,thing,name="Property{}".format(instances),uri=str(uuid4()),dataschema="",writable=True,stability=0,value=""):
 		self.thing = thing.uri
-		self.name = name
-		self.uri = uri
+		self._name = name
+		self._uri = uri
 		self.dataschema = dataschema
 		self.writable = writable
 		self.stability = stability
@@ -359,11 +361,13 @@ class Property:
 			"newStability" : self.stability,
 			"newValue" : self.value }
 
-	def getName(self):
-		return self.name
+	@property
+	def name(self):
+		return self._name
 
-	def getUri(self):
-		return self.uri
+	@property
+	def uri(self):
+		return self._uri
 
 	@staticmethod
 	def subscribeToValueChange(jsap_obj,propertyUri,handler,secure=False):
