@@ -22,11 +22,11 @@
 #  
 #  
 
+from copy import deepcopy
 from sepy import JSAPObject,LowLevelKP
 from uuid import uuid4
 from itertools import count
 import logging
-import copy
 
 logging.basicConfig(format="%(filename)s-%(funcName)s-%(levelname)s %(asctime)-15s %(message)s",level=logging.INFO)
 logger = logging.getLogger("sepaLogger")
@@ -95,19 +95,15 @@ class WebThing:
 
 	@property
 	def properties(self):
-		return copy.deepcopy(self.__properties)
+		return deepcopy(self.__properties)
 
 	@property
 	def actions(self):
-		try:
-			logger.info(self.__actions)
-			return copy.deepcopy(self.__actions)
-		except Exception as e:
-			logger.error(e)
+		return deepcopy(self.__actions)
 
 	@property
 	def events(self):
-		return copy.deepcopy(self.__events)
+		return deepcopy(self.__events)
 
 	@property
 	def name(self):
