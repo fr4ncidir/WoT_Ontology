@@ -28,45 +28,45 @@ from webthing import *
 
 def jsonLD2Thing(jldFileString):
 	data = json.loads(jldFileString)
-	
+
 	if not "td:Thing" in data["@type"]:
 		return None
 	wt = WebThing(name=data["name"],uri="wot{}".format(data["name"]))
-	
+
 	for item in data["interaction"]:
 		if "td:Property" in item["@type"]:
 			pr = Property(wt,item["name"],uri="wot{}".format(item["name"]),dataschema=item["dataschema"],writable=item["writable"],stability=item["stability"],value=item["start_value"])
 			wt.add_property(pr)
-			
+
 	for item in data["interaction"]:
 		obj = None
-		
+
 		in_ds = ""
 		try:
 			in_ds = item["input_dataschema"]
 		except KeyError:
 			pass
-		
+
 		out_ds = ""
 		try:
 			out_ds = item["output_dataschema"]
 		except KeyError:
 			pass
-		
+
 		if "td:Action" in item["@type"]:
 			obj = Action(wt,name=item["name"],uri="wot{}".format(item["name"]),in_dataschema=in_ds,out_dataschema=out_ds)
 			wt.add_action(obj)
 		elif "td:Event" in item["@type"]:
 			obj = Event(wt,name=item["name"],uri="wot{}".format(item["name"]),out_dataschema=out_ds)
 			wt.add_event(obj)
-		
+
 		if not obj is None:
 			try:
 				for connection in item["connections"]:
 					if connection["@type"]=="td:forProperty":
 						print(type(obj))
-						wt.add_forProperty(obj,wt.getProperty(connection["item"]))
+						wt.add_forProperty(obj,wt.properties[connection["item"]])
 			except KeyError:
 				pass
-	
+
 	return wt

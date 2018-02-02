@@ -44,11 +44,11 @@ class WotGenTests(TestCase):
         self.assertTrue('\\things\\thing2.jsonld' in r)
         self.assertFalse('\\things\\thing2.json' in r)
         self.assertFalse('\\things\\thing4.txt' in r)
-        
+
     def test_jsonLD_parser(self):
         res = "src\\main\\things\\thing_example.jsonld"
         self.assertTrue(os.path.exists(res))
         wt = thing_parser.jsonLD2Thing("".join(read_file(res)))
-        self.assertTrue(wt.getName()=="MyLamp")
-        self.assertTrue(len(wt.getProperty())==1)
-        self.assertTrue(len(wt.getAction())==2)
+        self.assertTrue(wt.name=="MyLamp")
+        self.assertTrue(len(wt.properties)==1)
+        self.assertTrue(len(wt.actions)==2)
