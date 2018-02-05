@@ -1,17 +1,20 @@
-from pybuilder.core import task,depends,before
-from pybuilder.utils import mkdir,discover_files
+from pybuilder.core import task,depends,description,before
+from pybuilder.utils import mkdir,discover_files,read_file
 from pathlib import Path
 from pybuilder.errors import PyBuilderException
 from pybuilder_cocktail.generation import generate
+from thing_parser import jsonLD2Thing
 
-@task("cocktail_dependencies", description="Add cocktail dependencies to your Project")
+@task
+@description("Add cocktail dependencies to your Project")
 @before("install_dependencies", only_once=True)
 def cocktail_dependencies(project):
     project.depends_on('sepy')
 
-@task("generate_things", description="Reads your TDs and creates Py things")
+@task
+@description("Reads your TDs and creates Py things")
 @depends('cocktail_dependencies')
-def generate_things(project, logger):
+def gen_things(project, logger):
     logger.info("Thanks for your order...")
     logger.info("Finding ingredients...")
 
@@ -62,7 +65,8 @@ def read_web_things(tds):
     wts = []
     for td in tds:
         try:
-            wt = jsonLD2Thing(td)
+            jsonld = "".join(read_file(td))
+            wt = jsonLD2Thing(jsonld)
             wts.append(wt)
         except Exception as e:
             raise
@@ -78,5 +82,5 @@ def retrieve_src_for_things(project):
         mkdir(things_dir)
     return things_dir
 
-def list_thing_descriptors(dir):
-    return discover_files(dir,'.jsonld')
+def list_thing_descriptors(directory):
+    return discover_files(directory,'.jsonld')
