@@ -35,27 +35,27 @@ ACCENDI_RISCALDAMENTO = "AccendiRiscaldamento"
 SPEGNI_RISCALDAMENTO = "SpegniRiscaldamento"
 
 wt = WebThing(JSAP,name="{{thing.name}}",uri="{{thing.uri}}")
-{% for property in thing.properties %}
-{{property.name}} = Property(wt,"{{property.name}}",uri="wot:{{property.name}}",dataschema="{{property.dataschema}}",writable={{property.writable}},value={{property.value}})
+{% for name in thing.properties %}
+{{name}} = Property(wt,"{{name}}",uri="wot:{{name}}",dataschema="{{thing.properties[name].dataschema}}",writable={{thing.properties[name].writable}},value={{thing.properties[name].value}})
 {%- endfor %}
-{% for action in thing.actions %}
-{{action.name}} = Action(wt,name="{{action.name}}",uri="wot:{{action.name}}")
+{% for name in thing.actions %}
+{{name}} = Action(wt,name="{{name}}",uri="wot:{{name}}")
 {%- endfor %}
 
-{% for action in thing.actions %}
-def {{action.name}}_executor():
-print("{{action.name}}")
+{% for name in thing.actions %}
+def {{name}}_executor():
+print("{{name}}")
 
 {%- endfor %}
 
 if __name__ == '__main__':
 import sys
 
-{% for property in thing.properties %}
-wt.add_property({{property.name}})
+{% for name in thing.properties %}
+wt.add_property({{name}})
 {%- endfor %}
-{% for action in thing.actions %}
-wt.add_action({{action.name}})
+{% for name in thing.actions %}
+wt.add_action({{name}})
 {%- endfor %}
 
 {% for forP in thing.for_properties %}
@@ -82,8 +82,8 @@ def __init__(self):
   pass
 def handle(self, added, removed):
   for item in added:
-    {% for action in thing.actions %}
-    if item["action"]["value"]=="{}{}".format(WOT,"{{action.name}}"):
-      {{action.name}}_executor()
+    {% for name in thing.actions %}
+    if item["action"]["value"]=="{}{}".format(WOT,"{{name}}"):
+      {{name}}_executor()
       continue
     {%- endfor %}
