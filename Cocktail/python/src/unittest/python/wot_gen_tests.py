@@ -1,10 +1,12 @@
 from unittest import TestCase
 from pybuilder.core import Project, Logger,Dependency
+from pybuilder.utils import read_file
 from pybuilder_cocktail import *
 from pyfakefs.fake_filesystem_unittest import Patcher
 import os.path
 from webthing import *
 from jsap import *
+import thing_parser
 
 class WotGenTests(TestCase):
     def setUp(self):
@@ -72,3 +74,10 @@ class WotGenTests(TestCase):
             self.assertIn(thing2,res)
             self.assertNotIn(lamp,res)
             self.assertNotIn(sensor,res)
+    def test_jsonLD_parser(self):
+        res = "src\\main\\things\\thing_example.jsonld"
+        self.assertTrue(os.path.exists(res))
+        wt = thing_parser.jsonLD2Thing("".join(read_file(res)))
+        self.assertTrue(wt.name=="MyLamp")
+        self.assertTrue(len(wt.properties)==1)
+        self.assertTrue(len(wt.actions)==2)
