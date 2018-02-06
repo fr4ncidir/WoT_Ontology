@@ -31,8 +31,6 @@ from webthing import *
 logging.basicConfig(format=LOGFORMAT,level=LOGLEVEL)
 
 WOT = "http://wot.arces.unibo.it/sepa#"
-ACCENDI_RISCALDAMENTO = "AccendiRiscaldamento"
-SPEGNI_RISCALDAMENTO = "SpegniRiscaldamento"
 
 wt = WebThing(JSAP,name="{{thing.name}}",uri="{{thing.uri}}")
 {% for name in thing.properties %}
