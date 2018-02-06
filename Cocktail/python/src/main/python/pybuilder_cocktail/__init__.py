@@ -1,5 +1,6 @@
 from pybuilder.core import task,depends,description,before
 from pybuilder.utils import mkdir,discover_files,read_file
+from pybuilder.terminal import *
 from pathlib import Path
 from pybuilder.errors import PyBuilderException
 from pybuilder_cocktail.generation import generate
@@ -38,10 +39,11 @@ def gen_things(project, logger):
     for wt in already_existing_things:
         wts.remove(wt)
 
-    generate_things(src,wts)
+    tcount = generate_things(src,wts)
+    logger.info("Succesfully generated %d things" % tcount)
 
     logger.info("Shaking...")
-    update(already_existing_things)
+    ask_overwrite(src,already_existing_things,logger)
 
     logger.info("There you are!")
 
@@ -59,8 +61,22 @@ def find_already_existing(src,wts):
 
 
 def generate_things(src,wts):
+    count = 0
     for wt in wts:
         generate(src,wt)
+        count = count + 1
+    return count
+
+def ask_overwrite(src,wts,logger):
+    for wt in wts:
+        heading = (bold(styled_text("[ASK]", fg(CYAN))),bold(styled_text(wt.name, fg(RED))))
+        res = input("%s   %s already exists, do you want to overwrite it?(y/n)" % heading)
+        while(res != "y" and res != "n" ):
+            res = input("please use n or y:")
+        if(res == "y"):
+            generate(src,wt)
+            logger.info("%s generated %s.py" % (styled_text("Succesfully", fg(GREEN)),wt.name))
+        pass
 
 def read_web_things(tds):
     wts = []
