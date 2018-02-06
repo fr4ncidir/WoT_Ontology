@@ -33,7 +33,18 @@
 		{
 			"@type":["td:Action"],
 			"name":"Blink",
-			"input_dataSchema":"xsd:integer"
+			"input_dataschema":"xsd:integer"
+		},
+		{
+			"@type":["td:Event","td:PropertyChangedEvent"],
+			"name":"Ping",
+			"output_dataschema":"xsd:integer",
+			"connections":[
+				{
+					"@type":"td:forProperty",
+					"item":"Status"
+				}
+			]
 		}
 	]
 }
