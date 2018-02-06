@@ -44,46 +44,47 @@ wt = WebThing(JSAP,name="{{thing.name}}",uri="{{thing.uri}}")
 
 {% for name in thing.actions %}
 def {{name}}_executor():
-print("{{name}}")
+  print("{{name}}")
 
 {%- endfor %}
 
 if __name__ == '__main__':
-import sys
+  import sys
 
-{% for name in thing.properties %}
-wt.add_property({{name}})
-{%- endfor %}
-{% for name in thing.actions %}
-wt.add_action({{name}})
-{%- endfor %}
+  {% for name in thing.properties %}
+  wt.add_property({{name}})
+  {%- endfor %}
+  {% for name in thing.actions %}
+  wt.add_action({{name}})
+  {%- endfor %}
 
 {% for forP in thing.for_properties %}
-wt.add_forProperty({{forP[0].name}},{{forP[1].name}})
+  wt.add_forProperty({{forP[0].name}},{{forP[1].name}})
 {%- endfor %}
 
-wt.post()
+  wt.post()
 
-kp,subid = wt.listenForActionRequests(ActionRequestHandler())
+  kp,subid = wt.listenForActionRequests(ActionRequestHandler())
 
-colorama.init()
-print(Fore.RED + "Waiting for action requests..." + Style.RESET_ALL)
+  colorama.init()
+  print(Fore.RED + "Waiting for action requests..." + Style.RESET_ALL)
 
-while True:
-  try:
-    pass
-  except KeyboardInterrupt:
-    print("CTRL-C pressed! Bye!")
-    kp.unsubscribe(subid,False)
-    sys.exit(0)
+  while True:
+    try:
+      pass
+    except KeyboardInterrupt:
+      print("CTRL-C pressed! Bye!")
+      kp.unsubscribe(subid,False)
+      sys.exit(0)
 
 class ActionRequestHandler:
-def __init__(self):
-  pass
-def handle(self, added, removed):
-  for item in added:
-    {% for name in thing.actions %}
-    if item["action"]["value"]=="{}{}".format(WOT,"{{name}}"):
-      {{name}}_executor()
-      continue
-    {%- endfor %}
+  def __init__(self):
+    pass
+  def handle(self, added, removed):
+    for item in added:
+      {% for name in thing.actions %}
+      if item["action"]["value"]=="{}{}".format(WOT,"{{name}}"):
+        {{name}}_executor()
+        continue
+      {%- endfor %}
+      pass
