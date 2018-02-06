@@ -16,7 +16,6 @@ default_task = "publish"
 
 @init
 def set_properties(project):
-    project.depends_on('PyLD')
     project.depends_on('pyfakefs')
     project.depends_on("sepy",url="git+https://github.com/arces-wot/SEPA-python3-APIs")
     project.plugin_depends_on("jinja2")
