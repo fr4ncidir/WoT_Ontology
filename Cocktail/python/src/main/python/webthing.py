@@ -172,6 +172,15 @@ class WebThing:
 		sparql =  self.jsap_obj.getQuery("GET_ACTION_REQUEST",{"thing" : self.uri})
 		subid = self.kp.subscribe(self.jsap_obj.subscribeUri,sparql, "ActionRequest_{}_Notification".format(self.uri), handler)
 		return (self.kp,subid)
+	
+	def throwNewEvent(self,eventName,output_value=None):
+		if output_value is None:
+			logger.info("Throwing new event instance (autogen URI) for Event {} (WebThing {}) - no output given".format(self.events[eventName],self.name))
+			sparql = self.jsap_obj.getUpdate("POST_NEW_EVENT_WITHOUT_OUTPUT",{"event" : self.events[eventName].uri,"thing" : self.uri})
+		else:
+			logger.info("Throwing new event instance (autogen URI) for Event {} (WebThing {}) - output: {}".format(self.events[eventName],self.uri,output_value))
+			sparql = self.jsap_obj.getUpdate("POST_NEW_EVENT_WITH_OUTPUT",{"event" : self.events[eventName].uri,"thing" : self.uri, "newDataValue" : output_value})
+		self.kp.update(self.jsap_obj.updateUri,sparql)
 
 	@staticmethod
 	def discoveryThings(jsap_obj):
@@ -306,15 +315,6 @@ class Event:
 	@property
 	def uri(self):
 		return self._uri
-
-	def throwNewEvent(self,output_value=None):
-		if output_value is None:
-			logger.info("Throwing new event instance (autogen URI) for Event {} (WebThing {}) - no output given".format(self.uri,self.thing.uri))
-			sparql = self.thing.getJSAPObject().getUpdate("POST_NEW_EVENT_WITHOUT_OUTPUT",{"event" : self.uri,"thing" : self.thing.uri})
-		else:
-			logger.info("Throwing new event instance (autogen URI) for Event {} (WebThing {}) - output: {}".format(self.uri,self.thing.uri,output_value))
-			sparql = self.thing.getJSAPObject().getUpdate("POST_NEW_EVENT_WITH_OUTPUT",{"event" : self.uri,"thing" : self.thing.uri, "newDataValue" : output_value})
-		self.thing.getKP().update(self.jsap_obj.updateUri,sparql)
 
 	@staticmethod
 	def subscribeToEvent(jsap_obj,thingUri,eventUri,handler):
