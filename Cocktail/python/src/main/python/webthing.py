@@ -135,24 +135,24 @@ class WebThing:
 
 		# second step: add properties
 		for item in self.__properties:
-			logger.info("Adding property {}({}) to {}({})".format(item.name,item.uri,self.name,self.uri))
-			sparql =  self.jsap_obj.getUpdate("ADD_PROPERTY",item.getForcedBindings())
+			logger.info("Adding property {}({}) to {}({})".format(self.__properties[item].name,self.__properties[item].uri,self.name,self.uri))
+			sparql =  self.jsap_obj.getUpdate("ADD_PROPERTY",self.__properties[item].getForcedBindings())
 			self.kp.update(self.jsap_obj.updateUri,sparql)
 
 		# third step: add events
 		for item in self.__events:
-			if item.isPropertyChangedEvent():
+			if self.__events[item].isPropertyChangedEvent():
 				update = "ADD_PROPERTY_CHANGED_EVENT"
 			else:
 				update = "ADD_EVENT"
-			logger.info("Adding event {}({}) to {}({})".format(item.name,item.uri,self.name,self.uri))
-			sparql =  self.jsap_obj.getUpdate(update,item.getForcedBindings())
+			logger.info("Adding event {}({}) to {}({})".format(self.__events[item].name,self.__events[item].uri,self.name,self.uri))
+			sparql =  self.jsap_obj.getUpdate(update,self.__events[item].getForcedBindings())
 			self.kp.update(self.jsap_obj.updateUri,sparql)
 
 		# fourth step: add actions
 		for item in self.__actions:
-			logger.info("Adding action {}({}) to {}({})".format(item.name,item.uri,self.name,self.uri))
-			sparql =  self.jsap_obj.getUpdate("ADD_NEW_ACTION",item.getForcedBindings())
+			logger.info("Adding action {}({}) to {}({})".format(self.__actions[item].name,self.__actions[item].uri,self.name,self.uri))
+			sparql =  self.jsap_obj.getUpdate("ADD_NEW_ACTION",self.__actions[item].getForcedBindings())
 			self.kp.update(self.jsap_obj.updateUri,sparql)
 
 		# fifth step: include forProperties
@@ -176,10 +176,10 @@ class WebThing:
 	def throwNewEvent(self,eventName,output_value=None):
 		if output_value is None:
 			logger.info("Throwing new event instance (autogen URI) for Event {} (WebThing {}) - no output given".format(self.events[eventName],self.name))
-			sparql = self.jsap_obj.getUpdate("POST_NEW_EVENT_WITHOUT_OUTPUT",{"event" : self.events[eventName].uri,"thing" : self.uri})
+			sparql = self.jsap_obj.getUpdate("POST_NEW_EVENT_WITHOUT_OUTPUT",{"event" : self.__events[eventName].uri,"thing" : self.uri})
 		else:
 			logger.info("Throwing new event instance (autogen URI) for Event {} (WebThing {}) - output: {}".format(self.events[eventName],self.uri,output_value))
-			sparql = self.jsap_obj.getUpdate("POST_NEW_EVENT_WITH_OUTPUT",{"event" : self.events[eventName].uri,"thing" : self.uri, "newDataValue" : output_value})
+			sparql = self.jsap_obj.getUpdate("POST_NEW_EVENT_WITH_OUTPUT",{"event" : self.__events[eventName].uri,"thing" : self.uri, "newDataValue" : output_value})
 		self.kp.update(self.jsap_obj.updateUri,sparql)
 
 	@staticmethod
@@ -300,7 +300,7 @@ class Event:
 
 	def getForcedBindings(self):
 		forcedBindings = {
-			"thing" : self.thing.uri,
+			"thing" : self.thing,
 			"eName" : self.name,
 			"event" : self.uri }
 

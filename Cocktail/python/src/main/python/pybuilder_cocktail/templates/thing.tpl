@@ -31,7 +31,7 @@ logging.basicConfig(format="%(filename)s-%(funcName)s-%(levelname)s %(asctime)-1
 
 WOT = "http://wot.arces.unibo.it/sepa#"
 
-wt = WebThing(JSAP,name="{{thing.name}}",uri="{{thing.uri}}")
+wt = WebThing("../../resources/thing_description.jsap",name="{{thing.name}}",uri="{{thing.uri}}")
 {% for name in thing.properties %}
 {{name}} = Property(wt,"{{name}}",uri="wot:{{name}}",dataschema="{{thing.properties[name].dataschema}}",writable={{thing.properties[name].writable}},value={{thing.properties[name].value}})
 {%- endfor %}
@@ -57,6 +57,19 @@ def throw_{{name}}(output):
   wt.throwNewEvent(Ping.name,out_dataschema=output)
 {% endif %}
 {%- endfor %}
+
+class ActionRequestHandler:
+  def __init__(self):
+    pass
+  def handle(self, added, removed):
+    for item in added:
+      {% for name in thing.actions %}
+      if item["action"]["value"]=="{}{}".format(WOT,"{{name}}"):
+        {{name}}_executor()
+        continue
+      {%- endfor %}
+      pass
+
 
 if __name__ == '__main__':
   import sys
@@ -89,15 +102,3 @@ if __name__ == '__main__':
       print("CTRL-C pressed! Bye!")
       kp.unsubscribe(subid,False)
       sys.exit(0)
-
-class ActionRequestHandler:
-  def __init__(self):
-    pass
-  def handle(self, added, removed):
-    for item in added:
-      {% for name in thing.actions %}
-      if item["action"]["value"]=="{}{}".format(WOT,"{{name}}"):
-        {{name}}_executor()
-        continue
-      {%- endfor %}
-      pass
