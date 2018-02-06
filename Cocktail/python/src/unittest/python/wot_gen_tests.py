@@ -19,7 +19,8 @@ class WotGenTests(TestCase):
 
     def test_add_dep(self):
          cocktail_dependencies(self.project)
-         self.assertTrue( Dependency("sepy",None,None) in self.project.dependencies)
+         self.assertTrue( Dependency("sepy",url="git+https://github.com/arces-wot/SEPA-python3-APIs") in self.project.dependencies)
+         self.assertTrue( Dependency("colorama") in self.project.dependencies)
 
     def test_retrieve_src_for_things(self):
         res = retrieve_src_for_things(self.project)
