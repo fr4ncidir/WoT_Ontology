@@ -11,7 +11,7 @@ use_plugin("python.distutils")
 use_plugin("pybuilder_cocktail")
 
 name = "Cocktail"
-default_task = "publish"
+default_task = ["install_dependencies","publish"]
 
 
 @init
