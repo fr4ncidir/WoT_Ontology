@@ -10,7 +10,6 @@ use_plugin("python.install_dependencies")
 use_plugin("python.distutils")
 use_plugin("pybuilder_cocktail")
 
-
 name = "Cocktail"
 default_task = "publish"
 
@@ -19,4 +18,5 @@ default_task = "publish"
 def set_properties(project):
     project.depends_on('PyLD')
     project.depends_on('pyfakefs')
+    project.plugin_depends_on("jinja2")
     pass
