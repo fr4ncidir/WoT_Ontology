@@ -6,8 +6,7 @@ from pybuilder.errors import PyBuilderException
 from pybuilder_cocktail.generation import generate
 from thing_parser import jsonLD2Thing
 
-@task
-@description("Add cocktail dependencies to your Project")
+
 @before("install_dependencies", only_once=True)
 def cocktail_dependencies(project):
     project.depends_on("sepy",url="git+https://github.com/arces-wot/SEPA-python3-APIs")
@@ -15,7 +14,6 @@ def cocktail_dependencies(project):
 
 @task
 @description("Reads your TDs and creates Py things")
-@depends('cocktail_dependencies')
 def gen_things(project, logger):
     logger.info("Thanks for your order...")
     logger.info("Finding ingredients...")
