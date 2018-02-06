@@ -10,6 +10,7 @@ from thing_parser import jsonLD2Thing
 @before("install_dependencies", only_once=True)
 def cocktail_dependencies(project):
     project.depends_on('sepy')
+    project.depends_on('colorama')
 
 @task
 @description("Reads your TDs and creates Py things")
