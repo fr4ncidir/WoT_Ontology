@@ -10,7 +10,7 @@ from thing_parser import jsonLD2Thing
 @description("Add cocktail dependencies to your Project")
 @before("install_dependencies", only_once=True)
 def cocktail_dependencies(project):
-    project.depends_on('sepy')
+    project.depends_on("sepy",url="git+https://github.com/arces-wot/SEPA-python3-APIs")
     project.depends_on('colorama')
 
 @task
