@@ -1,7 +1,5 @@
-import sys
-
-sys.path.insert(0, "src/main/python")
-from pybuilder.core import use_plugin, init
+from pybuilder.core import use_plugin, init,use_bldsup
+use_bldsup(build_support_dir="src\main\python")
 
 use_plugin("python.core")
 use_plugin("python.unittest")
