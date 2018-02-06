@@ -7,6 +7,7 @@ import os.path
 from webthing import *
 from jsap import *
 import thing_parser
+import sys
 
 class WotGenTests(TestCase):
     def setUp(self):
@@ -23,8 +24,10 @@ class WotGenTests(TestCase):
 
     def test_retrieve_src_for_things(self):
         res = retrieve_src_for_things(self.project)
-
-        self.assertEquals(res,'src\\main\\things')
+        if sys.platform in ['win32']:
+            self.assertEquals(res,'src\\main\\things')
+        else:
+            self.assertEquals(res,'src/main/things')
         self.assertTrue(os.path.exists(res))
 
         self.project.things_path = 'things'
@@ -42,10 +45,16 @@ class WotGenTests(TestCase):
             for item in res:
                 r.append(item)
 
-        self.assertTrue('\\things\\thing1.jsonld' in r)
-        self.assertTrue('\\things\\thing2.jsonld' in r)
-        self.assertFalse('\\things\\thing2.json' in r)
-        self.assertFalse('\\things\\thing4.txt' in r)
+        if sys.platform in ['win32']:
+            self.assertTrue('\\things\\thing1.jsonld' in r)
+            self.assertTrue('\\things\\thing2.jsonld' in r)
+            self.assertFalse('\\things\\thing2.json' in r)
+            self.assertFalse('\\things\\thing4.txt' in r)
+        else:
+            self.assertTrue('/things/thing1.jsonld' in r)
+            self.assertTrue('/things/thing2.jsonld' in r)
+            self.assertFalse('/things/thing2.json' in r)
+            self.assertFalse('/things/thing4.txt' in r)
 
     def test_remove_already_existing(self):
         with Patcher() as patcher:
@@ -75,8 +84,12 @@ class WotGenTests(TestCase):
             self.assertNotIn(lamp,res)
             self.assertNotIn(sensor,res)
     def test_jsonLD_parser(self):
-        res = "src\\main\\things\\thing_example.jsonld"
+        if sys.platform in ["win32"]:        
+            res = "src\\main\\things\\thing_example.jsonld"
+        else:
+            res = "src/main/things/thing_example.jsonld"
         self.assertTrue(os.path.exists(res))
+            
         wt = thing_parser.jsonLD2Thing("".join(read_file(res)))
         self.assertTrue(wt.name=="MyLamp")
         self.assertTrue(len(wt.properties)==1)
