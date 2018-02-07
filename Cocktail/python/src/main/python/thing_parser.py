@@ -30,11 +30,11 @@ def jsonLD2Thing(jldFileString):
 
 	if not "td:Thing" in data["@type"]:
 		return None
-	wt = WebThing(name=data["name"],uri="wot{}".format(data["name"]))
+	wt = WebThing(name=data["name"],uri="wot:{}".format(data["name"]))
 
 	for item in data["interaction"]:
 		if "td:Property" in item["@type"]:
-			pr = Property(wt,item["name"],uri="wot{}".format(item["name"]),dataschema=item["dataschema"],writable=item["writable"],stability=item["stability"],value=item["start_value"])
+			pr = Property(wt,item["name"],uri="wot:{}".format(item["name"]),dataschema=item["dataschema"],writable=item["writable"],stability=item["stability"],value=item["start_value"])
 			wt.add_property(pr)
 
 	for item in data["interaction"]:
@@ -53,10 +53,13 @@ def jsonLD2Thing(jldFileString):
 			pass
 
 		if "td:Action" in item["@type"]:
-			obj = Action(wt,name=item["name"],uri="wot{}".format(item["name"]),in_dataschema=in_ds,out_dataschema=out_ds)
+			obj = Action(wt,name=item["name"],uri="wot:{}".format(item["name"]),in_dataschema=in_ds,out_dataschema=out_ds)
 			wt.add_action(obj)
 		elif "td:Event" in item["@type"]:
-			obj = Event(wt,name=item["name"],uri="wot{}".format(item["name"]),out_dataschema=out_ds)
+			if "td:PropertyChangedEvent" in item["@type"]:
+				obj = Event(wt,name=item["name"],uri="wot:{}".format(item["name"]),out_dataschema=out_ds,PCFlag=True)
+			else:
+				obj = Event(wt,name=item["name"],uri="wot:{}".format(item["name"]),out_dataschema=out_ds,PCFlag=False)
 			wt.add_event(obj)
 
 		if not obj is None:

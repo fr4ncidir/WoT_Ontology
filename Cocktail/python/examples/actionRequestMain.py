@@ -22,15 +22,14 @@
 #  
 #  
 import sys
-sys.path.append("../")
+sys.path.append("../src/main/python")
 
 import colorama
 import rlcompleter,readline
 from colorama import Fore, Style
 from webthing import *
-from wot_init import *
 
-logging.basicConfig(format=LOGFORMAT,level=LOGLEVEL)
+logging.basicConfig(format="%(filename)s-%(funcName)s-%(levelname)s %(asctime)-15s %(message)s",level=logging.INFO)
 
 subid = ""
 kp = None
@@ -69,7 +68,7 @@ def main(args):
 	
 	thing_action_map = {}
 	action_names = []
-	jsap_obj = JSAPObject.JSAPObject(JSAP)
+	jsap_obj = JSAPObject.JSAPObject("../../../thing_description.jsap")
 	colorama.init()
 	
 	while True:

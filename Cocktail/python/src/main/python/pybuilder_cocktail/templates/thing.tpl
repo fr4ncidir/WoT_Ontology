@@ -25,19 +25,21 @@
 import colorama
 from colorama import Fore, Style
 import logging
-from wot_init import *
 from webthing import *
 
-logging.basicConfig(format=LOGFORMAT,level=LOGLEVEL)
+logging.basicConfig(format="%(filename)s-%(funcName)s-%(levelname)s %(asctime)-15s %(message)s",level=logging.INFO)
 
 WOT = "http://wot.arces.unibo.it/sepa#"
 
-wt = WebThing(JSAP,name="{{thing.name}}",uri="{{thing.uri}}")
+wt = WebThing("../../resources/thing_description.jsap",name="{{thing.name}}",uri="{{thing.uri}}")
 {% for name in thing.properties %}
 {{name}} = Property(wt,"{{name}}",uri="wot:{{name}}",dataschema="{{thing.properties[name].dataschema}}",writable={{thing.properties[name].writable}},value={{thing.properties[name].value}})
 {%- endfor %}
 {% for name in thing.actions %}
-{{name}} = Action(wt,name="{{name}}",uri="wot:{{name}}")
+{{name}} = Action(wt,name="{{name}}",uri="wot:{{name}}",in_dataschema="{{thing.actions[name].in_dataschema}}",out_dataschema="{{thing.actions[name].out_dataschema}}")
+{%- endfor %}
+{% for name in thing.events %}
+{{name}} = Event(wt,name="{{name}}",uri="wot:{{name}}",out_dataschema="{{thing.events[name].out_dataschema}}",PCFlag={{thing.events[name].pc_flag}})
 {%- endfor %}
 
 {% for name in thing.actions %}
@@ -45,6 +47,29 @@ def {{name}}_executor():
   print("{{name}}")
 
 {%- endfor %}
+
+{% for name in thing.events %}
+{% if thing.events[name].out_dataschema=="" %}
+def throw_{{name}}():
+  wt.throwNewEvent(Ping.name)
+{% else %}
+def throw_{{name}}(output):
+  wt.throwNewEvent(Ping.name,out_dataschema=output)
+{% endif %}
+{%- endfor %}
+
+class ActionRequestHandler:
+  def __init__(self):
+    pass
+  def handle(self, added, removed):
+    for item in added:
+      {% for name in thing.actions %}
+      if item["action"]["value"]=="{}{}".format(WOT,"{{name}}"):
+        {{name}}_executor()
+        continue
+      {%- endfor %}
+      pass
+
 
 if __name__ == '__main__':
   import sys
@@ -54,6 +79,9 @@ if __name__ == '__main__':
   {%- endfor %}
   {% for name in thing.actions %}
   wt.add_action({{name}})
+  {%- endfor %}
+  {% for name in thing.events %}
+  wt.add_event({{name}})
   {%- endfor %}
 
 {% for forP in thing.for_properties %}
@@ -74,15 +102,3 @@ if __name__ == '__main__':
       print("CTRL-C pressed! Bye!")
       kp.unsubscribe(subid,False)
       sys.exit(0)
-
-class ActionRequestHandler:
-  def __init__(self):
-    pass
-  def handle(self, added, removed):
-    for item in added:
-      {% for name in thing.actions %}
-      if item["action"]["value"]=="{}{}".format(WOT,"{{name}}"):
-        {{name}}_executor()
-        continue
-      {%- endfor %}
-      pass

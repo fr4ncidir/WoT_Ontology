@@ -89,6 +89,8 @@ def main(args):
 		for element in updates:
 			for item in root.findall(".//"+element,ns):
 				jsap_build(item.text,"updates",data,jsap)
+				
+	copy(TD_complete,"./Cocktail/python/src/resources/thing_description.jsap")
 	return 0
 
 if __name__ == '__main__':
