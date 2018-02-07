@@ -31,9 +31,9 @@ class WotGenTests(TestCase):
             patcher.fs.CreateFile('/fakesrc/fake.jsap',contents=fake_td)
 
             heater = WebThing('/fakesrc/fake.jsap','heater')
-            power = Property(heater,"Power",uri="wot:Power",dataschema="float",writable=False,value="0")
-            on =    Action(  heater,name="On",uri="wot:HeaterOn")
-            off =   Action(  heater,name="Off",uri="wot:HeaterOff")
+            power = Property("Power",uri="wot:Power",dataschema="float",writable=False,value="0")
+            on =    Action(  name="On",uri="wot:HeaterOn")
+            off =   Action(  name="Off",uri="wot:HeaterOff")
 
             heater.add_property(power)
             heater.add_action(on)

@@ -33,13 +33,13 @@ WOT = "http://wot.arces.unibo.it/sepa#"
 
 wt = WebThing("../../resources/thing_description.jsap",name="{{thing.name}}",uri="{{thing.uri}}")
 {% for name in thing.properties %}
-{{name}} = Property(wt,"{{name}}",uri="wot:{{name}}",dataschema="{{thing.properties[name].dataschema}}",writable={{thing.properties[name].writable}},value={{thing.properties[name].value}})
+{{name}} = Property("{{name}}",uri="wot:{{name}}",dataschema="{{thing.properties[name].dataschema}}",writable={{thing.properties[name].writable}},value={{thing.properties[name].value}})
 {%- endfor %}
 {% for name in thing.actions %}
-{{name}} = Action(wt,name="{{name}}",uri="wot:{{name}}",in_dataschema="{{thing.actions[name].in_dataschema}}",out_dataschema="{{thing.actions[name].out_dataschema}}")
+{{name}} = Action(name="{{name}}",uri="wot:{{name}}",in_dataschema="{{thing.actions[name].in_dataschema}}",out_dataschema="{{thing.actions[name].out_dataschema}}")
 {%- endfor %}
 {% for name in thing.events %}
-{{name}} = Event(wt,name="{{name}}",uri="wot:{{name}}",out_dataschema="{{thing.events[name].out_dataschema}}",PCFlag={{thing.events[name].pc_flag}})
+{{name}} = Event(name="{{name}}",uri="wot:{{name}}",out_dataschema="{{thing.events[name].out_dataschema}}",PCFlag={{thing.events[name].pc_flag}})
 {%- endfor %}
 
 {% for name in thing.actions %}
@@ -54,7 +54,7 @@ def throw_{{name}}():
   wt.throwNewEvent(Ping.name)
 {% else %}
 def throw_{{name}}(output):
-  wt.throwNewEvent(Ping.name,out_dataschema=output)
+  wt.throwNewEvent(Ping.name,output_value=output)
 {% endif %}
 {%- endfor %}
 

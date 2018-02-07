@@ -48,8 +48,6 @@ class WebThing:
 		self.__sub_things = []		# list of WebThing
 		self.__forProperties = [] 	# list of pairs (Action | Event,Property)
 		self.kp = LowLevelKP.LowLevelKP()
-
-
 		next(WebThing.instances)
 
 	def add_property(self,newproperty):
@@ -191,6 +189,24 @@ class WebThing:
 		sparql = jsap_obj.getQuery("ALL_THINGS",{})
 		status,results = kp.query(jsap_obj.queryUri,sparql)
 		return results["results"]["bindings"]
+		
+	def postActionConfirmation(self,action,instanceUri,secure=False):
+		if not action.name in self.__actions:
+			raise ValueError("WebThing {} doesn't contain {}".format(self.name,action.name))
+		logger.info("Posting confirmation for {} Action {} (WebThing {})".format(instanceUri,action.uri,self.uri))
+		sparql = self.getJSAPObject().getUpdate("ADD_CONFIRMATION_TIMESTAMP",{"instance" : instanceUri})
+		self.getKP().update(self.getJSAPObject().updateUri,sparql)
+
+	def postActionCompletion(self,action,instanceUri,output_value=None):
+		if not action.name in self.__actions:
+			raise ValueError("WebThing {} doesn't contain {}".format(self.name,action.name))
+		if output_value is None:
+			logger.info("Posting completion for {} Action {} (WebThing {}) - no output given".format(instanceUri,action.uri,self.uri))
+			sparql = self.getJSAPObject().getUpdate("ADD_COMPLETION_TIMESTAMP_NO_OUTPUT",{"instance" : instanceUri})
+		else:
+			logger.info("Posting completion for {} Action {} (WebThing {}) - output: {}".format(instanceUri,action.uri,self.uri,output_value))
+			sparql = self.getJSAPObject().getUpdate("ADD_COMPLETION_TIMESTAMP_WITH_OUTPUT",{"instance" : instanceUri,"value" : output_value})
+		self.getKP().update(self.getJSAPObject().updateUri,sparql)
 
 class DefaultActionCompletionHandler:
 		def __init__(self,kp,secure=False):
@@ -223,7 +239,7 @@ class Action:
 		if self.thing is None:
 			raise ValueError("Undefined container WebThing for {}".format(self._name))
 		forcedBindings = {
-			"thing" : self.thing.uri,
+			"thing" : self.thing,
 			"newName" : self._name,
 			"action" : self._uri,
 			"newInDataSchema" : self.in_dataschema,
@@ -231,7 +247,7 @@ class Action:
 		return forcedBindings
 	
 	def setThing(self,thing):
-		self.thing = thing
+		self.thing = thing.uri
 	
 	@property
 	def name(self):
@@ -265,24 +281,6 @@ class Action:
 		logger.info("Subscribing to confirmation timestamp for ActionInstance {}".format(instanceUri))
 		sparql = jsap_obj.getQuery("GET_CONFIRMATION_TIMESTAMP",{"instance" : instanceUri})
 		return (kp,kp.subscribe(jsap_obj.subscribeUri,sparql, "ActionConfirmation_{}_Notification".format(instanceUri), handler))
-
-	def postActionConfirmation(self,jsap_object,instanceUri,secure=False):
-		if self.thing is None:
-			raise ValueError("Undefined container WebThing for {}".format(self.name))
-		logger.info("Posting confirmation for {} Action {} (WebThing {})".format(instanceUri,self.uri,self.thing.uri))
-		sparql = self.thing.getJSAPObject().getUpdate("ADD_CONFIRMATION_TIMESTAMP",{"instance" : instanceUri})
-		self.thing.getKP().update(self.thing.getJSAPObject().updateUri,sparql)
-
-	def postActionCompletion(self,instanceUri,output_value=None):
-		if self.thing is None:
-			raise ValueError("Undefined container WebThing for {}".format(self.name))
-		if output_value is None:
-			logger.info("Posting completion for {} Action {} (WebThing {}) - no output given".format(instanceUri,self.uri,self.thing.uri))
-			sparql = self.thing.getJSAPObject().getUpdate("ADD_COMPLETION_TIMESTAMP_NO_OUTPUT",{"instance" : instanceUri})
-		else:
-			logger.info("Posting completion for {} Action {} (WebThing {}) - output: {}".format(instanceUri,self.uri,self.thing.uri,output_value))
-			sparql = self.thing.getJSAPObject().getUpdate("ADD_COMPLETION_TIMESTAMP_WITH_OUTPUT",{"instance" : instanceUri,"value" : output_value})
-		self.thing.getKP().update(self.thing.getJSAPObject().updateUri,sparql)
 
 	@staticmethod
 	def getActionList(jsap_obj,thingUri=None):
@@ -319,10 +317,8 @@ class Event:
 		forcedBindings = {
 			"thing" : self.thing,
 			"eName" : self.name,
-			"event" : self.uri }
-
-		if self.out_dataschema!="" and self.pc_flag==False:
-			forcedBindings["outDataSchema"] = self.out_dataschema
+			"event" : self.uri,
+			"outDataSchema" : self.out_dataschema }
 		return forcedBindings
 
 	@property
