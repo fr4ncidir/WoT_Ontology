@@ -59,6 +59,7 @@ class WebThing:
 			raise ValueError("%s already defined" % newproperty.name)
 		self.__properties[newproperty.name] = newproperty
 		logger.info("Added Property {}({})".format(newproperty.name,newproperty.uri))
+		newproperty.setThing(self)
 		return len(self.__properties)
 
 	def add_action(self,newaction):
@@ -68,6 +69,7 @@ class WebThing:
 			raise ValueError("%s already defined" % newaction.name)
 		self.__actions[newaction.name] = newaction
 		logger.info("Added Action {}({})".format(newaction.name,newaction.uri))
+		newaction.setThing(self)
 		return len(self.__actions)
 
 	def add_event(self,newevent):
@@ -77,6 +79,7 @@ class WebThing:
 			raise ValueError("%s already defined" % newevent.name)
 		self.__events[newevent.name]= newevent
 		logger.info("Added Event {}({})".format(newevent.name,newevent.uri))
+		newevent.setThing(self)
 		return len(self.__events)
 
 	def add_sub_thing(self,subthing):
@@ -208,8 +211,8 @@ class Action:
 	"Action class object, as defined by in WoT Arces research group"
 	instances = count(1)
 
-	def __init__(self,thing,name="Action{}".format(instances),uri=str(uuid4()),in_dataschema="",out_dataschema=""):
-		self.thing = thing.uri
+	def __init__(self,name="Action{}".format(instances),uri=str(uuid4()),in_dataschema="",out_dataschema=""):
+		self.thing = None
 		self._name = name
 		self._uri = uri
 		self.in_dataschema = in_dataschema
@@ -217,14 +220,19 @@ class Action:
 		next(Action.instances)
 
 	def getForcedBindings(self):
+		if self.thing is None:
+			raise ValueError("Undefined container WebThing for {}".format(self._name))
 		forcedBindings = {
-			"thing" : self.thing,
+			"thing" : self.thing.uri,
 			"newName" : self._name,
-			"action" : self.uri,
+			"action" : self._uri,
 			"newInDataSchema" : self.in_dataschema,
 			"newOutDataSchema" : self.out_dataschema }
 		return forcedBindings
-
+	
+	def setThing(self,thing):
+		self.thing = thing
+	
 	@property
 	def name(self):
 		return self._name
@@ -258,12 +266,16 @@ class Action:
 		sparql = jsap_obj.getQuery("GET_CONFIRMATION_TIMESTAMP",{"instance" : instanceUri})
 		return (kp,kp.subscribe(jsap_obj.subscribeUri,sparql, "ActionConfirmation_{}_Notification".format(instanceUri), handler))
 
-	def postActionConfirmation(self,instanceUri,secure=False):
+	def postActionConfirmation(self,jsap_object,instanceUri,secure=False):
+		if self.thing is None:
+			raise ValueError("Undefined container WebThing for {}".format(self.name))
 		logger.info("Posting confirmation for {} Action {} (WebThing {})".format(instanceUri,self.uri,self.thing.uri))
 		sparql = self.thing.getJSAPObject().getUpdate("ADD_CONFIRMATION_TIMESTAMP",{"instance" : instanceUri})
 		self.thing.getKP().update(self.thing.getJSAPObject().updateUri,sparql)
 
 	def postActionCompletion(self,instanceUri,output_value=None):
+		if self.thing is None:
+			raise ValueError("Undefined container WebThing for {}".format(self.name))
 		if output_value is None:
 			logger.info("Posting completion for {} Action {} (WebThing {}) - no output given".format(instanceUri,self.uri,self.thing.uri))
 			sparql = self.thing.getJSAPObject().getUpdate("ADD_COMPLETION_TIMESTAMP_NO_OUTPUT",{"instance" : instanceUri})
@@ -287,18 +299,23 @@ class Event:
 	"Event class object, as defined by in WoT Arces research group"
 	instances = count(1)
 
-	def __init__(self,thing,name="Event{}".format(instances),uri=str(uuid4()),out_dataschema="",PCFlag=False):
-		self.thing = thing.uri
+	def __init__(self,name="Event{}".format(instances),uri=str(uuid4()),out_dataschema="",PCFlag=False):
+		self.thing = None
 		self._name = name
 		self._uri = uri
 		self.out_dataschema = out_dataschema
 		self.pc_flag = PCFlag
 		next(Event.instances)
 
+	def setThing(self,thing):
+		self.thing = thing.uri
+
 	def isPropertyChangedEvent(self):
 		return self.pc_flag
 
 	def getForcedBindings(self):
+		if self.thing is None:
+			raise ValueError("Undefined container WebThing for {}".format(self._name))
 		forcedBindings = {
 			"thing" : self.thing,
 			"eName" : self.name,
@@ -337,8 +354,8 @@ class Property:
 	"Property class object, as defined by in WoT Arces research group"
 	instances = count(1)
 
-	def __init__(self,thing,name="Property{}".format(instances),uri=str(uuid4()),dataschema="",writable=True,stability=0,value=""):
-		self.thing = thing.uri
+	def __init__(self,name="Property{}".format(instances),uri=str(uuid4()),dataschema="",writable=True,stability=0,value=""):
+		self.thing = None
 		self._name = name
 		self._uri = uri
 		self.dataschema = dataschema
@@ -348,14 +365,19 @@ class Property:
 		next(Property.instances)
 
 	def getForcedBindings(self):
+		if self.thing is None:
+			raise ValueError("Undefined container WebThing for {}".format(self._name))
 		return {
 			"thing" : self.thing,
-			"newName" : self.name,
-			"property" : self.uri,
+			"newName" : self._name,
+			"property" : self._uri,
 			"newDataSchema" : self.dataschema,
 			"newWritable" : self.writable,
 			"newStability" : self.stability,
 			"newValue" : self.value }
+
+	def setThing(self,thing):
+		self.thing = thing.uri
 
 	@property
 	def name(self):
