@@ -275,7 +275,7 @@
             }
         },
         "ADD_PROPERTY_CHANGED_EVENT": {
-            "sparql": "INSERT DATA {?thing td:hasEvent ?event. ?event rdf:type td:Event. ?event rdf:type td:PropertyChangedEvent. ?event td:hasName ?eName} ",
+            "sparql": "INSERT DATA {?thing td:hasEvent ?event. ?event rdf:type td:Event . ?event rdf:type td:PropertyChangedEvent . ?event td:hasName ?eName . ?event wot:hasOutputDataSchema ?outDataSchema }",
             "forcedBindings": {
                 "event": {
                     "type": "uri",
@@ -286,6 +286,10 @@
                     "value": ""
                 },
                 "eName": {
+                    "type": "literal",
+                    "value": ""
+                },
+                "outDataSchema": {
                     "type": "literal",
                     "value": ""
                 }
@@ -472,6 +476,6 @@
             "sparql": "SELECT ?thing WHERE {?thing rdf:type td:Thing}"
         }
     },
-    "creation_time": "2018-02-06 16:58:00",
-    "ontology_version": "http://wot.arces.unibo.it/ontology/web_of_things/1.0.2"
+    "creation_time": "2018-02-07 15:16:13",
+    "ontology_version": "http://wot.arces.unibo.it/ontology/web_of_things/1.0.3"
 }

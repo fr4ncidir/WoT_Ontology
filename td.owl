@@ -10,12 +10,12 @@
      xmlns:dul="http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#"
      xmlns:wot="http://wot.arces.unibo.it/ontology/web_of_things#">
     <owl:Ontology rdf:about="http://wot.arces.unibo.it/ontology/web_of_things">
-        <owl:versionIRI rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things/1.0.2"/>
+        <owl:versionIRI rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things/1.0.3"/>
         <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Created by Francesco Antoniazzi
 francesco.antoniazzi@unibo.it</owl:versionInfo>
         <rdfs:seeAlso rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">https://github.com/fr4ncidir/WoT_Ontology</rdfs:seeAlso>
         <rdfs:seeAlso rdf:datatype="http://www.w3.org/2001/XMLSchema#string">F. Serena, M. Poveda-Villalon, and R. Garcia-Castro, &quot;Semantic discovery in the web of things.&quot;</rdfs:seeAlso>
-        <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2018-01-05T13:10:00</owl:versionInfo>
+        <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2018-02-07T15:10:00</owl:versionInfo>
         <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Web Of Things Ontology by ARCES WOT group</rdfs:comment>
     </owl:Ontology>
     
@@ -804,7 +804,7 @@ DELETE {?thing td:hasProperty ?property. ?property rdf:type td:Property. ?proper
 
     <owl:Class rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#PropertyChangedEvent">
         <rdfs:subClassOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Event"/>
-        <add_property_changed_event rdf:datatype="http://wot.arces.unibo.it/ontology/web_of_things#SPARQL_jsap">&quot;ADD_PROPERTY_CHANGED_EVENT&quot;:{&quot;sparql&quot;:&quot;INSERT DATA {?thing td:hasEvent ?event. ?event rdf:type td:Event. ?event rdf:type td:PropertyChangedEvent. ?event td:hasName ?eName} &quot;,&quot;forcedBindings&quot;:{ &quot;event&quot;:{&quot;type&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;}, &quot;thing&quot;:{&quot;type&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;}, &quot;eName&quot;:{&quot;type&quot;:&quot;literal&quot;,&quot;value&quot;:&quot;&quot;}}}</add_property_changed_event>
+        <add_property_changed_event rdf:datatype="http://wot.arces.unibo.it/ontology/web_of_things#SPARQL_jsap">&quot;ADD_PROPERTY_CHANGED_EVENT&quot;:{&quot;sparql&quot;:&quot;INSERT DATA {?thing td:hasEvent ?event. ?event rdf:type td:Event . ?event rdf:type td:PropertyChangedEvent . ?event td:hasName ?eName . ?event wot:hasOutputDataSchema ?outDataSchema }&quot;,&quot;forcedBindings&quot;:{ &quot;event&quot;:{&quot;type&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;}, &quot;thing&quot;:{&quot;type&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;},&quot;eName&quot;:{&quot;type&quot;:&quot;literal&quot;,&quot;value&quot;:&quot;&quot;},&quot;outDataSchema&quot;:{&quot;type&quot;:&quot;literal&quot;,&quot;value&quot;:&quot;&quot;}}}</add_property_changed_event>
         <delete_property_changed_event rdf:datatype="http://wot.arces.unibo.it/ontology/web_of_things#SPARQL_jsap">&quot;DELETE_PROPERTY_CHANGED_EVENT&quot;:{&quot;sparql&quot;:&quot;DELETE {?thing td:hasEvent ?event. ?event td:hasName ?name. ?event rdf:type td:Event. ?event rdf:type td:PropertyChangedEvent} WHERE {?thing rdf:type td:Thing}&quot;, &quot;forcedBindings&quot;:{ &quot;thing&quot;:{&quot;type&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;}, &quot;thing&quot;:{&quot;event&quot;:&quot;uri&quot;,&quot;value&quot;:&quot;&quot;}}}</delete_property_changed_event>
         <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A PropertyChangedEvent is a particular Event that a Thing may throw, in case a Property it owns is changed by someone.</rdfs:comment>
     </owl:Class>
