@@ -1,5 +1,6 @@
 from pybuilder.core import use_plugin, init,use_bldsup
-use_bldsup(build_support_dir="src\main\python")
+import os
+use_bldsup(build_support_dir=os.path.join("src","main","python"))
 
 use_plugin("python.core")
 use_plugin("python.unittest")
