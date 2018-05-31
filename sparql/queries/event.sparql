@@ -1,0 +1,26 @@
+#                          _   
+#      _____   _____ _ __ | |_ 
+#     / _ \ \ / / _ \ '_ \| __|
+#    |  __/\ V /  __/ | | | |_ 
+#     \___| \_/ \___|_| |_|\__|
+#                              
+#    
+
+DESCRIBE_EVENT:
+    sparql: "
+        select * 
+        where {
+            ?event  rdf:type wot:Event;
+                    wot:hasName ?eName.
+            optional {
+                ?event wot:hasOutputDataSchema ?oDS.
+                ?oDS wot:hasFieldSchema ?oFS.
+                ?oFS rdf:type ?oFS_type.
+                filter (?oFS_type != wot:FieldSchema) }.
+            optional {?event wot:forProperty ?property}.
+            values (?event) {(?event_uri)}
+        }"
+    forcedBindings:
+        event_uri:
+            type: uri
+            value: UNDEF

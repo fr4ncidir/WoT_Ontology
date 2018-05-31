@@ -629,140 +629,6 @@
 
     <owl:Class rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#Action">
         <rdfs:subClassOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#InteractionPattern"/>
-        <action rdf:datatype="http://wot.arces.unibo.it/ontology/web_of_things#ysap">DESCRIBE_ACTION:
-  sparql:
-    &quot;select * 
-where {
-  ?action rdf:type wot:Action;
-            wot:hasName ?aName.
-  optional {?action wot:hasInputDataSchema ?iDS.
-            ?iDS wot:hasFieldSchema ?iFS.
-            ?iFS rdf:type ?iFS_type.
-            filter (?iFS_type != wot:FieldSchema)}.
-  optional {?action wot:hasOutputDataSchema ?oDS.
-            ?oDS wot:hasFieldSchema ?oFS.
-            ?oFS rdf:type ?oFS_type.
-            filter (?oFS_type != wot:FieldSchema)}
-  optional {?action wot:forProperty ?property}
-  values (?action) {(?action_uri)}
-  }&quot;
-  forcedBindings:
-    action_uri:
-      type: uri
-      value: UNDEF</action>
-        <new_empty_action rdf:datatype="http://wot.arces.unibo.it/ontology/web_of_things#ysap">ADD_EMPTY_ACTION:
-  sparql:
-    &quot;delete {
-  ?action wot:hasName ?oldName}
-insert {
-  ?action rdf:type wot:InteractionPattern, wot:Action;
-          wot:hasName ?newName}
-where {
-  optional {?action wot:hasName ?oldName}
-  }&quot;
-  forcedBindings:
-    action:
-      type: uri
-      value: &quot;&quot;
-    newName:
-      type: literal
-      value: &quot;&quot;</new_empty_action>
-        <new_i_action rdf:datatype="http://wot.arces.unibo.it/ontology/web_of_things#ysap">ADD_I_ACTION:
-  sparql:
-    &quot;delete {
-  ?action wot:hasName ?oldName;
-          wot:hasDataSchema ?oldDSs;
-          wot:hasInputDataSchema ?oldIDS }
-insert {
-  ?action rdf:type wot:InteractionPattern, wot:Action;
-          wot:hasName ?newName;
-          wot:hasDataSchema ?newDSs;
-          wot:hasInputDataSchema ?newIDS }
-where {
-  optional {
-    ?action wot:hasName ?oldName;
-          wot:hasDataSchema ?oldDSs;
-          wot:hasInputDataSchema ?oldIDS}
-  }&quot;
-  forcedBindings:
-    action:
-      type: uri
-      value: &quot;&quot;
-    newName:
-      type: literal
-      value: &quot;&quot;
-    newDSs:
-      type: uri
-      value: &quot;&quot;
-    newIDS:
-      type: uri
-      value: &quot;&quot;</new_i_action>
-        <new_io_action rdf:datatype="http://wot.arces.unibo.it/ontology/web_of_things#ysap">ADD_IO_ACTION:
-  sparql:
-    &quot;delete {
-  ?action wot:hasName ?oldName;
-          wot:hasDataSchema ?oldDSs;
-          wot:hasInputDataSchema ?oldIDS;
-          wot:hasOutputDataSchema ?oldODS }
-insert {
-  ?action rdf:type wot:InteractionPattern, wot:Action;
-          wot:hasName ?newName;
-          wot:hasDataSchema ?newDSs;
-          wot:hasInputDataSchema ?newIDS;
-          wot:hasOutputDataSchema ?newODS }
-where {
-  optional {
-    ?action wot:hasName ?oldName;
-          wot:hasDataSchema ?oldDSs;
-          wot:hasInputDataSchema ?oldIDS;
-          wot:hasOutputDataSchema ?oldODS }
-  }&quot;
-  forcedBindings:
-    action:
-      type: uri
-      value: &quot;&quot;
-    newName:
-      type: literal
-      value: &quot;&quot;
-    newDSs:
-      type: uri
-      value: &quot;&quot;
-    newIDS:
-      type: uri
-      value: &quot;&quot;
-    newODS:
-      type: uri
-      value: &quot;&quot;</new_io_action>
-        <new_o_action rdf:datatype="http://wot.arces.unibo.it/ontology/web_of_things#ysap">ADD_O_ACTION:
-  sparql:
-    &quot;delete {
-  ?action wot:hasName ?oldName;
-          wot:hasDataSchema ?oldDSs;
-          wot:hasOutputDataSchema ?oldODS }
-insert {
-  ?action rdf:type wot:InteractionPattern, wot:Action;
-          wot:hasName ?newName;
-          wot:hasDataSchema ?newDSs;
-          wot:hasOutputDataSchema ?newODS }
-where {
-  optional {
-    ?action wot:hasName ?oldName;
-          wot:hasDataSchema ?oldDSs;
-          wot:hasOutputDataSchema ?oldODS }
-  }&quot;
-  forcedBindings:
-    action:
-      type: uri
-      value: &quot;&quot;
-    newName:
-      type: literal
-      value: &quot;&quot;
-    newDSs:
-      type: uri
-      value: &quot;&quot;
-    newODS:
-      type: uri
-      value: &quot;&quot;</new_o_action>
         <rdfs:comment xml:lang="en">An Action is the synchronous interaction of a Web Thing</rdfs:comment>
     </owl:Class>
     
@@ -792,71 +658,8 @@ where {
     <!-- http://wot.arces.unibo.it/ontology/web_of_things#DataSchema -->
 
     <owl:Class rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#DataSchema">
-        <data_field_schema rdf:datatype="http://wot.arces.unibo.it/ontology/web_of_things#ysap">GET_DATASCHEMAS:
-  sparql:
-    &quot;select * 
-where {
-  ?ip wot:hasDataSchema ?ds.
-  ?ds rdf:type ?ds_type;
-      wot:hasFieldSchema ?fs.
-  ?fs rdf:type ?fs_type.
-  filter (?ds_type != wot:DataSchema)
-  values (?ip ?ds ?ds_type ?fs) {(?ip_force ?ds_force ?ds_type_force ?fs_force)} 
-  filter (?fs_type != wot:FieldSchema)
-  values (?fs_type) {(?fs_type_force)} 
-  }&quot;
-  forcedBindings:
-    ip_force:
-      type: uri
-      value: UNDEF
-    ds_force:
-      type: uri
-      value: UNDEF
-    ds_type_force:
-      type: uri
-      value: UNDEF
-    fs_force:
-      type: uri
-      value: UNDEF
-    fs_type_force:
-      type: uri
-      value: UNDEF</data_field_schema>
         <rdfs:comment xml:lang="en">Node from which you can get all the information needed to format inputs for an Action, or to interpret outputs from Actions and Events. Similarly, also the value of Properties have their DataSchema.</rdfs:comment>
     </owl:Class>
-    <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#DataSchema"/>
-        <owl:annotatedProperty rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#data_field_schema"/>
-        <owl:annotatedTarget rdf:datatype="http://wot.arces.unibo.it/ontology/web_of_things#ysap">GET_DATASCHEMAS:
-  sparql:
-    &quot;select * 
-where {
-  ?ip wot:hasDataSchema ?ds.
-  ?ds rdf:type ?ds_type;
-      wot:hasFieldSchema ?fs.
-  ?fs rdf:type ?fs_type.
-  filter (?ds_type != wot:DataSchema)
-  values (?ip ?ds ?ds_type ?fs) {(?ip_force ?ds_force ?ds_type_force ?fs_force)} 
-  filter (?fs_type != wot:FieldSchema)
-  values (?fs_type) {(?fs_type_force)} 
-  }&quot;
-  forcedBindings:
-    ip_force:
-      type: uri
-      value: UNDEF
-    ds_force:
-      type: uri
-      value: UNDEF
-    ds_type_force:
-      type: uri
-      value: UNDEF
-    fs_force:
-      type: uri
-      value: UNDEF
-    fs_type_force:
-      type: uri
-      value: UNDEF</owl:annotatedTarget>
-        <rdfs:comment>Force bindings to query specific interaction patterns, dataschemas and so on</rdfs:comment>
-    </owl:Axiom>
     
 
 
@@ -864,69 +667,6 @@ where {
 
     <owl:Class rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#Event">
         <rdfs:subClassOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#InteractionPattern"/>
-        <event rdf:datatype="http://wot.arces.unibo.it/ontology/web_of_things#ysap">DESCRIBE_EVENT:
-  sparql:
-    &quot;select * 
-where {
-  ?event rdf:type wot:Event;
-            wot:hasName ?eName.
-  optional {?event wot:hasOutputDataSchema ?oDS.
-            ?oDS wot:hasFieldSchema ?oFS.
-            ?oFS rdf:type ?oFS_type.
-            filter (?oFS_type != wot:FieldSchema)}
-  optional {?event wot:forProperty ?property}
-  values (?event) {(?event_uri)}
-  }&quot;
-  forcedBindings:
-    event_uri:
-      type: uri
-      value: UNDEF</event>
-        <new_empty_event rdf:datatype="http://wot.arces.unibo.it/ontology/web_of_things#ysap">ADD_EMPTY_EVENT:
-  sparql:
-    &quot;delete {?event wot:hasName ?oldName}
-insert {
-  ?event rdf:type wot:InteractionPattern, wot:Action;
-          wot:hasName ?newName }
-where {
-  optional {?event wot:hasName ?oldName}
-  }&quot;
-  forcedBindings:
-    action:
-      type: uri
-      value: &quot;&quot;
-    newName:
-      type: literal
-      value: &quot;&quot;</new_empty_event>
-        <new_o_event rdf:datatype="http://wot.arces.unibo.it/ontology/web_of_things#ysap">ADD_O_EVENT:
-  sparql:
-    &quot;delete {
-  ?event wot:hasName ?oldName;
-          wot:hasDataSchema ?oldDSs;
-          wot:hasOutputDataSchema ?oldODS }
-insert {
-  ?event rdf:type wot:InteractionPattern, wot:Event;
-          wot:hasName ?newName;
-          wot:hasDataSchema ?newDSs;
-          wot:hasOutputDataSchema ?newODS }
-where {
-  optional {
-    ?event wot:hasName ?oldName;
-          wot:hasDataSchema ?oldDSs;
-          wot:hasOutputDataSchema ?oldODS }
-  }&quot;
-  forcedBindings:
-    event:
-      type: uri
-      value: &quot;&quot;
-    newName:
-      type: literal
-      value: &quot;&quot;
-    newDSs:
-      type: uri
-      value: &quot;&quot;
-    newODS:
-      type: uri
-      value: &quot;&quot;</new_o_event>
         <rdfs:comment xml:lang="en">An Event is the asynchronous interaction of a Web Thing</rdfs:comment>
     </owl:Class>
     
@@ -969,47 +709,8 @@ where {
     <!-- http://wot.arces.unibo.it/ontology/web_of_things#InteractionPattern -->
 
     <owl:Class rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#InteractionPattern">
-        <interaction_pattern rdf:datatype="http://wot.arces.unibo.it/ontology/web_of_things#ysap">DISCOVER_INTERACTION_PATTERNS:
-  sparql:
-    &quot;select *
-where {
-  ?td wot:hasInteractionPattern ?ipattern.
-  ?ipattern rdf:type ?ipatterntype;
-            wot:hasName ?ipatternName.
-  filter (?ipatterntype != wot:InteractionPattern)
-  values (?td ?ipatterntype) {(?td_uri ?ipattern_type_specific)} 
-  }&quot;
-  forcedBindings:
-    td_uri:
-      type: uri
-      value: UNDEF
-    ipattern_type_specific:
-      type: uri
-      value: UNDEF</interaction_pattern>
         <rdfs:comment xml:lang="en">Things interact with the external world according to their InteractionPattern</rdfs:comment>
     </owl:Class>
-    <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#InteractionPattern"/>
-        <owl:annotatedProperty rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#interaction_pattern"/>
-        <owl:annotatedTarget rdf:datatype="http://wot.arces.unibo.it/ontology/web_of_things#ysap">DISCOVER_INTERACTION_PATTERNS:
-  sparql:
-    &quot;select *
-where {
-  ?td wot:hasInteractionPattern ?ipattern.
-  ?ipattern rdf:type ?ipatterntype;
-            wot:hasName ?ipatternName.
-  filter (?ipatterntype != wot:InteractionPattern)
-  values (?td ?ipatterntype) {(?td_uri ?ipattern_type_specific)} 
-  }&quot;
-  forcedBindings:
-    td_uri:
-      type: uri
-      value: UNDEF
-    ipattern_type_specific:
-      type: uri
-      value: UNDEF</owl:annotatedTarget>
-        <rdfs:comment>Force binding to query all InteractionPattern from a specific thing descriptor, or specific InteractionPattern types</rdfs:comment>
-    </owl:Axiom>
     
 
 
@@ -1035,99 +736,6 @@ where {
 
     <owl:Class rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#Property">
         <rdfs:subClassOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#InteractionPattern"/>
-        <del_property rdf:datatype="http://wot.arces.unibo.it/ontology/web_of_things#ysap">DELETE_PROPERTY:
-  sparql:
-    &quot;delete where {
-    ?property rdf:type wot:InteractionPattern, wot:Property;
-            wot:hasName ?oldName;
-            wot:hasStability ?oldStability;
-            wot:isWritable ?oldWritability;
-            wot:hasDataSchema ?oldDS;
-            wot:hasPropertyDataSchema ?oldPDS;
-            wot:hasPropertyData ?oldPData.
-  ?oldPData rdf:type wot:PropertyData, dul:InformationObject;
-            dul:hasDataValue ?oldValue.
-  ?td wot:hasInteractionPattern ?property;
-         wot:hasProperty ?property 
-  }&quot;
-  forcedBindings:
-    property:
-      type: uri
-      value: &quot;&quot;</del_property>
-        <new_property rdf:datatype="http://wot.arces.unibo.it/ontology/web_of_things#ysap">ADD_PROPERTY:
-  sparql:
-    &quot;delete {
-  ?property wot:hasName ?oldName;
-            wot:hasStability ?oldStability;
-            wot:isWritable ?oldWritability;
-            wot:hasDataSchema ?oldDS;
-            wot:hasPropertyDataSchema ?oldPDS;
-            wot:hasPropertyData ?oldPData.
-  ?oldPData rdf:type wot:PropertyData, dul:InformationObject;
-            dul:hasDataValue ?oldValue }
-insert {
-  ?property rdf:type wot:Property, wot:InteractionPattern;
-            wot:hasName ?newName;
-            wot:hasStability ?newStability;
-            wot:isWritable ?newWritability;
-            wot:hasDataSchema ?newDS;
-            wot:hasPropertyDataSchema ?newDS;
-            wot:hasPropertyData ?newPD.
-  ?newPD rdf:type wot:PropertyData, dul:InformationObject;
-            dul:hasDataValue ?newValue }
-where {
-  optional {
-    ?property wot:hasName ?oldName;
-            wot:hasStability ?oldStability;
-            wot:isWritable ?oldWritability;
-            wot:hasDataSchema ?oldDS;
-            wot:hasPropertyDataSchema ?oldPDS;
-            wot:hasPropertyData ?oldPData.
-  ?oldPData rdf:type wot:PropertyData, dul:InformationObject;
-            dul:hasDataValue ?oldValue }
-  }&quot;
-  forcedBindings:
-    property:
-      type: uri
-      value: &quot;&quot;
-    newName:
-      type: literal
-      value: &quot;&quot;
-    newStability:
-      type: literal
-      value: &quot;&quot;
-    newWritability:
-      type: literal
-      value: &quot;&quot;
-    newDS:
-      type: uri
-      value: &quot;&quot;
-    newPD:
-      type: uri
-      value: &quot;&quot;
-    newValue:
-      type: literal
-      value: &quot;&quot;</new_property>
-        <property rdf:datatype="http://wot.arces.unibo.it/ontology/web_of_things#ysap">DESCRIBE_PROPERTY:
-  sparql:
-    &quot;select * 
-where {
-  ?property rdf:type wot:Property;
-            wot:hasName ?pName;
-            wot:hasStability ?pStability;
-            wot:isWritable ?pWritability;
-            wot:hasPropertyDataSchema ?pDS;
-            wot:hasPropertyData/dul:hasDataValue ?pValue.
-  ?pDS wot:hasFieldSchema ?pFS.
-  ?pFS rdf:type ?pFS_type.
-  optional {?ipattern wot:forProperty ?property}.
-  filter (?pFS_type != wot:FieldSchema).
-  values (?property) {(?property_uri)}
-  }&quot;
-  forcedBindings:
-    property_uri:
-      type: uri
-      value: UNDEF</property>
         <rdfs:comment xml:lang="en">A Property is the static interaction pattern of Web Things.</rdfs:comment>
     </owl:Class>
     
@@ -1155,90 +763,8 @@ where {
 
     <owl:Class rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#Thing">
         <rdfs:subClassOf rdf:resource="http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Agent"/>
-        <del_thing rdf:datatype="http://wot.arces.unibo.it/ontology/web_of_things#ysap">DELETE_THING:
-  sparql:
-    &quot;delete where {
-  ?thing wot:hasThingDescription ?td.
-  ?td ?any_td_predicate ?any_td_object.
-  ?any_super_subject ?any_super_predicate ?thing.
-  ?thing ?any_thing_predicate ?any_thing_object }&quot;
-  forcedBindings:
-    thing:
-      type: uri
-      value: &quot;&quot;</del_thing>
-        <new_subthing rdf:datatype="http://wot.arces.unibo.it/ontology/web_of_things#ysap">NEW_SUBTHING:
-  sparql:
-    &quot;insert { ?superthing wot:hasSubThing ?subthing }
-where { ?superthing rdf:type wot:Thing.
-?subthing rdf:type wot:Thing }&quot;
-  forcedBindings:
-    superthing:
-      type: uri
-      value: &quot;&quot;
-    subthing:
-      type: uri
-      value: &quot;&quot;</new_subthing>
-        <new_thing rdf:datatype="http://wot.arces.unibo.it/ontology/web_of_things#ysap">NEW_THING:
-  sparql:
-    &quot;delete {
-  ?thing wot:hasName ?oldName;
-         wot:hasThingDescription ?oldTD }
-insert {
-  ?thing rdf:type wot:Thing, dul:Agent;
-         wot:hasName ?newName;
-         wot:hasThingDescription ?newTD.
-  ?newTD rdf:type wot:ThingDescription }
-where {
-  optional {?thing wot:hasName ?oldName;
-         wot:hasThingDescription ?oldTD }
-  }&quot;
-  forcedBindings:
-    thing:
-      type: uri
-      value: &quot;&quot;
-    newName:
-      type: literal
-      value: &quot;&quot;
-    newTD:
-      type: uri
-      value: &quot;&quot;</new_thing>
-        <thing rdf:datatype="http://wot.arces.unibo.it/ontology/web_of_things#ysap">DISCOVER_THINGS:
-  sparql:
-    &quot;select *
-where {
-  ?thing rdf:type wot:Thing;
-         wot:hasName ?name;
-         wot:hasThingDescription ?td.
-  values (?thing ?name ?td) {(?thing_uri ?name_literal ?td_uri)}.
-  }&quot;
-  forcedBindings:
-    thing_uri:
-      type: uri
-      value: UNDEF
-    name_literal:
-      type: literal
-      value: UNDEF
-    td_uri:
-      type: uri
-      value: UNDEF</thing>
         <rdfs:comment xml:lang="en">This is the class of Web Things. From this object descriptions based on other ontologies should be attached, to identify location and every other circumstantial quality.</rdfs:comment>
     </owl:Class>
-    <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Thing"/>
-        <owl:annotatedProperty rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#del_thing"/>
-        <owl:annotatedTarget rdf:datatype="http://wot.arces.unibo.it/ontology/web_of_things#ysap">DELETE_THING:
-  sparql:
-    &quot;delete where {
-  ?thing wot:hasThingDescription ?td.
-  ?td ?any_td_predicate ?any_td_object.
-  ?any_super_subject ?any_super_predicate ?thing.
-  ?thing ?any_thing_predicate ?any_thing_object }&quot;
-  forcedBindings:
-    thing:
-      type: uri
-      value: &quot;&quot;</owl:annotatedTarget>
-        <rdfs:comment>Deletes also subthing relationships</rdfs:comment>
-    </owl:Axiom>
     
 
 
@@ -1246,23 +772,6 @@ where {
 
     <owl:Class rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#ThingDescription">
         <rdfs:subClassOf rdf:resource="http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#InformationObject"/>
-        <thing_description rdf:datatype="http://wot.arces.unibo.it/ontology/web_of_things#ysap">GET_THING_DESCRIPTION:
-  sparql:
-    &quot;select * 
-where {
-  ?thing rdf:type wot:Thing;
-         wot:hasThingDescription ?td;
-         wot:hasName ?tName.
-  optional {?thing wot:hasSubThing ?subThing}.
-  ?td wot:hasInteractionPattern ?ip.
-  ?ip rdf:type ?ip_type.
-  optional{?ip wot:forProperty ?pTarget}.
-  filter (?ip_type != wot:InteractionPattern)
-  }&quot;
-  forcedBindings:
-    thing:
-      type: uri
-      value: &quot;&quot;</thing_description>
         <rdfs:comment xml:lang="en">A ThingDescription is a node in the graph from which you can query all information about a Web Thing. When you perform an HTTP GET on the resource, you obtain a JSON-LD representation of the Thing Description.</rdfs:comment>
     </owl:Class>
     
