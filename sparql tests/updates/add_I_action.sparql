@@ -1,0 +1,24 @@
+#	           _     _     ___               _   _
+#	  __ _  __| | __| |   |_ _|    __ _  ___| |_(_) ___  _ __
+#	 / _` |/ _` |/ _` |    | |    / _` |/ __| __| |/ _ \| '_ \
+#	| (_| | (_| | (_| |    | |   | (_| | (__| |_| | (_) | | | |
+#	 \__,_|\__,_|\__,_|___|___|___\__,_|\___|\__|_|\___/|_| |_|
+#	                 |_____| |_____|
+#	
+#	This is an update example for the ADD_I_ACTION update, i.e. an Action with only input. All other variants are similar.
+
+delete {
+  <http://MyFirstWebThing.com/Action1> wot:hasName ?oldName;
+          wot:hasDataSchema ?oldDSs;
+          wot:hasInputDataSchema ?oldIDS }
+insert {
+  <http://MyFirstWebThing.com/Action1> rdf:type wot:InteractionPattern, wot:Action;
+          wot:hasName 'my_new_name';
+          wot:hasDataSchema <http://MyFirstWebThing.com/Action1/DataSchema/input2>;
+          wot:hasInputDataSchema <http://MyFirstWebThing.com/Action1/DataSchema/input2>. }
+where {
+  optional {
+    <http://MyFirstWebThing.com/Action1> wot:hasName ?oldName;
+          wot:hasDataSchema ?oldDSs;
+          wot:hasInputDataSchema ?oldIDS }
+  }

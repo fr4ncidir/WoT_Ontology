@@ -1,0 +1,22 @@
+#	     _      _    _   _     _
+#	  __| | ___| |  | |_| |__ (_)_ __   __ _
+#	 / _` |/ _ \ |  | __| '_ \| | '_ \ / _` |
+#	| (_| |  __/ |  | |_| | | | | | | | (_| |
+#	 \__,_|\___|_|___\__|_| |_|_|_| |_|\__, |
+#	            |_____|                |___/
+#
+#	This is a delete example for the del_thing update.
+#	InteractionPatterns are left into the graph
+
+prefix wot: <http://wot.arces.unibo.it/ontology/web_of_things#>
+prefix dul: <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+delete where {
+  <http://MyFirstWebThing.com> wot:hasThingDescription ?td.
+  ?td ?any_td_predicate ?any_td_object.
+  ?any_super_subject ?any_super_predicate <http://MyFirstWebThing.com>.
+  <http://MyFirstWebThing.com> ?any_thing_predicate ?any_thing_object }

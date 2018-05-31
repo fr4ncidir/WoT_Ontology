@@ -1,0 +1,106 @@
+#	 _____ _     _             _
+#	|_   _| |__ (_)_ __   __ _/ |
+#	  | | | '_ \| | '_ \ / _` | |
+#	  | | | | | | | | | | (_| | |
+#	  |_| |_| |_|_|_| |_|\__, |_|
+#	                     |___/
+#	This first example inserts a thing into the store.
+#	URI: 										<http://MyFirstWebThing.com>
+#	Name: 										'Thing1'
+#	Thing-Description URI: 						<http://MyFirstWebThingDescription.com>
+#	Number of Actions: 							2
+#	Number of Events: 							1
+#	Number of Properties: 						1
+#	Action 1 URI: 								<http://MyFirstWebThing.com/Action1>
+#	Action 1 Name: 								'Thing1_Action1'
+#	Action 1 InputDataSchema URI: 				<http://MyFirstWebThing.com/Action1/DataSchema/input>
+#	Action 1 OutputDataSchema URI: 				<http://MyFirstWebThing.com/Action1/DataSchema/output>
+#	Action 1 InputDataSchema FieldSchema: 		xsd:string --> type xsd:_
+#	Action 1 OutputDataSchema FieldSchema: 		<www.wikipedia.it> - ResourceURI
+#	Action 2 URI: 								<http://MyFirstWebThing.com/Action2>
+#	Action 2 Name: 								'Thing1_Action2'
+#	Action 2 OutputDataSchema URI:				<http://MyFirstWebThing.com/Action2/DataSchema/output>
+#	Action 2 OutputDataSchema FieldSchema: 		xsd:integer --> type xsd:_
+#	Event URI: 									<http://MyFirstWebThing.com/Event1>
+#	Event Name: 								'Thing1_Event1'
+#	Event OutputDataSchema URI: 				<http://MyFirstWebThing.com/Event1/DataSchema/output>
+# 	Event OutputDataSchema FieldSchema: 		xsd:dateTimeStamp --> type xsd:_
+#	Property URI: 								<http://MyFirstWebThing.com/Property1>
+#	Property Name: 								'Thing1_Property1'
+#	Property Stability: 						'1000'
+#	Property Writability: 						'true'
+#	Property forProperty:						<http://MyFirstWebThing.com/Action2>
+#	Property PropertyDataSchema URI:			<http://MyFirstWebThing.com/Property1/DataSchema/property>
+#	Property PropertyDataSchema FieldSchema: 	xsd:string --> type xsd:_
+#	Property PropertyData:						<http://MyFirstWebThing.com/Property1/PropertyData>
+#	Property initial value: 					'Hello World!'
+
+
+prefix wot: <http://wot.arces.unibo.it/ontology/web_of_things#>
+prefix dul: <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+INSERT DATA {
+	# BASIC INFORMATION
+  <http://MyFirstWebThing.com> 	rdf:type wot:Thing, dul:Agent;
+								wot:hasName 'Thing1';
+								wot:hasThingDescription <http://MyFirstWebThingDescription.com>.
+  <http://MyFirstWebThingDescription.com> 	rdf:type wot:ThingDescription;
+											wot:hasInteractionPattern 	<http://MyFirstWebThing.com/Action1>, 
+																	<http://MyFirstWebThing.com/Action2>, 
+																	<http://MyFirstWebThing.com/Event1>, 
+																	<http://MyFirstWebThing.com/Property1>;
+											wot:hasAction <http://MyFirstWebThing.com/Action1>, <http://MyFirstWebThing.com/Action2>;
+											wot:hasEvent <http://MyFirstWebThing.com/Event1>;
+											wot:hasProperty <http://MyFirstWebThing.com/Property1>.
+	
+	# ACTION 1 TRIPLES
+  <http://MyFirstWebThing.com/Action1> 	rdf:type wot:InteractionPattern, wot:Action;
+										wot:hasName 'Thing1_Action1';
+										wot:hasDataSchema <http://MyFirstWebThing.com/Action1/DataSchema/input>, <http://MyFirstWebThing.com/Action1/DataSchema/output>;
+										wot:hasInputDataSchema <http://MyFirstWebThing.com/Action1/DataSchema/input>;
+										wot:hasOutputDataSchema <http://MyFirstWebThing.com/Action1/DataSchema/output>.
+  <http://MyFirstWebThing.com/Action1/DataSchema/input> rdf:type wot:DataSchema, wot:InputDataSchema;
+														wot:hasFieldSchema xsd:string.
+  xsd:string rdf:type wot:FieldSchema, xsd:_.
+  <http://MyFirstWebThing.com/Action1/DataSchema/output> 	rdf:type wot:DataSchema, wot:OutputDataSchema;
+															wot:hasFieldSchema <http://www.wikipedia.it>.
+  <http://www.wikipedia.it> rdf:type wot:FieldSchema, wot:ResourceURI.
+	
+	# ACTION 2 TRIPLES
+  <http://MyFirstWebThing.com/Action2> 	rdf:type wot:InteractionPattern, wot:Action;
+										wot:hasName 'Thing1_Action2';
+										wot:hasDataSchema <http://MyFirstWebThing.com/Action2/DataSchema/output>;
+										wot:hasOutputDataSchema <http://MyFirstWebThing.com/Action2/DataSchema/output>.
+  <http://MyFirstWebThing.com/Action2/DataSchema/output> 	rdf:type wot:DataSchema, wot:OutputDataSchema;
+															wot:hasFieldSchema xsd:integer.
+  xsd:integer rdf:type wot:FieldSchema, xsd:_.
+  
+	# EVENT TRIPLES
+  <http://MyFirstWebThing.com/Event1> 	rdf:type wot:InteractionPattern, wot:Event;
+										wot:hasName 'Thing1_Event1';
+										wot:hasDataSchema <http://MyFirstWebThing.com/Event1/DataSchema/output>;
+										wot:hasOutputDataSchema <http://MyFirstWebThing.com/Event1/DataSchema/output>.
+  <http://MyFirstWebThing.com/Event1/DataSchema/output> rdf:type wot:DataSchema, wot:OutputDataSchema;
+														wot:hasFieldSchema xsd:dateTimeStamp.
+  xsd:dateTimeStamp rdf:type wot:FieldSchema, xsd:_.
+  
+	# PROPERTY TRIPLES
+  <http://MyFirstWebThing.com/Property1> 	rdf:type wot:InteractionPattern, wot:Property;
+											wot:hasName 'Thing1_Property1';
+											wot:hasStability '1000';
+											wot:isWritable 'true';
+											wot:hasDataSchema <http://MyFirstWebThing.com/Property1/DataSchema/property>;
+											wot:hasPropertyDataSchema <http://MyFirstWebThing.com/Property1/DataSchema/property>;
+											wot:hasData <http://MyFirstWebThing.com/Property1/PropertyData>;
+											wot:hasPropertyData <http://MyFirstWebThing.com/Property1/PropertyData>.
+  <http://MyFirstWebThing.com/Property1/PropertyData> rdf:type wot:PropertyData, dul:InformationObject;
+													  dul:hasDataValue 'Hello World!'.
+  <http://MyFirstWebThing.com/Property1/DataSchema/property> rdf:type wot:DataSchema, wot:PropertyDataSchema;
+															 wot:hasFieldSchema xsd:string.
+  <http://MyFirstWebThing.com/Action2> wot:forProperty <http://MyFirstWebThing.com/Property1>.
+  # xsd:string rdf:type wot:FieldSchema, xsd:_.										
+  }
