@@ -24,8 +24,9 @@ GET_THING_DESCRIPTION:
             ?ip rdf:type ?ip_type.
             optional{?ip wot:forProperty ?pTarget}.
             filter (?ip_type != wot:InteractionPattern)
+            values (?thing) {(?thingURI)}
         }"
     forcedBindings:
-        thing:
+        thingURI:
             type: uri
-            value: ""
+            value: UNDEF
