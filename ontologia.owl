@@ -267,6 +267,23 @@
     
 
 
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#forProperty -->
+
+    <owl:ObjectProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#forProperty">
+        <rdfs:domain>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#Action"/>
+                    <rdf:Description rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#Event"/>
+                </owl:unionOf>
+            </owl:Class>
+        </rdfs:domain>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Property"/>
+        <rdfs:comment xml:lang="en">This ObjectProperty notifies that an Action, or an Event, have some relationship, within their activity, with a Property.</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
     <!-- http://wot.arces.unibo.it/ontology/web_of_things#hasAction -->
 
     <owl:ObjectProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#hasAction">
@@ -614,6 +631,16 @@
     
 
 
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#occurredAt -->
+
+    <owl:DatatypeProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#occurredAt">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#hasTimeStamp"/>
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#EventInstance"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTimeStamp"/>
+    </owl:DatatypeProperty>
+    
+
+
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //
@@ -638,18 +665,6 @@
 
     <owl:Class rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#ActionInstance">
         <rdfs:subClassOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Instance"/>
-        <action_instance rdf:datatype="http://wot.arces.unibo.it/ontology/web_of_things#ysap">SUBSCRIBE_TO_ACTIONINSTANCE:
-  comment:
-    &quot;&quot;
-  sparql:
-    &quot;&quot;
-  forcedBindings:
-    td_uri:
-      type: uri
-      value: UNDEF
-    ipattern_type_specific:
-      type: uri
-      value: UNDEF</action_instance>
         <rdfs:comment xml:lang="en">When a user requests a new Action, a new ActionInstance is inserted</rdfs:comment>
     </owl:Class>
     

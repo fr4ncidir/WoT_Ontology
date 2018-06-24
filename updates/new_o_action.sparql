@@ -1,0 +1,33 @@
+#                                             _   _             
+#     _ __   _____      __  ___     __ _  ___| |_(_) ___  _ __  
+#    | '_ \ / _ \ \ /\ / / / _ \   / _` |/ __| __| |/ _ \| '_ \ 
+#    | | | |  __/\ V  V / | (_) | | (_| | (__| |_| | (_) | | | |
+#    |_| |_|\___| \_/\_/___\___/___\__,_|\___|\__|_|\___/|_| |_|
+#                     |_____| |_____|                           
+#    
+
+ADD_O_ACTION:
+    sparql: "
+        insert {
+            ?td wot:hasInteractionPattern ?action;
+                wot:hasAction ?action.
+            ?action rdf:type wot:InteractionPattern, wot:Action;
+                    wot:hasName ?newName;
+                    wot:hasOutputDataSchema ?ods}
+        where {
+            ?td rdf:type wot:ThingDescription.
+            ?ods rdf:type wot:DataSchema.
+        }"
+    forcedBindings:
+        td:
+            type: uri
+            value: ""
+        action:
+            type: uri
+            value: ""
+        newName:
+            type: literal
+            value: ""
+        ods:
+            type: uri
+            value: ""
