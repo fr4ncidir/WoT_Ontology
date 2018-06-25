@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  Property.py
+#  InteractionPattern.py
 #  
 #  Copyright 2018 Francesco Antoniazzi <francesco.antoniazzi@unibo.it>
 #  
@@ -22,43 +22,29 @@
 #  
 #  
 
-import cocktail.InteractionPattern as InteractionPattern
-import sparql_utilities as bzu
-import constants as cts
+import constants as cst
 
-class Property(InteractionPattern):
-    def __init__(self,sepa):
-        super().__init__(sepa,bindings)
+class DataSchema:
+    def __init__(self,sepa,bindings):
+        self._sepa = sepa
+        self._bindings = bindings
         
+    @property
+    def bindings(self):
+        return self._bindings
+
     def post():
-        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_PROPERTY,fB_values=self.bindings)
+        sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_DATASCHEMA,fB_values=bindings)
         self._sepa.update(sparql,fB)
         
-    def update(bindings):
-        self._bindings = bindings
-        self.post(sepa)
-        
-    @property
-    def uri(self):
-        return self.bindings["property"]
-        
-    @property
-    def name(self):
-        return self.bindings["newName"]
-        
-    @property
-    def stability(self):
-        return self.bindings["newStability"]
-    
-    @property
-    def writability(self):
-        return self.bindings["newWritability"]
-        
-    @property
-    def value(self):
-        return self.bindings["newValue"]
-    
-    @classmethod
+    @staticmethod
     def getBindingList():
         _,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_PROPERTY)
         return fB.keys()
+    
+    @staticmethod
+    def discover(sepa):
+        d_output = sepa.query(cts.PATH_SPARQL_QUERY_DATASCHEMA)
+        if nice_output:
+            bzu.tablify(json.dumps(d_output))
+        return d_output

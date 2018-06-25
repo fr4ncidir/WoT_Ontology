@@ -22,7 +22,7 @@
 #  
 #  
 
-import InteractionPattern
+import cocktail.InteractionPattern as InteractionPattern
 import sparql_utilities as bzu
 import constants as cts
 from enum import Enum
@@ -32,17 +32,17 @@ class EType(Enum):
     EMPTY_EVENT = "empty"
 
 class Event(InteractionPattern):
-    def __init__(self,bindings,forProperties=[]):
-        super().__init__()
-        if "ods" in bindings.keys():
+    def __init__(self,sepa,bindings,forProperties=[]):
+        super().__init__(sepa,bindings)
+        if "ods" in bindings.keys(bindings):
             self._type = EType.OUTPUT_EVENT
         else:
             self._type = EType.EMPTY_EVENT
         self._forProperties = forProperties
         
-    def post(sepa):
-        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_EVENT_TEMPLATE.format(self.type),fB_values=self.bindings)
-        sepa.update(sparql,fB)
+    def post():
+        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_EVENT_TEMPLATE.format(self.type),fB_values=self._bindings)
+        self._sepa.update(sparql,fB)
         
         sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_ADD_FORPROPERTY)
         properties = []
@@ -50,18 +50,18 @@ class Event(InteractionPattern):
             properties.append(prop.bindings["property"])
         sparql = sparql.replace("?ip wot:forProperty ?property","?ip wot:forProperty {}".format(", ".join(properties))
         sparql = sparql.replace("?property a wot:Property"," a wotProperty. ".join(properties)+" a wot:Property")
-        sepa.update(sparql,fB)
+        self._sepa.update(sparql,fB)
         
     def notify(self,output={}):
         # build fB_values with output
-        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_EVENT_INSTANCE_TEMPLATE.format(self.type),fB_values=self.bindings)
-        sepa.update(sparql,fB)
+        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_EVENT_INSTANCE_TEMPLATE.format(self.type),fB_values=self._bindings)
+        self._sepa.update(sparql,fB)
     
     @property
     def type(self):
         return self._type
     
-    @staticmethod
+    @classmethod
     def getBindingList(event_type):
         if event_type not in EType:
             raise ValueError

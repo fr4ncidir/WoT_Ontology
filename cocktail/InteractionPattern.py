@@ -23,29 +23,34 @@
 #  
 
 import constants as cst
+from abc import abstractmethod
 
 class InteractionPattern:
-    def __init__(self,bindings):
+    def __init__(self,sepa,bindings):
+        self._sepa = sepa
         self._bindings = bindings
-        
+
     @property
     def bindings(self):
         return self._bindings
         
-    def delete(sepa):
-        sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_DELETE_IP,fB_values=bindings)
+    def setSepa(self,new_sepa):
+        self._sepa = new_sepa
+        
+    def delete(self):
+        sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_DELETE_IP,fB_values=self._bindings)
         sepa.update(sparql,fB)
         
     @abstractmethod
-    def post(sepa):
+    def post(self):
         pass
-        
+    
+    @classmethod
     @abstractmethod
-    @staticmethod
     def getBindingList():
         pass
     
+    @classmethod
     @abstractmethod
-    @staticmethod
     def discover(sepa):
         pass

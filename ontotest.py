@@ -31,7 +31,8 @@ import argparse
 import logging
 import constants as cst
 
-logging.basicConfig(format='%(levelname)s %(asctime)-15s %(message)s',level=logging.INFO)   
+#logging.basicConfig(format=,level=logging.INFO)  
+logger = logging.getLogger("ontology_test_log") 
 
 def main(args):
     if args["reset"]:
@@ -49,28 +50,30 @@ def main(args):
     else:
         # 1st check: after the updates the content of the store has to be the same as in the json
         # this call exploits default params.
-        bzu.query_FileCompare(myBZ)
+        result = bzu.query_FileCompare(myBZ)
     
     # 2nd check: every query in ./queries folder
-    test.test_queries(myBZ,args["reset"])
+    result = result and test.test_queries(myBZ,args["reset"])
     
     # 3rd check: adding and removing a thing
-    bzu.notify_result("test_thing",test.test_new_thing(myBZ,reset=args["reset"]))
+    result = result and bzu.notify_result("test_thing",test.test_new_thing(myBZ,reset=args["reset"]))
     
     # 4th check: adding and removing a property
-    bzu.notify_result("test_new_property",test.test_new_property(myBZ,reset=args["reset"]))
+    result = result and bzu.notify_result("test_new_property",test.test_new_property(myBZ,reset=args["reset"]))
     
     # 5th check: adding and removing actions
-    bzu.notify_result("test_new_actions",test.test_new_action(myBZ,reset=args["reset"]))
+    result = result and bzu.notify_result("test_new_actions",test.test_new_action(myBZ,reset=args["reset"]))
     
     # 6th check: adding and removing events
-    bzu.notify_result("test_new_events",test.test_new_event(myBZ,reset=args["reset"]))
+    result = result and bzu.notify_result("test_new_events",test.test_new_event(myBZ,reset=args["reset"]))
     
     # 7th check: action instance
-    bzu.notify_result("test_new_events",test.test_action_instance(myBZ,reset=args["reset"]))
+    result = result and bzu.notify_result("test_new_events",test.test_action_instance(myBZ,reset=args["reset"]))
     
     # 8th check: action instance
-    bzu.notify_result("test_new_events",test.test_event_instance(myBZ,reset=args["reset"]))
+    result = result and bzu.notify_result("test_new_events",test.test_event_instance(myBZ,reset=args["reset"]))
+    
+    bzu.notify_result("Ontology test result",result)
     
     return 0
 

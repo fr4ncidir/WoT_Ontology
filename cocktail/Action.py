@@ -22,11 +22,15 @@
 #  
 #  
 
-import InteractionPattern
+import cocktail.InteractionPattern as InteractionPattern
 import sparql_utilities as bzu
 import constants as cts
 from enum import Enum
 import threading
+import logging
+
+#logging.basicConfig(format="%(levelname)s %(asctime)-15s - %s(filename)s - %(message)s",level=logging.INFO)
+logger = logging.getLogger("cocktail_log")
 
 class AType(Enum):
     IO_ACTION = "io"
@@ -35,8 +39,8 @@ class AType(Enum):
     EMPTY_ACTION = "empty"
 
 class Action(InteractionPattern):
-    def __init__(self,bindings,action_task,forProperties=[]):
-        super().__init__(bindings)
+    def __init__(self,sepa,bindings,action_task,forProperties=[]):
+        super().__init__(sepa,bindings)
         self._action_task = action_task
         if ("ods" in bindings.keys()) and ("ids" in bindings.keys()):
             self._type = AType.IO_ACTION
@@ -48,9 +52,9 @@ class Action(InteractionPattern):
             self._type = AType.EMPTY_ACTION
         self._forProperties = forProperties
         
-    def post(sepa):
-        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_ACTION_TEMPLATE.format(self.type),fB_values=self.bindings)
-        sepa.update(sparql,fB)
+    def post():
+        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_ACTION_TEMPLATE.format(self.type),fB_values=self._bindings)
+        self._sepa.update(sparql,fB)
         for prop in forProperties:
             # connect property
             break
@@ -68,30 +72,34 @@ class Action(InteractionPattern):
     def post_output(self,instance):
         if (self.type is AType.OUTPUT_ACTION) or (self.type is AType.IO_ACTION):
             # get bindings
-            sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_INSTANCE_OUTPUT,fB_values=self.bindings)
-            sepa.update(sparql,fB)
+            sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_INSTANCE_OUTPUT,fB_values=self._bindings)
+            self._sepa.update(sparql,fB)
             post_timestamp("completion",instance)
             
     def post_timestamp(self,ts_type,instance):
         if (ts_type.lower() != "completion") and (ts_type.lower() != "confirmation"):
             raise ValueError
         sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_TS_TEMPLATE.format(ts_type.lower()),fB_values={"aInstance": instance})
-        sepa.update(sparql,fB)
+        self._sepa.update(sparql,fB)
         
     @property
     def type(self):
         return self._type
     
-    @staticmethod
+    @classmethod
     def getBindingList(action_type):
         if action_type not in AType:
             raise ValueError
         _,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_ACTION_TEMPLATE.format(action_type))
         return fB.keys()
         
-    @staticmethod
+    @classmethod
     def discover(sepa,nice_output=True):
         d_output = sepa.query(cts.PATH_SPARQL_QUERY_ACTION)
         if nice_output:
             bzu.tablify(json.dumps(d_output))
         return d_output
+        
+    @classmethod
+    def newRequest(sepa):
+        pass

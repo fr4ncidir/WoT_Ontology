@@ -32,7 +32,8 @@ import constants as cst
 This is a utility module with some functions to be used with yaml-formatted jsap.
 """
 
-logging.basicConfig(format='%(levelname)s %(asctime)-15s %(message)s',level=logging.INFO)
+logging.basicConfig(format="%(levelname)s %(asctime)-15s - %s(filename)s - %(message)s",level=logging.INFO)
+logger = logging.getLogger("ontology_test_log")
 
 def notify_result(name,result):
     """
