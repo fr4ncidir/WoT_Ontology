@@ -24,6 +24,7 @@
 
 import constants as cst
 from abc import abstractmethod
+import sparql_utilities as bzu
 
 class InteractionPattern:
     def __init__(self,sepa,bindings):
@@ -39,7 +40,7 @@ class InteractionPattern:
         
     def delete(self):
         sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_DELETE_IP,fB_values=self._bindings)
-        sepa.update(sparql,fB)
+        self._sepa.update(sparql,fB)
         
     @abstractmethod
     def post(self):

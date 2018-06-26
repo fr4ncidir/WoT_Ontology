@@ -29,9 +29,9 @@ import json
 import logging
 import os
 import constants as cst
-import cocktail.Thing as Thing
-import cocktail.DataSchema as DataSchema
-import cocktail.Property as Property
+from cocktail.Thing import Thing
+from cocktail.DataSchema import DataSchema
+from cocktail.Property import Property
 
 logging.basicConfig(format='%(levelname)s %(asctime)-15s %(message)s',level=logging.INFO)
 logger = logging.getLogger("ontology_test_log")
@@ -45,7 +45,7 @@ def reset_blazegraph(graph):
     graph.update(bzu.file_to_string(cst.SPARQL_INSERT_THING3))
     
 def update_dummy_thing(graph):
-    Thing.Thing(graph,{   "thing": THING_URI,
+    Thing(graph,{   "thing": THING_URI,
                     "newName": "TEST-THING",
                     "newTD": "<http://TestTD.com>" }).post()
     
@@ -93,7 +93,7 @@ def test_new_thing(graph,reset=False):
     
     logger.info("STARTING TEST_NEW_THING")
     # Adding new thing within the forced bindings
-    dummyThing = Thing.Thing(graph,{"thing": THING_URI,"newName": "TEST-THING","newTD": "<http://TestTD.com>" },superthing=SUPERTHING)
+    dummyThing = Thing(graph,{"thing": THING_URI,"newName": "TEST-THING","newTD": "<http://TestTD.com>" },superthing=SUPERTHING)
     dummyThing.post()
     
     # Registering the new thing as subthing of a previous existing one
@@ -145,7 +145,7 @@ def test_new_property(graph,reset=False):
         logger.error("test_property start check failure: skip")
         return False
     # Adding new Dataschema and its corresponding FieldSchema
-    dummy_DS = DataSchema.DataSchema(graph, {   "ds_uri": DATASCHEMA_URI,
+    dummy_DS = DataSchema(graph, {   "ds_uri": DATASCHEMA_URI,
                                                 "fs_uri": "xsd:string",
                                                 "fs_types": "xsd:_, wot:FieldSchema"})
     # sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_DATASCHEMA,
@@ -159,7 +159,7 @@ def test_new_property(graph,reset=False):
         graph.query(cst.SPARQL_QUERY_ALL,destination=cst.RES_SPARQL_QUERY_ALL_NEW_DATASCHEMA)
     
     # Adding the new thing
-    dummyThing = Thing.Thing(graph,{"thing": THING_URI,"newName": "TEST-THING","newTD": "<http://TestTD.com>" })
+    dummyThing = Thing(graph,{"thing": THING_URI,"newName": "TEST-THING","newTD": "<http://TestTD.com>" })
     
     # Adding the property
     p_fBindings = { "td": "<http://TestTD.com>",
@@ -170,7 +170,7 @@ def test_new_property(graph,reset=False):
                     "newDS": DATASCHEMA_URI,
                     "newPD": "<http://TestThing.com/Property1/PropertyData>",
                     "newValue": "ABCDEFG"}
-    testProperty = Property.Property(graph,p_fBindings)
+    testProperty = Property(graph,p_fBindings)
     testProperty.post()
     # sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_PROPERTY,fB_values=p_fBindings)
     # graph.update(sparql,fB)

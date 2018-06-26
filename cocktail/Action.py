@@ -22,7 +22,7 @@
 #  
 #  
 
-import cocktail.InteractionPattern as InteractionPattern
+from cocktail.InteractionPattern import InteractionPattern
 import sparql_utilities as bzu
 import constants as cts
 from enum import Enum

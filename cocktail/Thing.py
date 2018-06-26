@@ -42,7 +42,7 @@ class Thing:
             
     def delete(self):
         sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_DELETE_THING, fB_values=self._bindings)
-        graph.update(sparql,fB)
+        self._sepa.update(sparql,fB)
         
     @staticmethod
     def discover(nice_output=True):
