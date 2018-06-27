@@ -27,6 +27,7 @@ import prettytable
 import json
 import re
 import os
+import logging
 
 def main(args):
     # builds prefix dictionary
@@ -38,7 +39,7 @@ def main(args):
             m = re.match(r"prefix ([a-zA-Z]+): <(.+)>",line)
             prefixes[m.groups()[0]] = m.groups()[1]
     except:
-        print("Error while parsing prefixes, skipping...")
+        logging.warning("Error while parsing prefixes, skipping...")
     
     # loads the json from a file, or tries from the command line argument
     if os.path.isfile(args["file"]):

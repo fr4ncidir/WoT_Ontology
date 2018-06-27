@@ -46,8 +46,9 @@ class Thing:
         self._sepa.update(sparql,fB)
         
     @staticmethod
-    def discover(nice_output=True):
-        d_output = sepa.query(cts.PATH_SPARQL_QUERY_THING)
+    def discover(sepa,bindings={},nice_output=True):
+        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_QUERY_THING, fB_values=bindings)
+        d_output = sepa.query(sparql,fB)
         if nice_output:
             bzu.tablify(json.dumps(d_output))
         return d_output

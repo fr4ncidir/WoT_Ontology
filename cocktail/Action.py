@@ -23,11 +23,13 @@
 #  
 
 from cocktail.InteractionPattern import InteractionPattern
+from cocktail.Thing import Thing
 import sparql_utilities as bzu
 import constants as cts
 from enum import Enum
 import threading
 import logging
+import json
 
 #logging.basicConfig(format="%(levelname)s %(asctime)-15s - %s(filename)s - %(message)s",level=logging.INFO)
 logger = logging.getLogger("cocktail_log")
@@ -51,8 +53,30 @@ class Action(InteractionPattern):
         else:
             self._type = AType.EMPTY_ACTION
         self._forProperties = forProperties
+    
+    @property
+    def uri(self):
+        return self._bindings["action"]
         
+    @property
+    def name(self):
+        return self._bindings["newName"]
+        
+    @property
+    def action_task(self):
+        return self._action_task
+        
+    def getTD(self)
+        return self._bindings["td"]
+        
+    def setThing(self,thingURI):
+        self._bindings["thing"] = thingURI
+        
+    def getThing(self)
+        return self._bindings["thing"] if "thing" in self._bindings.keys() else None
+    
     def post(self):
+        #assert not self.isInferred()
         sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_ACTION_TEMPLATE.format(self._type.value),fB_values=self._bindings)
         self._sepa.update(sparql,fB)
         
@@ -69,21 +93,26 @@ class Action(InteractionPattern):
     def enable(self):
         # Subscribe to action requests
         # at notification, get 'args'
+        #assert not self.isInferred()
         # threading.start_new_thread(self._action_task,args)
         pass
         
     def disable(self):
         # unsubscribe to action requests
+        #assert not self.isInferred()
         pass
         
-    def post_output(self,instance):
-        if (self.type is AType.OUTPUT_ACTION) or (self.type is AType.IO_ACTION):
+    def post_output(self,a_type,instance):
+        # this should not be static!
+        #assert not self.isInferred()
+        if (self._type is AType.OUTPUT_ACTION) or (self._type is AType.IO_ACTION):
             # get bindings
             sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_INSTANCE_OUTPUT,fB_values=self._bindings)
             self._sepa.update(sparql,fB)
             post_timestamp("completion",instance)
-            
+           
     def post_timestamp(self,ts_type,instance):
+        # this should not be static!!!!
         if (ts_type.lower() != "completion") and (ts_type.lower() != "confirmation"):
             raise ValueError
         sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_TS_TEMPLATE.format(ts_type.lower()),fB_values={"aInstance": instance})
@@ -91,6 +120,7 @@ class Action(InteractionPattern):
         
     @property
     def type(self):
+        #assert not self.isInferred()
         return self._type
     
     @classmethod
@@ -100,13 +130,42 @@ class Action(InteractionPattern):
         _,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_ACTION_TEMPLATE.format(action_type.value))
         return fB.keys()
         
-    @classmethod
-    def discover(sepa,nice_output=True):
-        d_output = sepa.query(cts.PATH_SPARQL_QUERY_ACTION)
+    @staticmethod
+    def discover(sepa,action="UNDEF",nice_output=True):
+        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_QUERY_ACTION,fB_values={"action_uri":action})
+        d_output = sepa.query(sparql,fB=fB)
         if nice_output:
             bzu.tablify(json.dumps(d_output))
+        if ((action != "UNDEF") and (len(d_output["results"]["bindings"])>1)):
+            raise Exception("Action discovery gave more than one result")
         return d_output
-        
-    @classmethod
-    def newRequest(sepa):
-        pass
+    
+    @staticmethod
+    def buildFromQuery(sepa,actionURI):
+        query_action = Action.discover(sepa,action=actionURI)
+        query_ip = InteractionPattern.discover(sepa,ip_type="wot:Action")
+        for binding in query_ip["results"]["bindings"]:
+            if binding["ipattern"] == actionURI:
+                td = binding["td"]
+        aBinding = query_action["results"]["bindings"][0]
+        out_bindings = { "td": td,
+                        "action": aBinding["action"],
+                        "newName": aBinding["aName"]}
+        if "ods" in aBinding.keys():
+            out_bindings["ods"] = aBinding["oDS"]
+        if "ids" in aBinding.keys():
+            out_bindings["ids"] = aBinding["iDS"]
+        query_thing = Thing.discover(sepa,bindings={"td_uri": td})
+        out_bindings = query_thing["results"]["bindings"][0]["thing_uri"]
+        return Action(sepa,out_bindings,None)
+    
+    @staticmethod
+    def newRequest(sepa,bindings,a_type):
+        sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_ACTION_INSTANCE_TEMPLATE.format(a_type.value), fB_values=bindings)
+        graph.update(sparql,fB)
+        return bindings["newAInstance"]
+            
+    def isInferred(self):
+        if self._action_task is None:
+            return True
+        return False

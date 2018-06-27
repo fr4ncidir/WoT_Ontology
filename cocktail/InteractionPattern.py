@@ -25,6 +25,7 @@
 import constants as cst
 from abc import abstractmethod
 import sparql_utilities as bzu
+import json
 
 class InteractionPattern:
     def __init__(self,sepa,bindings):
@@ -59,7 +60,11 @@ class InteractionPattern:
     def getBindingList():
         pass
     
-    @classmethod
+    @staticmethod
     @abstractmethod
-    def discover(sepa):
-        pass
+    def discover(sepa,td_uri="UNDEF",ip_type="UNDEF",nice_output=False):
+        sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_QUERY_INTERACTION_PATTERN,fB_values={"td_uri": td_uri, "ipattern_type_specific": ip_type})
+        query_ip = sepa.query(sparql,fB)
+        if nice_output:
+            bzu.tablify(json.dumps(d_output))
+        return query_ip

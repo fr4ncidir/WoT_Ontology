@@ -41,6 +41,7 @@ PATH_SPARQL_QUERY_EVENT_INSTANCE = "./subscribes/event_instance.sparql"
 PATH_SPARQL_QUERY_TS_TEMPLATE = "./subscribes/{}_ts.sparql"
 PATH_SPARQL_QUERY_INSTANCE_OUTPUT = "./subscribes/instance_output.sparql"
 PATH_SPARQL_QUERY_DATASCHEMA = "./queries/data_schema.sparql"
+PATH_SPARQL_QUERY_INTERACTION_PATTERN = "./queries/interaction_pattern.sparql"
 
 # Updates
 PATH_SPARQL_NEW_THING = "./updates/new_thing.sparql"

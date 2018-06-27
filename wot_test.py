@@ -49,15 +49,16 @@ def reset_blazegraph(graph):
 def add_action_instance_ts(graph,instance,iType,reset):
     result = True
     for c in ["confirmation","completion"]:
-        sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_TS_TEMPLATE.format(c),fB_values={"aInstance": instance})
-        graph.update(sparql,fB)
+        Action.post_timestamp(c,instance)
+        # sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_TS_TEMPLATE.format(c),fB_values={"aInstance": instance})
+        # graph.update(sparql,fB)
         
         result = result and bzu.query_CompareUpdate(graph,
             cst.PATH_SPARQL_QUERY_TS_TEMPLATE.format(c),
             {"aInstance": instance},
             reset,
             cst.RES_SPARQL_NEW_TS_TEMPLATE.format(c),
-            "test_{}_action_instance {}".format(iType,c.upper()),
+            "test_{}_action_instance {}".format(iType.value,c.upper()),
             ignore=["ts"])
     return result
     
@@ -398,57 +399,63 @@ def test_action_instance(graph,reset=False):
     The action here tested is Input-Output, which means we test all kind i-o-io actions in one.
     We test also the empty action.
     """
-    URIS = {"<http://MyFirstWebThing.com{}>": "I", "<http://MyThirdWebThing.com{}>": "EMPTY"}
+    #URIS = {"<http://MyFirstWebThing.com{}>": AType.INPUT_ACTION, "<http://MyThirdWebThing.com{}>": AType.EMPTY_ACTION}
+    
+    actions = [ Action.buildFromQuery(graph,"<http://MyFirstWebThing.com/Action1>"),
+                Action.buildFromQuery(graph,"<http://MyThirdWebThing.com/Action1>")]
+    
     result = True
     logger.info("STARTING TEST_ACTION_INSTANCE")
     
     # Adding the instances
-    for action in URIS.keys():
-        bindings = {
-                "thing": action.format(""),
-                "action": action.format("/Action1"),
-                "newAInstance": action.format("/Action1/instance1"),
-                "newAuthor": "<http://MySecondWebThing.com>",
-                "newIData": action.format("/Action1/instance1/InputData"),
-                "newIValue": "This is an input string",
-                "newIDS": action.format("/Action1/DataSchema/input")}
-        sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_ACTION_INSTANCE_TEMPLATE.format(URIS[action].lower()), fB_values=bindings)
-        graph.update(sparql,fB)
+    for action in actions:
+        bindings = {   "thing": action.getThing(),
+                                    "action": action.uri,
+                                    "newAInstance": action.uri.replace(">","/instance1>"),
+                                    "newAuthor": "<http://MySecondWebThing.com>",
+                                    "newIData": action.uri.replace(">","/instance1/InputData>"),
+                                    "newIValue": "This is an input string",
+                                    "newIDS": action.uri.replace(">","/DataSchema/input>")}
+        instance = Action.newRequest(graph,bindings,action.type)
+        # sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_ACTION_INSTANCE_TEMPLATE.format(URIS[action].lower()), fB_values=bindings)
+        # graph.update(sparql,fB)
         
         # Checking the instance
         result = result and bzu.query_CompareUpdate(graph,
             cst.PATH_SPARQL_QUERY_ACTION_INSTANCE,
             bindings,
             reset,
-            cst.RES_SPARQL_NEW_ACTION_INSTANCE_TEMPLATE.format(URIS[action].lower()),
-            "test_{}_action_instance UPDATE-SUBSCRIBE".format(URIS[action]),
+            cst.RES_SPARQL_NEW_ACTION_INSTANCE_TEMPLATE.format(action.type.value),
+            "test_{}_action_instance UPDATE-SUBSCRIBE".format(action.type.value),
             ignore=["aTS"])
             
         # Adding and checking Confirmation and Completion timestamps
-        result = result and add_action_instance_ts(graph,bindings["newAInstance"],URIS[action],reset)
+        result = result and add_action_instance_ts(graph,instance,action.type,reset)
         
         # Update the instances
-        bindings["newAInstance"] = action.format("/Action1/instance2")
-        if URIS[action] == "I":
-            bindings["newIData"] = action.format("/Action1/instance2/InputData")
+        bindings["newAInstance"] = action.uri.replace(">","/instance2>")
+        if action.type == AType.INPUT_ACTION:
+            bindings["newIData"] = action.uri.replace(">","/instance2/InputData>")
             bindings["newIValue"] = "This is a modified input string"
-        sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_ACTION_INSTANCE_TEMPLATE.format(URIS[action].lower()), fB_values=bindings)
-        graph.update(sparql,fB)
+        instance = Action.newRequest(graph,bindings,action.type)
+        # sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_ACTION_INSTANCE_TEMPLATE.format(URIS[action].lower()), fB_values=bindings)
+        # graph.update(sparql,fB)
     
         # Checking updates to instances are successful
         result = result and bzu.query_CompareUpdate(graph,
             cst.PATH_SPARQL_QUERY_ACTION_INSTANCE,
             bindings,
             reset,
-            cst.RES_SPARQL_NEW_ACTION_INSTANCE_UPDATE_TEMPLATE.format(URIS[action].lower()),
-            "test_{}_action_instance NEW REQUEST".format(URIS[action]),
+            cst.RES_SPARQL_NEW_ACTION_INSTANCE_UPDATE_TEMPLATE.format(action.type.value),
+            "test_{}_action_instance NEW REQUEST".format(action.type.value),
             ignore=["aTS"])
         
         # Adding and checking Confirmation and Completion timestamps
-        result = result and add_action_instance_ts(graph,bindings["newAInstance"],URIS[action],reset)
+        result = result and add_action_instance_ts(graph,instance,action.type,reset)
         
-        if URIS[action] == "I":
+        if action.type == AType.INPUT_ACTION:
             # Post output
+            #Action.post_output(graph,)
             sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_INSTANCE_OUTPUT,
                         fB_values={ "instance": bindings["newAInstance"],
                                     "oData": action.format("/Action1/instance2/OutputData"),
@@ -462,7 +469,7 @@ def test_action_instance(graph,reset=False):
                 {"instance": bindings["newAInstance"]},
                 reset,
                 cst.RES_SPARQL_NEW_INSTANCE_OUTPUT,
-                "test_{}_action_instance OUTPUT".format(URIS[action]))
+                "test_{}_action_instance OUTPUT".format(URIS[action].value))
     
         # Remove instances and outputs
         sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_DELETE_ACTION_INSTANCE,fB_values={"aInstance": bindings["newAInstance"]})
