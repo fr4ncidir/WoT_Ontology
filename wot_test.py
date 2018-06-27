@@ -32,6 +32,8 @@ import constants as cst
 from cocktail.Thing import Thing
 from cocktail.DataSchema import DataSchema
 from cocktail.Property import Property
+from cocktail.Action import Action,AType
+from cocktail.Event import Event,EType
 
 logging.basicConfig(format='%(levelname)s %(asctime)-15s %(message)s',level=logging.INFO)
 logger = logging.getLogger("ontology_test_log")
@@ -43,11 +45,6 @@ def reset_blazegraph(graph):
     graph.update(bzu.file_to_string(cst.SPARQL_INSERT_THING1))
     graph.update(bzu.file_to_string(cst.SPARQL_INSERT_THING2))
     graph.update(bzu.file_to_string(cst.SPARQL_INSERT_THING3))
-    
-def update_dummy_thing(graph):
-    Thing(graph,{   "thing": THING_URI,
-                    "newName": "TEST-THING",
-                    "newTD": "<http://TestTD.com>" }).post()
     
 def add_action_instance_ts(graph,instance,iType,reset):
     result = True
@@ -93,8 +90,7 @@ def test_new_thing(graph,reset=False):
     
     logger.info("STARTING TEST_NEW_THING")
     # Adding new thing within the forced bindings
-    dummyThing = Thing(graph,{"thing": THING_URI,"newName": "TEST-THING","newTD": "<http://TestTD.com>" },superthing=SUPERTHING)
-    dummyThing.post()
+    dummyThing = Thing(graph,{"thing": THING_URI,"newName": "TEST-THING","newTD": "<http://TestTD.com>" },superthing=SUPERTHING).post()
     
     # Registering the new thing as subthing of a previous existing one
     # sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_SUBTHING,
@@ -145,9 +141,9 @@ def test_new_property(graph,reset=False):
         logger.error("test_property start check failure: skip")
         return False
     # Adding new Dataschema and its corresponding FieldSchema
-    dummy_DS = DataSchema(graph, {   "ds_uri": DATASCHEMA_URI,
-                                                "fs_uri": "xsd:string",
-                                                "fs_types": "xsd:_, wot:FieldSchema"})
+    dummy_DS = DataSchema(graph, {  "ds_uri": DATASCHEMA_URI,
+                                    "fs_uri": "xsd:string",
+                                    "fs_types": "xsd:_, wot:FieldSchema"}).post()
     # sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_DATASCHEMA,
         # fB_values={ "ds_uri": DATASCHEMA_URI,
                     # "fs_uri": "xsd:string",
@@ -159,7 +155,7 @@ def test_new_property(graph,reset=False):
         graph.query(cst.SPARQL_QUERY_ALL,destination=cst.RES_SPARQL_QUERY_ALL_NEW_DATASCHEMA)
     
     # Adding the new thing
-    dummyThing = Thing(graph,{"thing": THING_URI,"newName": "TEST-THING","newTD": "<http://TestTD.com>" })
+    dummyThing = Thing(graph,{"thing": THING_URI,"newName": "TEST-THING","newTD": "<http://TestTD.com>" }).post()
     
     # Adding the property
     p_fBindings = { "td": "<http://TestTD.com>",
@@ -170,8 +166,7 @@ def test_new_property(graph,reset=False):
                     "newDS": DATASCHEMA_URI,
                     "newPD": "<http://TestThing.com/Property1/PropertyData>",
                     "newValue": "ABCDEFG"}
-    testProperty = Property(graph,p_fBindings)
-    testProperty.post()
+    testProperty = Property(graph,p_fBindings).post()
     # sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_PROPERTY,fB_values=p_fBindings)
     # graph.update(sparql,fB)
     
@@ -259,33 +254,37 @@ def test_new_action(graph,reset=False):
     logger.info("STARTING TEST_NEW_ACTIONS")
     
     # Adding new Action Dataschemas and its corresponding FieldSchema
-    sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_DATASCHEMA,
-        fB_values={ "ds_uri": DS_URI_INPUT,
+    DataSchema(graph, { "ds_uri": DS_URI_INPUT,
                     "fs_uri": "xsd:string",
-                    "fs_types": "xsd:_, wot:FieldSchema"})
-    graph.update(sparql,fB)
-    sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_DATASCHEMA,
-        fB_values={ "ds_uri": DS_URI_OUTPUT,
+                    "fs_types": "xsd:_, wot:FieldSchema"}).post()
+    DataSchema(graph, { "ds_uri": DS_URI_OUTPUT,
                     "fs_uri": "xsd:integer",
-                    "fs_types": "xsd:_, wot:FieldSchema"})
-    graph.update(sparql,fB)
+                    "fs_types": "xsd:_, wot:FieldSchema"}).post()
     
     if reset:
         logger.warning("Rebuilding "+cst.RES_SPARQL_QUERY_ALL_NEW_DS_ACTIONS)
         graph.query(cst.SPARQL_QUERY_ALL,destination=cst.RES_SPARQL_QUERY_ALL_NEW_DS_ACTIONS)
     
     # Adding the new thing
-    update_dummy_thing(graph)
+    dummyThing = Thing(graph,{   "thing": THING_URI,
+                    "newName": "TEST-THING",
+                    "newTD": "<http://TestTD.com>" }).post()
     
     # Adding new Actions and then query the output
-    for aType in ["IO","I","O","EMPTY"]:
-        sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_ACTION_TEMPLATE.format(aType.lower()),
-            fB_values={ "td": "<http://TestTD.com>",
-                        "action": "<http://TestAction_{}.com>".format(aType),
-                        "newName": "TEST-ACTION-{}".format(aType),
+    actions = []
+    for aType in list(AType):
+        actions.append(Action(graph,{ "td": "<http://TestTD.com>",
+                        "action": "<http://TestAction_{}.com>".format(aType.value),
+                        "newName": "TEST-ACTION-{}".format(aType.value),
                         "ids": DS_URI_INPUT,
-                        "ods": DS_URI_OUTPUT})
-        graph.update(sparql,fB)
+                        "ods": DS_URI_OUTPUT},None,force_type=aType).post())
+        # sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_ACTION_TEMPLATE.format(aType.value),
+            # fB_values={ "td": "<http://TestTD.com>",
+                        # "action": "<http://TestAction_{}.com>".format(aType.value),
+                        # "newName": "TEST-ACTION-{}".format(aType.value),
+                        # "ids": DS_URI_INPUT,
+                        # "ods": DS_URI_OUTPUT})
+        # graph.update(sparql,fB)
     
     
     result = bzu.query_CompareUpdate(graph,
@@ -293,16 +292,20 @@ def test_new_action(graph,reset=False):
         {}, reset,
         cst.RES_SPARQL_NEW_ACTIONS,
         "test_actions ADD",
-        replace={"(?action_uri)": "(<http://TestAction_IO.com>) (<http://TestAction_I.com>) (<http://TestAction_O.com>) (<http://TestAction_EMPTY.com>)"})
+        replace={"(?action_uri)": "(<http://TestAction_io.com>) (<http://TestAction_i.com>) (<http://TestAction_o.com>) (<http://TestAction_empty.com>)"})
     if not reset:
         # Deleting the actions
-        for aType in ["IO","I","O","EMPTY"]:
-            sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_DELETE_IP, fB_values={"ip": "<http://TestAction_{}.com>".format(aType)})
-            graph.update(sparql,fB)
+        for action in actions:
+            action.delete()
+        # for aType in list(AType):
+            
+            # sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_DELETE_IP, fB_values={"ip": "<http://TestAction_{}.com>".format(aType.value)})
+            # graph.update(sparql,fB)
         
         # Query all check
-        sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_DELETE_THING, fB_values={"thing": THING_URI})
-        graph.update(sparql,fB)
+        dummyThing.delete()
+        #sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_DELETE_THING, fB_values={"thing": THING_URI})
+        #graph.update(sparql,fB)
         result = result and bzu.query_FileCompare(graph,message="test_actions DELETE",fileAddress=cst.RES_SPARQL_QUERY_ALL_NEW_DS_ACTIONS)
     
     reset_blazegraph(graph)
@@ -327,27 +330,32 @@ def test_new_event(graph,reset=False):
     logger.info("STARTING TEST_NEW_EVENTS")
     
     # Adding new Action Dataschema and its corresponding FieldSchema
-    sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_DATASCHEMA,
-        fB_values={ "ds_uri": DS_URI_OUTPUT,
-                    "fs_uri": "xsd:integer",
-                    "fs_types": "xsd:_, wot:FieldSchema"})
-    graph.update(sparql,fB)
+    DataSchema(graph, { "ds_uri": DS_URI_OUTPUT,
+                "fs_uri": "xsd:integer",
+                "fs_types": "xsd:_, wot:FieldSchema"}).post()
     
     if reset:
         logger.warning("Rebuilding "+cst.RES_SPARQL_QUERY_ALL_NEW_DS_EVENTS)
         graph.query(cst.SPARQL_QUERY_ALL,destination=cst.RES_SPARQL_QUERY_ALL_NEW_DS_EVENTS)
     
     # Adding the new thing
-    update_dummy_thing(graph)
+    dummyThing = Thing(graph,{   "thing": THING_URI,
+                    "newName": "TEST-THING",
+                    "newTD": "<http://TestTD.com>" }).post()
     
     # Adding new Actions and then query the output
-    for eType in ["O","EMPTY"]:
-        sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_EVENT_TEMPLATE.format(eType.lower()),
-            fB_values={ "td": "<http://TestTD.com>",
-                        "event": "<http://TestEvent_{}.com>".format(eType),
-                        "eName": "TEST-EVENT-{}".format(eType),
-                        "ods": DS_URI_OUTPUT})
-        graph.update(sparql,fB)
+    events = []
+    for eType in list(EType):
+        events.append(Event(graph,{ "td": "<http://TestTD.com>",
+                        "event": "<http://TestEvent_{}.com>".format(eType.value),
+                        "eName": "TEST-EVENT-{}".format(eType.value),
+                        "ods": DS_URI_OUTPUT},force_type=eType).post())
+        # sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_EVENT_TEMPLATE.format(eType.lower()),
+            # fB_values={ "td": "<http://TestTD.com>",
+                        # "event": "<http://TestEvent_{}.com>".format(eType),
+                        # "eName": "TEST-EVENT-{}".format(eType),
+                        # "ods": DS_URI_OUTPUT})
+        # graph.update(sparql,fB)
     
     # Querying the actions
     result = bzu.query_CompareUpdate(graph,
@@ -355,17 +363,20 @@ def test_new_event(graph,reset=False):
         {},reset,
         cst.RES_SPARQL_NEW_EVENTS,
         "test_events ADD",
-        replace={"(?event_uri)": "(<http://TestEvent_O.com>) (<http://TestEvent_EMPTY.com>)"})
+        replace={"(?event_uri)": "(<http://TestEvent_o.com>) (<http://TestEvent_empty.com>)"})
     
     if not reset:
-        # Deleting the actions
-        for eType in ["O","EMPTY"]:
-            sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_DELETE_IP, fB_values={"ip": "<http://TestEvent_{}.com>".format(eType)})
-            graph.update(sparql,fB)
+        # Deleting the events
+        for event in events:
+            event.delete()
+        # for eType in list(EType):
+            # sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_DELETE_IP, fB_values={"ip": "<http://TestEvent_{}.com>".format(eType.value)})
+            # graph.update(sparql,fB)
         
         # Query all check
-        sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_DELETE_THING, fB_values={"thing": THING_URI})
-        graph.update(sparql,fB)
+        dummyThing.delete()
+        # sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_DELETE_THING, fB_values={"thing": THING_URI})
+        # graph.update(sparql,fB)
         result = result and bzu.query_FileCompare(graph,message="test_events DELETE",fileAddress=cst.RES_SPARQL_QUERY_ALL_NEW_DS_EVENTS)
     
     reset_blazegraph(graph)

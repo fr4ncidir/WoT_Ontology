@@ -39,6 +39,7 @@ class Thing:
             self._sepa.update(sparql,fB)
         for ip in interaction_patterns:
             ip.post()
+        return self
             
     def delete(self):
         sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_DELETE_THING, fB_values=self._bindings)

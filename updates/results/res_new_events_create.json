@@ -1,1 +1,1 @@
-{"head": {"vars": ["event", "eName", "oDS", "oFS", "oFS_type", "property"]}, "results": {"bindings": [{"event": {"type": "uri", "value": "http://TestEvent_EMPTY.com"}, "eName": {"type": "literal", "value": "TEST-EVENT-EMPTY"}}]}}
+{"head": {"vars": ["event", "eName", "oDS", "oFS", "oFS_type", "property"]}, "results": {"bindings": []}}

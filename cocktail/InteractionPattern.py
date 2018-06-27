@@ -39,7 +39,15 @@ class InteractionPattern:
         self._sepa = new_sepa
         
     def delete(self):
-        sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_DELETE_IP,fB_values=self._bindings)
+        if "property" in self._bindings.keys():
+            tag = "property"
+        elif "event" in self._bindings.keys():
+            tag = "event"
+        elif "action" in self._bindings.keys():
+            tag = "action"
+        else:
+            raise ValueError("Bad bindings!")
+        sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_DELETE_IP,fB_values={"ip": self._bindings[tag]})
         self._sepa.update(sparql,fB)
         
     @abstractmethod

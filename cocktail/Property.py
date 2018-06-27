@@ -33,6 +33,7 @@ class Property(InteractionPattern):
     def post(self):
         sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_PROPERTY,fB_values=self._bindings)
         self._sepa.update(sparql,fB)
+        return self
         
     def update(self,bindings):
         self._bindings = bindings

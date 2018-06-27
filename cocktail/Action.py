@@ -39,25 +39,32 @@ class AType(Enum):
     EMPTY_ACTION = "empty"
 
 class Action(InteractionPattern):
-    def __init__(self,sepa,bindings,action_task,forProperties=[]):
+    def __init__(self,sepa,bindings,action_task,forProperties=[],force_type=None):
         super().__init__(sepa,bindings)
         self._action_task = action_task
-        if ("ods" in bindings.keys()) and ("ids" in bindings.keys()):
+        if (("ods" in bindings.keys()) and ("ids" in bindings.keys())) or (force_type is AType.IO_ACTION):
             self._type = AType.IO_ACTION
-        elif "ods" in bindings.keys():
+        elif ("ods" in bindings.keys()) or (force_type is AType.OUTPUT_ACTION):
             self._type = AType.OUTPUT_ACTION
-        elif "ids" in bindings.keys():
+        elif ("ids" in bindings.keys()) or (force_type is AType.INPUT_ACTION):
             self._type = AType.INPUT_ACTION
         else:
             self._type = AType.EMPTY_ACTION
         self._forProperties = forProperties
         
-    def post():
-        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_ACTION_TEMPLATE.format(self.type),fB_values=self._bindings)
+    def post(self):
+        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_ACTION_TEMPLATE.format(self._type.value),fB_values=self._bindings)
         self._sepa.update(sparql,fB)
-        for prop in forProperties:
-            # connect property
-            break
+        
+        if self._forProperties:
+            sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_ADD_FORPROPERTY,fB_values={"ip":self._bindings["action"]})
+            properties = []
+            for prop in self._forProperties:
+                properties.append(prop.bindings["property"])
+            sparql = sparql.replace("?ip wot:forProperty ?property","?ip wot:forProperty {}".format(", ".join(properties)))
+            sparql = sparql.replace("?property a wot:Property"," a wotProperty. ".join(properties)+" a wot:Property")
+            self._sepa.update(sparql,fB)
+        return self
         
     def enable(self):
         # Subscribe to action requests
@@ -90,7 +97,7 @@ class Action(InteractionPattern):
     def getBindingList(action_type):
         if action_type not in AType:
             raise ValueError
-        _,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_ACTION_TEMPLATE.format(action_type))
+        _,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_ACTION_TEMPLATE.format(action_type.value))
         return fB.keys()
         
     @classmethod

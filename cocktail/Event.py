@@ -32,29 +32,31 @@ class EType(Enum):
     EMPTY_EVENT = "empty"
 
 class Event(InteractionPattern):
-    def __init__(self,sepa,bindings,forProperties=[]):
+    def __init__(self,sepa,bindings,forProperties=[],force_type=None):
         super().__init__(sepa,bindings)
-        if "ods" in bindings.keys(bindings):
+        if ("ods" in bindings.keys()) or (force_type is EType.OUTPUT_EVENT):
             self._type = EType.OUTPUT_EVENT
         else:
             self._type = EType.EMPTY_EVENT
         self._forProperties = forProperties
         
-    def post():
-        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_EVENT_TEMPLATE.format(self.type),fB_values=self._bindings)
+    def post(self):
+        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_EVENT_TEMPLATE.format(self._type.value),fB_values=self._bindings)
         self._sepa.update(sparql,fB)
         
-        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_ADD_FORPROPERTY)
-        properties = []
-        for prop in forProperties:
-            properties.append(prop.bindings["property"])
-        sparql = sparql.replace("?ip wot:forProperty ?property","?ip wot:forProperty {}".format(", ".join(properties))
-        sparql = sparql.replace("?property a wot:Property"," a wotProperty. ".join(properties)+" a wot:Property")
-        self._sepa.update(sparql,fB)
+        if self._forProperties:
+            sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_ADD_FORPROPERTY,fB_values={"ip":self._bindings["event"]})
+            properties = []
+            for prop in self._forProperties:
+                properties.append(prop.bindings["property"])
+            sparql = sparql.replace("?ip wot:forProperty ?property","?ip wot:forProperty {}".format(", ".join(properties)))
+            sparql = sparql.replace("?property a wot:Property"," a wotProperty. ".join(properties)+" a wot:Property")
+            self._sepa.update(sparql,fB)
+        return self
         
     def notify(self,output={}):
         # build fB_values with output
-        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_EVENT_INSTANCE_TEMPLATE.format(self.type),fB_values=self._bindings)
+        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_EVENT_INSTANCE_TEMPLATE.format(self._type.value),fB_values=self._bindings)
         self._sepa.update(sparql,fB)
     
     @property
@@ -65,5 +67,5 @@ class Event(InteractionPattern):
     def getBindingList(event_type):
         if event_type not in EType:
             raise ValueError
-        _,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_EVENT_TEMPLATE.format(event_type))
+        _,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_EVENT_TEMPLATE.format(event_type.value))
         return fB.keys()

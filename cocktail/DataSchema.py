@@ -23,6 +23,7 @@
 #  
 
 import constants as cst
+import sparql_utilities as bzu
 
 class DataSchema:
     def __init__(self,sepa,bindings):
@@ -33,9 +34,10 @@ class DataSchema:
     def bindings(self):
         return self._bindings
 
-    def post():
-        sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_DATASCHEMA,fB_values=bindings)
+    def post(self):
+        sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_DATASCHEMA,fB_values=self._bindings)
         self._sepa.update(sparql,fB)
+        return self
         
     @staticmethod
     def getBindingList():
@@ -43,7 +45,7 @@ class DataSchema:
         return fB.keys()
     
     @staticmethod
-    def discover(sepa):
+    def discover(sepa,nice_output):
         d_output = sepa.query(cts.PATH_SPARQL_QUERY_DATASCHEMA)
         if nice_output:
             bzu.tablify(json.dumps(d_output))
