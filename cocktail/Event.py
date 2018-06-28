@@ -23,15 +23,20 @@
 #  
 
 from cocktail.InteractionPattern import InteractionPattern
+from cocktail.Thing import Thing
 import sparql_utilities as bzu
 import constants as cts
 from enum import Enum
+import json
 
 class EType(Enum):
     OUTPUT_EVENT = "o"
     EMPTY_EVENT = "empty"
 
 class Event(InteractionPattern):
+    """
+    wot:Event python implementation
+    """
     def __init__(self,sepa,bindings,forProperties=[],force_type=None):
         super().__init__(sepa,bindings)
         if ("ods" in bindings.keys()) or (force_type is EType.OUTPUT_EVENT):
@@ -54,10 +59,21 @@ class Event(InteractionPattern):
             self._sepa.update(sparql,fB)
         return self
         
-    def notify(self,output={}):
-        # build fB_values with output
-        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_EVENT_INSTANCE_TEMPLATE.format(self._type.value),fB_values=self._bindings)
+    def notify(self,bindings):
+        """
+        Posts to the rdf store a notification, whose data in 'bindings' is formatted as in the new-event-instance yaml.
+        """
+        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_EVENT_INSTANCE_TEMPLATE.format(self._type.value),fB_values=bindings)
         self._sepa.update(sparql,fB)
+        return bindings["newEInstance"]
+    
+    @property
+    def uri(self):
+        return self._bindings["event"]
+        
+    @property
+    def name(self):
+        return self._bindings["eName"]
     
     @property
     def type(self):
@@ -69,3 +85,44 @@ class Event(InteractionPattern):
             raise ValueError
         _,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_EVENT_TEMPLATE.format(event_type.value))
         return fB.keys()
+        
+    def deleteInstance(self,instance):
+        super().deleteInstance(instance)
+        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_DELETE_EVENT_INSTANCE,fB_values={"eInstance": instance})
+        self._sepa.update(sparql,fB)
+        
+    @staticmethod
+    def discover(sepa,event="UNDEF",nice_output=False):
+        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_QUERY_EVENT,fB_values={"event_uri":event})
+        d_output = sepa.query(sparql,fB=fB)
+        if nice_output:
+            bzu.tablify(json.dumps(d_output))
+        if ((event != "UNDEF") and (len(d_output["results"]["bindings"])>1)):
+            raise Exception("Event discovery gave more than one result")
+        return d_output
+        
+    @staticmethod
+    def buildFromQuery(sepa,eventURI):
+        query_event = Event.discover(sepa,event=eventURI)
+        query_ip = InteractionPattern.discover(sepa,ip_type="wot:Event",nice_output=False)
+        for binding in query_ip["results"]["bindings"]:
+            if binding["ipattern"]["value"] == eventURI.replace("<","").replace(">",""):
+                td = bzu.uriFormat(binding["td"]["value"])
+        eBinding = query_event["results"]["bindings"][0]
+        out_bindings = { "td": td,
+                        "event": bzu.uriFormat(eBinding["event"]["value"]),
+                        "eName": eBinding["eName"]["value"]}
+        if "oDS" in eBinding.keys():
+            out_bindings["ods"] = bzu.uriFormat(eBinding["oDS"]["value"])
+        query_thing = Thing.discover(sepa,bindings={"td_uri": td})
+        out_bindings["thing"] = bzu.uriFormat(query_thing["results"]["bindings"][0]["thing"]["value"])
+        return Event(sepa,out_bindings)
+    
+    @staticmethod
+    def observe(sepa,eventURI,handler):
+        """
+        Subscribes to event notifications coming from eventURI.
+        'handler' deals with the task to be performed in such situation.
+        """
+        # TODO subscribes to notification and does something
+        pass

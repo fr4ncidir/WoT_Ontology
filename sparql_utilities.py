@@ -212,3 +212,6 @@ def query_FileCompare(  graph,
     message = "{} ({} bindings)".format(message,len(result["results"]["bindings"]))
     
     return notify_result(message,compare_queries(template,result,show_diff=show_diff,ignore_val=ignore_val))
+
+def uriFormat(uri):
+    return "<"+uri+">" if "//" in uri else uri

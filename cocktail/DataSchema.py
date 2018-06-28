@@ -26,6 +26,9 @@ import constants as cst
 import sparql_utilities as bzu
 
 class DataSchema:
+    """
+    wot:DataSchema python implementation
+    """
     def __init__(self,sepa,bindings):
         self._sepa = sepa
         self._bindings = bindings
@@ -50,3 +53,7 @@ class DataSchema:
         if nice_output:
             bzu.tablify(json.dumps(d_output))
         return d_output
+
+    def delete(self):
+        # TODO
+        pass

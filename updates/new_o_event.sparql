@@ -16,7 +16,7 @@ ADD_O_EVENT:
                     wot:hasName ?eName;
                     wot:hasOutputDataSchema ?ods}
         where { 
-            ?td rdf:type wot:ThindDescription.
+            ?td rdf:type wot:ThingDescription.
             ?ods rdf:type wot:DataSchema.
         }"
     forcedBindings:

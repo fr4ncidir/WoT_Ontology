@@ -24,14 +24,21 @@
 
 import sparql_utilities as bzu
 import constants as cst
+import json
 
 class Thing:
+    """
+    wot:Thing python implementation
+    """
     def __init__(self,sepa,bindings,superthing=None):
         self._bindings = bindings
         self._sepa = sepa
         self._superthing = superthing
         
     def post(self,interaction_patterns=[]):
+        """
+        Posting the wot:Thing (and its connection to a superthing) with all its interaction patterns.
+        """
         sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_THING,fB_values=self._bindings)
         self._sepa.update(sparql,fB)
         if self._superthing is not None:
@@ -46,8 +53,12 @@ class Thing:
         self._sepa.update(sparql,fB)
         
     @staticmethod
-    def discover(sepa,bindings={},nice_output=True):
-        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_QUERY_THING, fB_values=bindings)
+    def discover(sepa,bindings={},nice_output=False):
+        """
+        Thing discovery. It can be more selective when we use 'bindings', while 'nice_output'
+        prints the results to console in a friendly manner.
+        """
+        sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_QUERY_THING, fB_values=bindings)
         d_output = sepa.query(sparql,fB)
         if nice_output:
             bzu.tablify(json.dumps(d_output))

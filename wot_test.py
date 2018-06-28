@@ -46,19 +46,17 @@ def reset_blazegraph(graph):
     graph.update(bzu.file_to_string(cst.SPARQL_INSERT_THING2))
     graph.update(bzu.file_to_string(cst.SPARQL_INSERT_THING3))
     
-def add_action_instance_ts(graph,instance,iType,reset):
+def add_action_instance_ts(graph,instance,action,reset):
     result = True
     for c in ["confirmation","completion"]:
-        Action.post_timestamp(c,instance)
-        # sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_TS_TEMPLATE.format(c),fB_values={"aInstance": instance})
-        # graph.update(sparql,fB)
+        action._post_timestamp(c,instance)
         
         result = result and bzu.query_CompareUpdate(graph,
             cst.PATH_SPARQL_QUERY_TS_TEMPLATE.format(c),
             {"aInstance": instance},
             reset,
             cst.RES_SPARQL_NEW_TS_TEMPLATE.format(c),
-            "test_{}_action_instance {}".format(iType.value,c.upper()),
+            "test_{}_action_instance {}".format(action.type.value,c.upper()),
             ignore=["ts"])
     return result
     
@@ -93,12 +91,6 @@ def test_new_thing(graph,reset=False):
     # Adding new thing within the forced bindings
     dummyThing = Thing(graph,{"thing": THING_URI,"newName": "TEST-THING","newTD": "<http://TestTD.com>" },superthing=SUPERTHING).post()
     
-    # Registering the new thing as subthing of a previous existing one
-    # sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_SUBTHING,
-        # fB_values={ "superthing": SUPERTHING,
-                    # "subthing": THING_URI})
-    # graph.update(sparql,fB)
-    
     result = bzu.query_CompareUpdate(graph,
         cst.PATH_SPARQL_QUERY_THING,
         {}, reset,
@@ -109,8 +101,7 @@ def test_new_thing(graph,reset=False):
     # Passing through this point also in reset case allows not to refresh the RDF store into the following test.
     # Deleting the thing, and checking if the triples in all the store are the same as if all the test never happened
     dummyThing.delete()
-    # sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_DELETE_THING, fB_values={"thing": THING_URI})
-    # graph.update(sparql,fB)
+
     # With this line, if it outputs True, we certify that the contents of the RDF store are exactly the same as they were
     # at the beginning of this function. So, no need to call reset_blazegraph
     result = result and bzu.query_FileCompare(graph,message="test_thing DELETE")
@@ -145,11 +136,6 @@ def test_new_property(graph,reset=False):
     dummy_DS = DataSchema(graph, {  "ds_uri": DATASCHEMA_URI,
                                     "fs_uri": "xsd:string",
                                     "fs_types": "xsd:_, wot:FieldSchema"}).post()
-    # sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_DATASCHEMA,
-        # fB_values={ "ds_uri": DATASCHEMA_URI,
-                    # "fs_uri": "xsd:string",
-                    # "fs_types": "xsd:_, wot:FieldSchema"})
-    # graph.update(sparql,fB)
 
     if reset:
         logger.warning("Rebuilding "+cst.RES_SPARQL_QUERY_ALL_NEW_DATASCHEMA)
@@ -168,8 +154,6 @@ def test_new_property(graph,reset=False):
                     "newPD": "<http://TestThing.com/Property1/PropertyData>",
                     "newValue": "ABCDEFG"}
     testProperty = Property(graph,p_fBindings).post()
-    # sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_PROPERTY,fB_values=p_fBindings)
-    # graph.update(sparql,fB)
     
     # Querying the property to check it
     sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_QUERY_PROPERTY, fB_values={"property_uri": PROPERTY_URI})
@@ -185,8 +169,6 @@ def test_new_property(graph,reset=False):
     p_fBindings["newWritability"] = "false"
     p_fBindings["newValue"] = NEW_PROPERTY_VALUE
     testProperty.update(p_fBindings)
-    # sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_PROPERTY, fB_values=p_fBindings)
-    # graph.update(sparql,fB)
     
     # Query again to confirm updates
     sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_QUERY_PROPERTY, fB_values={"property_uri": PROPERTY_URI})
@@ -223,13 +205,8 @@ def test_new_property(graph,reset=False):
         
         # Deleting the property
         testProperty.delete()
-        # sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_DELETE_IP, fB_values={"ip": PROPERTY_URI})
-        # graph.update(sparql,fB)
-        
         # Query all check
         dummyThing.delete()
-        # sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_DELETE_THING, fB_values={"thing": "<http://TestThing.com>"})
-        # graph.update(sparql,fB)
         result = result and bzu.query_FileCompare(graph,message="test_property DELETE",fileAddress=cst.RES_SPARQL_QUERY_ALL_NEW_DATASCHEMA,show_diff=False)
     
     reset_blazegraph(graph)
@@ -279,14 +256,6 @@ def test_new_action(graph,reset=False):
                         "newName": "TEST-ACTION-{}".format(aType.value),
                         "ids": DS_URI_INPUT,
                         "ods": DS_URI_OUTPUT},None,force_type=aType).post())
-        # sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_ACTION_TEMPLATE.format(aType.value),
-            # fB_values={ "td": "<http://TestTD.com>",
-                        # "action": "<http://TestAction_{}.com>".format(aType.value),
-                        # "newName": "TEST-ACTION-{}".format(aType.value),
-                        # "ids": DS_URI_INPUT,
-                        # "ods": DS_URI_OUTPUT})
-        # graph.update(sparql,fB)
-    
     
     result = bzu.query_CompareUpdate(graph,
         cst.PATH_SPARQL_QUERY_ACTION,
@@ -298,15 +267,8 @@ def test_new_action(graph,reset=False):
         # Deleting the actions
         for action in actions:
             action.delete()
-        # for aType in list(AType):
-            
-            # sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_DELETE_IP, fB_values={"ip": "<http://TestAction_{}.com>".format(aType.value)})
-            # graph.update(sparql,fB)
-        
         # Query all check
         dummyThing.delete()
-        #sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_DELETE_THING, fB_values={"thing": THING_URI})
-        #graph.update(sparql,fB)
         result = result and bzu.query_FileCompare(graph,message="test_actions DELETE",fileAddress=cst.RES_SPARQL_QUERY_ALL_NEW_DS_ACTIONS)
     
     reset_blazegraph(graph)
@@ -351,13 +313,7 @@ def test_new_event(graph,reset=False):
                         "event": "<http://TestEvent_{}.com>".format(eType.value),
                         "eName": "TEST-EVENT-{}".format(eType.value),
                         "ods": DS_URI_OUTPUT},force_type=eType).post())
-        # sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_EVENT_TEMPLATE.format(eType.lower()),
-            # fB_values={ "td": "<http://TestTD.com>",
-                        # "event": "<http://TestEvent_{}.com>".format(eType),
-                        # "eName": "TEST-EVENT-{}".format(eType),
-                        # "ods": DS_URI_OUTPUT})
-        # graph.update(sparql,fB)
-    
+
     # Querying the actions
     result = bzu.query_CompareUpdate(graph,
         cst.PATH_SPARQL_QUERY_EVENT,
@@ -370,14 +326,8 @@ def test_new_event(graph,reset=False):
         # Deleting the events
         for event in events:
             event.delete()
-        # for eType in list(EType):
-            # sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_DELETE_IP, fB_values={"ip": "<http://TestEvent_{}.com>".format(eType.value)})
-            # graph.update(sparql,fB)
-        
         # Query all check
         dummyThing.delete()
-        # sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_DELETE_THING, fB_values={"thing": THING_URI})
-        # graph.update(sparql,fB)
         result = result and bzu.query_FileCompare(graph,message="test_events DELETE",fileAddress=cst.RES_SPARQL_QUERY_ALL_NEW_DS_EVENTS)
     
     reset_blazegraph(graph)
@@ -399,27 +349,23 @@ def test_action_instance(graph,reset=False):
     The action here tested is Input-Output, which means we test all kind i-o-io actions in one.
     We test also the empty action.
     """
-    #URIS = {"<http://MyFirstWebThing.com{}>": AType.INPUT_ACTION, "<http://MyThirdWebThing.com{}>": AType.EMPTY_ACTION}
-    
     actions = [ Action.buildFromQuery(graph,"<http://MyFirstWebThing.com/Action1>"),
                 Action.buildFromQuery(graph,"<http://MyThirdWebThing.com/Action1>")]
-    
+
     result = True
     logger.info("STARTING TEST_ACTION_INSTANCE")
     
     # Adding the instances
     for action in actions:
         bindings = {   "thing": action.getThing(),
-                                    "action": action.uri,
-                                    "newAInstance": action.uri.replace(">","/instance1>"),
-                                    "newAuthor": "<http://MySecondWebThing.com>",
-                                    "newIData": action.uri.replace(">","/instance1/InputData>"),
-                                    "newIValue": "This is an input string",
-                                    "newIDS": action.uri.replace(">","/DataSchema/input>")}
+                        "action": action.uri,
+                        "newAInstance": action.uri.replace(">","/instance1>"),
+                        "newAuthor": "<http://MySecondWebThing.com>",
+                        "newIData": action.uri.replace(">","/instance1/InputData>"),
+                        "newIValue": "This is an input string",
+                        "newIDS": action.uri.replace(">","/DataSchema/input>")}
         instance = Action.newRequest(graph,bindings,action.type)
-        # sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_ACTION_INSTANCE_TEMPLATE.format(URIS[action].lower()), fB_values=bindings)
-        # graph.update(sparql,fB)
-        
+
         # Checking the instance
         result = result and bzu.query_CompareUpdate(graph,
             cst.PATH_SPARQL_QUERY_ACTION_INSTANCE,
@@ -430,7 +376,7 @@ def test_action_instance(graph,reset=False):
             ignore=["aTS"])
             
         # Adding and checking Confirmation and Completion timestamps
-        result = result and add_action_instance_ts(graph,instance,action.type,reset)
+        result = result and add_action_instance_ts(graph,instance,action,reset)
         
         # Update the instances
         bindings["newAInstance"] = action.uri.replace(">","/instance2>")
@@ -438,9 +384,7 @@ def test_action_instance(graph,reset=False):
             bindings["newIData"] = action.uri.replace(">","/instance2/InputData>")
             bindings["newIValue"] = "This is a modified input string"
         instance = Action.newRequest(graph,bindings,action.type)
-        # sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_ACTION_INSTANCE_TEMPLATE.format(URIS[action].lower()), fB_values=bindings)
-        # graph.update(sparql,fB)
-    
+
         # Checking updates to instances are successful
         result = result and bzu.query_CompareUpdate(graph,
             cst.PATH_SPARQL_QUERY_ACTION_INSTANCE,
@@ -451,18 +395,14 @@ def test_action_instance(graph,reset=False):
             ignore=["aTS"])
         
         # Adding and checking Confirmation and Completion timestamps
-        result = result and add_action_instance_ts(graph,instance,action.type,reset)
+        result = result and add_action_instance_ts(graph,instance,action,reset)
         
         if action.type == AType.INPUT_ACTION:
             # Post output
-            #Action.post_output(graph,)
-            sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_INSTANCE_OUTPUT,
-                        fB_values={ "instance": bindings["newAInstance"],
-                                    "oData": action.format("/Action1/instance2/OutputData"),
-                                    "oValue": "my output value",
-                                    "oDS": action.format("Action1/DataSchema/output")})
-            graph.update(sparql,fB)
-            
+            action.post_output({"instance": instance,
+                                "oData": action.uri.replace(">","/instance2/OutputData"),
+                                "oValue": "my output value",
+                                "oDS": action.uri.replace(">","/DataSchema/output")})
             # Check it
             result = result and bzu.query_CompareUpdate(graph,
                 cst.PATH_SPARQL_QUERY_INSTANCE_OUTPUT,
@@ -472,8 +412,7 @@ def test_action_instance(graph,reset=False):
                 "test_{}_action_instance OUTPUT".format(URIS[action].value))
     
         # Remove instances and outputs
-        sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_DELETE_ACTION_INSTANCE,fB_values={"aInstance": bindings["newAInstance"]})
-        graph.update(sparql,fB)
+        action.deleteInstance(instance)
     
     result = result and bzu.query_FileCompare(graph,message="test_action_instance DELETE INSTANCE")
     logger.info("ENDING TEST_ACTION_INSTANCE")
@@ -488,52 +427,49 @@ def test_event_instance(graph,reset=False):
     Outputs, if present, are checked.
     Delete is then performed.
     """
-    URIS = {"<http://MyFirstWebThing.com{}>": "O", "<http://MyThirdWebThing.com{}>": "EMPTY"}
+    events = [  Event.buildFromQuery(graph,"<http://MyFirstWebThing.com/Event1>"),
+                Event.buildFromQuery(graph,"<http://MyThirdWebThing.com/Event1>")]
+                
     result = True
     logger.info("STARTING TEST_EVENT_INSTANCE")
     
     # Adding the instances
-    for event in URIS.keys():
-        ev_number = "1" #if event=="O" else "2"
-        bindings = {
-                "thing": event.format(""),
-                "event": event.format("/Event"+ev_number),
-                "newEInstance": event.format("/Event"+ev_number+"/instance1"),
-                "newOData": event.format("/Event"+ev_number+"/instance1/OutputData"),
-                "newValue": "2018-06-23T10:05:19.478Z",
-                "newDS": event.format("/Event"+ev_number+"/DataSchema/output")}
-        sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_EVENT_INSTANCE_TEMPLATE.format(URIS[event].lower()), fB_values=bindings)
-        graph.update(sparql,fB)
+    for event in events:
+        bindings = {"thing": event.getThing(),
+                    "event": event.uri,
+                    "newEInstance": event.uri.replace(">","/instance1>"),
+                    "newOData": event.uri.replace(">","/instance1/OutputData>"),
+                    "newValue": "2018-06-23T10:05:19.478Z",
+                    "newDS": event.uri.replace(">","/DataSchema/output>")}
+        instance = event.notify(bindings)
 
         # Checking the instance
         result = result and bzu.query_CompareUpdate(graph,
             cst.PATH_SPARQL_QUERY_EVENT_INSTANCE,
             bindings,
             reset,
-            cst.RES_SPARQL_NEW_EVENT_INSTANCE_TEMPLATE.format(URIS[event].lower()),
-            "test_{}_event_instance UPDATE-SUBSCRIBE".format(URIS[event]),
+            cst.RES_SPARQL_NEW_EVENT_INSTANCE_TEMPLATE.format(event.type.value),
+            "test_{}_event_instance UPDATE-SUBSCRIBE".format(event.type.value),
             ignore=["eTS"])
                     
         # Update the instances
-        bindings["newEInstance"] = event.format("/Event1/instance2")
-        if URIS[event] == "O":
-            bindings["newOData"] = event.format("/Event1/instance2/OutputData")
+        bindings["newEInstance"] = event.uri.replace(">","/instance2>")
+        if event.type is EType.OUTPUT_EVENT:
+            bindings["newOData"] = event.uri.replace(">","/instance2/OutputData>")
             bindings["newValue"] = "2018-06-23T17:05:19.478Z"
-        sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_EVENT_INSTANCE_TEMPLATE.format(URIS[event].lower()), fB_values=bindings)
-        graph.update(sparql,fB)
+        instance = event.notify(bindings)
 
         # Checking updates to instances are successful
         result = result and bzu.query_CompareUpdate(graph,
             cst.PATH_SPARQL_QUERY_EVENT_INSTANCE,
             bindings,
             reset,
-            cst.RES_SPARQL_NEW_EVENT_INSTANCE_UPDATE_TEMPLATE.format(URIS[event].lower()),
-            "test_{}_event_instance NEW REQUEST".format(URIS[event]),
+            cst.RES_SPARQL_NEW_EVENT_INSTANCE_UPDATE_TEMPLATE.format(event.type.value),
+            "test_{}_event_instance NEW REQUEST".format(event.type.value),
             ignore=["eTS"])
     
         # Remove instances and outputs
-        sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_DELETE_EVENT_INSTANCE,fB_values={"eInstance": bindings["newEInstance"]})
-        graph.update(sparql,fB)
+        event.deleteInstance(instance)
     
     result = result and bzu.query_FileCompare(graph,message="test_event_instance DELETE INSTANCE",show_diff=True)
     logger.info("ENDING TEST_EVENT_INSTANCE")

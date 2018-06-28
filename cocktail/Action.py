@@ -41,7 +41,22 @@ class AType(Enum):
     EMPTY_ACTION = "empty"
 
 class Action(InteractionPattern):
+    """
+    wot:Action python implementation
+    """
     def __init__(self,sepa,bindings,action_task,forProperties=[],force_type=None):
+        """
+        Constructor of Action Item. 
+        'sepa' is the blazegraph/sepa instance.
+        'bindings' is a dictionary formatted as required by the new-action yaml
+        'action_task' is the function that is triggered when the action is requested. When
+            the Action is built from a query with the 'buildFromQuery' method, this field is
+            left None. In this case, we say that the Action is 'inferred', and some 
+            methods throw exception.
+        'forProperties' is a list containing the Properties that are linked to this action
+        'force_type' is a flag which you can use to force the type of the action into IO, O, I, EMPTY.
+            To do so, use the AType enum.
+        """
         super().__init__(sepa,bindings)
         self._action_task = action_task
         if (("ods" in bindings.keys()) and ("ids" in bindings.keys())) or (force_type is AType.IO_ACTION):
@@ -66,16 +81,14 @@ class Action(InteractionPattern):
     def action_task(self):
         return self._action_task
         
-    def getTD(self)
-        return self._bindings["td"]
-        
-    def setThing(self,thingURI):
-        self._bindings["thing"] = thingURI
-        
-    def getThing(self)
-        return self._bindings["thing"] if "thing" in self._bindings.keys() else None
+    def set_action_task(self,new_action_task):
+        self._action_task = new_action_task
     
     def post(self):
+        """
+        This method is not available if the Action is inferred.
+        Posts the Action to the rdf store, together with its forced bindings.
+        """
         #assert not self.isInferred()
         sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_ACTION_TEMPLATE.format(self._type.value),fB_values=self._bindings)
         self._sepa.update(sparql,fB)
@@ -91,28 +104,42 @@ class Action(InteractionPattern):
         return self
         
     def enable(self):
-        # Subscribe to action requests
-        # at notification, get 'args'
+        """
+        TODO This method is not available if the Action is inferred.
+        Subscribe to action requests
+        """
         #assert not self.isInferred()
         # threading.start_new_thread(self._action_task,args)
         pass
         
     def disable(self):
+        """
+        TODO This method is not available if the Action is inferred.
+        Unsubscribe to action requests. Action will be disabled until 'enable' is called again
+        """
         # unsubscribe to action requests
         #assert not self.isInferred()
         pass
         
-    def post_output(self,a_type,instance):
-        # this should not be static!
+    def post_output(self,bindings):
+        """
+        TODO This method is not available if the Action is inferred.
+        Post to rdf store the output of an action computation
+        """
         #assert not self.isInferred()
         if (self._type is AType.OUTPUT_ACTION) or (self._type is AType.IO_ACTION):
-            # get bindings
-            sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_INSTANCE_OUTPUT,fB_values=self._bindings)
+            sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_INSTANCE_OUTPUT,fB_values=bindings)
             self._sepa.update(sparql,fB)
-            post_timestamp("completion",instance)
+            self.post_timestamp("completion",instance)
            
-    def post_timestamp(self,ts_type,instance):
-        # this should not be static!!!!
+    def post_completion(self,instance):
+        self._post_timestamp("completion",instance)
+        
+    def post_confirmation(self,instance):
+        self._post_timestamp("confirmation",instance)
+    
+    def _post_timestamp(self,ts_type,instance):
+        #assert not self.isInferred()
         if (ts_type.lower() != "completion") and (ts_type.lower() != "confirmation"):
             raise ValueError
         sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_TS_TEMPLATE.format(ts_type.lower()),fB_values={"aInstance": instance})
@@ -120,18 +147,26 @@ class Action(InteractionPattern):
         
     @property
     def type(self):
-        #assert not self.isInferred()
         return self._type
     
     @classmethod
     def getBindingList(action_type):
+        """
+        Utility function to know how you have to format the bindings for the constructor.
+        DEPRECATED
+        """
         if action_type not in AType:
             raise ValueError
         _,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_ACTION_TEMPLATE.format(action_type.value))
         return fB.keys()
         
     @staticmethod
-    def discover(sepa,action="UNDEF",nice_output=True):
+    def discover(sepa,action="UNDEF",nice_output=False):
+        """
+        Static method, used to discover actions in the rdf store.
+        'action' by default is 'UNDEF', retrieving every action. Otherwise it will be more selective
+        'nice_output' prints a nice table on console, using tablaze.
+        """
         sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_QUERY_ACTION,fB_values={"action_uri":action})
         d_output = sepa.query(sparql,fB=fB)
         if nice_output:
@@ -142,30 +177,50 @@ class Action(InteractionPattern):
     
     @staticmethod
     def buildFromQuery(sepa,actionURI):
+        """
+        Static method to build an inferred local copy of an action by querying the rdf store.
+        'actionURI' is the uri of the action needed.
+        """
         query_action = Action.discover(sepa,action=actionURI)
-        query_ip = InteractionPattern.discover(sepa,ip_type="wot:Action")
+        query_ip = InteractionPattern.discover(sepa,ip_type="wot:Action",nice_output=False)
         for binding in query_ip["results"]["bindings"]:
-            if binding["ipattern"] == actionURI:
-                td = binding["td"]
+            if binding["ipattern"]["value"] == actionURI.replace("<","").replace(">",""):
+                td = bzu.uriFormat(binding["td"]["value"])
         aBinding = query_action["results"]["bindings"][0]
         out_bindings = { "td": td,
-                        "action": aBinding["action"],
-                        "newName": aBinding["aName"]}
-        if "ods" in aBinding.keys():
-            out_bindings["ods"] = aBinding["oDS"]
-        if "ids" in aBinding.keys():
-            out_bindings["ids"] = aBinding["iDS"]
+                        "action": bzu.uriFormat(aBinding["action"]["value"]),
+                        "newName": aBinding["aName"]["value"]}
+        if "oDS" in aBinding.keys():
+            out_bindings["ods"] = bzu.uriFormat(aBinding["oDS"]["value"])
+        if "iDS" in aBinding.keys():
+            out_bindings["ids"] = bzu.uriFormat(aBinding["iDS"]["value"])
         query_thing = Thing.discover(sepa,bindings={"td_uri": td})
-        out_bindings = query_thing["results"]["bindings"][0]["thing_uri"]
+        out_bindings["thing"] = bzu.uriFormat(query_thing["results"]["bindings"][0]["thing"]["value"])
         return Action(sepa,out_bindings,None)
     
     @staticmethod
     def newRequest(sepa,bindings,a_type):
-        sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_ACTION_INSTANCE_TEMPLATE.format(a_type.value), fB_values=bindings)
-        graph.update(sparql,fB)
+        """
+        Used by clients, this method allows to ask to perform an action.
+        'bindings' contains the information needed by the new-action-instance sparql
+        'a_type' is the corresponding AType enum item.
+        Returns the instance uri.
+        """
+        r_type = a_type.value
+        if a_type is AType.IO_ACTION:
+            r_type = AType.INPUT_ACTION.value
+        if a_type is AType.OUTPUT_ACTION:
+            r_type = AType.EMPTY_ACTION.value
+        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_ACTION_INSTANCE_TEMPLATE.format(r_type), fB_values=bindings)
+        sepa.update(sparql,fB)
         return bindings["newAInstance"]
             
     def isInferred(self):
         if self._action_task is None:
             return True
         return False
+        
+    def deleteInstance(self,instance):
+        super().deleteInstance(instance)
+        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_DELETE_ACTION_INSTANCE,fB_values={"aInstance": instance})
+        self._sepa.update(sparql,fB)

@@ -27,6 +27,9 @@ import sparql_utilities as bzu
 import constants as cts
 
 class Property(InteractionPattern):
+    """
+    wot:Property python implementation
+    """
     def __init__(self,sepa,bindings):
         super().__init__(sepa,bindings)
         

@@ -28,6 +28,10 @@ import sparql_utilities as bzu
 import json
 
 class InteractionPattern:
+    """
+    Interface implementing the wot:InteractionPattern
+    """
+    
     def __init__(self,sepa,bindings):
         self._sepa = sepa
         self._bindings = bindings
@@ -36,10 +40,22 @@ class InteractionPattern:
     def bindings(self):
         return self._bindings
         
+    def getTD(self):
+        return self._bindings["td"]
+        
+    def setThing(self,thingURI):
+        self._bindings["thing"] = thingURI
+        
+    def getThing(self):
+        return self._bindings["thing"] if "thing" in self._bindings.keys() else None
+        
     def setSepa(self,new_sepa):
         self._sepa = new_sepa
         
     def delete(self):
+        """
+        InteractionPattern deletion is the same for every possible case
+        """
         if "property" in self._bindings.keys():
             tag = "property"
         elif "event" in self._bindings.keys():
@@ -63,8 +79,16 @@ class InteractionPattern:
     @staticmethod
     @abstractmethod
     def discover(sepa,td_uri="UNDEF",ip_type="UNDEF",nice_output=False):
+        """
+        Generic InteractionPattern discovery. Can be more selective by giving 
+        'td_uri' and 'ip_type' params. 
+        'nice_output' prints to console a table with the result.
+        """
         sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_QUERY_INTERACTION_PATTERN,fB_values={"td_uri": td_uri, "ipattern_type_specific": ip_type})
-        query_ip = sepa.query(sparql,fB)
+        d_output = sepa.query(sparql,fB)
         if nice_output:
             bzu.tablify(json.dumps(d_output))
-        return query_ip
+        return d_output
+        
+    def deleteInstance(self,instance):
+        pass
