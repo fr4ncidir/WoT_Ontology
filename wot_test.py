@@ -255,7 +255,7 @@ def test_new_action(graph,reset=False):
                         "action": "<http://TestAction_{}.com>".format(aType.value),
                         "newName": "TEST-ACTION-{}".format(aType.value),
                         "ids": DS_URI_INPUT,
-                        "ods": DS_URI_OUTPUT},None,force_type=aType).post())
+                        "ods": DS_URI_OUTPUT},lambda: None,force_type=aType).post())
     
     result = bzu.query_CompareUpdate(graph,
         cst.PATH_SPARQL_QUERY_ACTION,
@@ -357,6 +357,7 @@ def test_action_instance(graph,reset=False):
     
     # Adding the instances
     for action in actions:
+        action.set_action_task(lambda: None)
         bindings = {   "thing": action.getThing(),
                         "action": action.uri,
                         "newAInstance": action.uri.replace(">","/instance1>"),
@@ -474,3 +475,6 @@ def test_event_instance(graph,reset=False):
     result = result and bzu.query_FileCompare(graph,message="test_event_instance DELETE INSTANCE",show_diff=True)
     logger.info("ENDING TEST_EVENT_INSTANCE")
     return result
+
+def dummyActionMethod():
+    pass

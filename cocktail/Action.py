@@ -89,7 +89,7 @@ class Action(InteractionPattern):
         This method is not available if the Action is inferred.
         Posts the Action to the rdf store, together with its forced bindings.
         """
-        #assert not self.isInferred()
+        assert not self.isInferred()
         sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_ACTION_TEMPLATE.format(self._type.value),fB_values=self._bindings)
         self._sepa.update(sparql,fB)
         
@@ -108,9 +108,8 @@ class Action(InteractionPattern):
         TODO This method is not available if the Action is inferred.
         Subscribe to action requests
         """
-        #assert not self.isInferred()
+        assert not self.isInferred()
         # threading.start_new_thread(self._action_task,args)
-        pass
         
     def disable(self):
         """
@@ -118,15 +117,14 @@ class Action(InteractionPattern):
         Unsubscribe to action requests. Action will be disabled until 'enable' is called again
         """
         # unsubscribe to action requests
-        #assert not self.isInferred()
-        pass
+        assert not self.isInferred()
         
     def post_output(self,bindings):
         """
         TODO This method is not available if the Action is inferred.
         Post to rdf store the output of an action computation
         """
-        #assert not self.isInferred()
+        assert not self.isInferred()
         if (self._type is AType.OUTPUT_ACTION) or (self._type is AType.IO_ACTION):
             sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_INSTANCE_OUTPUT,fB_values=bindings)
             self._sepa.update(sparql,fB)
@@ -139,7 +137,7 @@ class Action(InteractionPattern):
         self._post_timestamp("confirmation",instance)
     
     def _post_timestamp(self,ts_type,instance):
-        #assert not self.isInferred()
+        assert not self.isInferred()
         if (ts_type.lower() != "completion") and (ts_type.lower() != "confirmation"):
             raise ValueError
         sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_TS_TEMPLATE.format(ts_type.lower()),fB_values={"aInstance": instance})
@@ -222,5 +220,6 @@ class Action(InteractionPattern):
         
     def deleteInstance(self,instance):
         super().deleteInstance(instance)
+        assert not self.isInferred()
         sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_DELETE_ACTION_INSTANCE,fB_values={"aInstance": instance})
         self._sepa.update(sparql,fB)
