@@ -1,1 +1,0 @@
-{"head": {"vars": ["a", "b", "c"]}, "results": {"bindings": [{"a": {"type": "uri", "value": "http://a"}, "b": {"type": "uri", "value": "http://b"}, "c": {"datatype": "http://www.w3.org/2001/XMLSchema#integer", "type": "literal", "value": "1"}}]}}

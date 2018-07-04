@@ -36,6 +36,10 @@ class DataSchema:
     @property
     def bindings(self):
         return self._bindings
+        
+    @property
+    def uri(self):
+        return self._bindings["ds_uri"]
 
     def post(self):
         sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_DATASCHEMA,fB_values=self._bindings)

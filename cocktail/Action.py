@@ -68,6 +68,7 @@ class Action(InteractionPattern):
         else:
             self._type = AType.EMPTY_ACTION
         self._forProperties = forProperties
+        self._enable_subid = None
     
     @property
     def uri(self):
@@ -108,8 +109,13 @@ class Action(InteractionPattern):
         TODO This method is not available if the Action is inferred.
         Subscribe to action requests
         """
-        assert not self.isInferred()
-        # threading.start_new_thread(self._action_task,args)
+        if self._enable_subid is None:
+            assert not self.isInferred()
+            sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_QUERY_ACTION_INSTANCE,fB_values=self._bindings)
+            self._enable_subid = self._sepa.subscribe(sparql,fB=fB,alias=self.uri,handler=self._action_task)
+        else:
+            logger.message("{} already enabled".format(self.uri))
+        return self
         
     def disable(self):
         """
@@ -117,7 +123,12 @@ class Action(InteractionPattern):
         Unsubscribe to action requests. Action will be disabled until 'enable' is called again
         """
         # unsubscribe to action requests
-        assert not self.isInferred()
+        if self._enable_subid is not None:
+            assert not self.isInferred()
+            self._sepa.unsubscribe(self._enable_subid)
+            self._enable_subid = None
+        else:
+            logger.warning("{} already disabled".format(self.uri))
         
     def post_output(self,bindings):
         """
@@ -196,21 +207,28 @@ class Action(InteractionPattern):
         out_bindings["thing"] = bzu.uriFormat(query_thing["results"]["bindings"][0]["thing"]["value"])
         return Action(sepa,out_bindings,None)
     
-    @staticmethod
-    def newRequest(sepa,bindings,a_type):
+    def newRequest(self,bindings,confirm_handler=None,completion_handler=None,output_handler=None):
         """
         Used by clients, this method allows to ask to perform an action.
         'bindings' contains the information needed by the new-action-instance sparql
-        'a_type' is the corresponding AType enum item.
         Returns the instance uri.
         """
-        r_type = a_type.value
-        if a_type is AType.IO_ACTION:
-            r_type = AType.INPUT_ACTION.value
-        if a_type is AType.OUTPUT_ACTION:
-            r_type = AType.EMPTY_ACTION.value
-        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_ACTION_INSTANCE_TEMPLATE.format(r_type), fB_values=bindings)
-        sepa.update(sparql,fB)
+        assert self.isInferred()
+        if confirm_handler is not None:
+            # in case i'm interested in capturing the confirm flag
+            sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_QUERY_TS_TEMPLATE.format("confirmation"), fB_values={"aInstance": bindings["newAInstance"]})
+            self._sepa.subscribe(sparql,fB=fB,alias=bindings["newAInstance"],handler=self.confirm_handler)
+        if completion_handler is not None:
+            # in case i'm interested in capturing the completion flag
+            sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_QUERY_TS_TEMPLATE.format("completion"), fB_values={"aInstance": bindings["newAInstance"]})
+            self._sepa.subscribe(sparql,fB=fB,alias=bindings["newAInstance"],handler=self.completion_handler)
+        if output_handler is not None:
+            # in case i'm interested in capturing the output
+            sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_QUERY_INSTANCE_OUTPUT, fB_values={"instance": bindings["newAInstance"]})
+            self._sepa.subscribe(sparql,fB=fB,alias=bindings["newAInstance"],handler=self.output_handler)
+        req_type = AType.INPUT_ACTION.value if (self._type is AType.INPUT_ACTION or self._type is AType.IO_ACTION) else AType.EMPTY_ACTION.value
+        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_ACTION_INSTANCE_TEMPLATE.format(req_type), fB_values=bindings)
+        self._sepa.update(sparql,fB)
         return bindings["newAInstance"]
             
     def isInferred(self):

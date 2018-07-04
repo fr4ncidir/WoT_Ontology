@@ -99,3 +99,9 @@ class Blazegraph:
             else:
                 bSparql = bSparql.replace("?"+key,"'"+fB[key]["value"]+"'")
         return bSparql
+        
+    def subscribe(self,sparql,fB={},alias=None,handler=None):
+        self.query(sparql,fB=fB)
+        
+    def unsubscribe(self,subid):
+        pass

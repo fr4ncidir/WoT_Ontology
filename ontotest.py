@@ -22,7 +22,8 @@
 #  
 #  
 
-import blazegraph as bz
+from wrap_sepa import Sepa as Engine
+#from blazegraph import Blazegraph as Engine
 import yaml
 import json
 import sparql_utilities as bzu
@@ -41,7 +42,7 @@ def main(args):
             print("Abort")
             return 1
 
-    myBZ = bz.Blazegraph(ip=args["ip"],port=int(args["port"]))
+    myBZ = Engine(args["ip"],args["port"])
     test.reset_blazegraph(myBZ)
     
     if args["reset"]:
@@ -81,6 +82,6 @@ if __name__ == '__main__':
     import sys
     parser = argparse.ArgumentParser(description="Web Of Things ontology check")
     parser.add_argument("-ip", default="localhost", help="Blazegraph ip")
-    parser.add_argument("-port", default=9999, help="Blazegraph port")
+    parser.add_argument("-port", default=8888, help="Blazegraph port")
     parser.add_argument("--reset", action="store_true", help="Rebuild json outputs")
     sys.exit(main(vars(parser.parse_args())))

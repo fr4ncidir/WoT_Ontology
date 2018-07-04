@@ -23,7 +23,6 @@
 #  
 #  SEE THE README FOR EXPLANATIONS ON THE TESTS HERE AVAILABLE
 
-import blazegraph as bz
 import sparql_utilities as bzu
 import json
 import logging
@@ -357,7 +356,6 @@ def test_action_instance(graph,reset=False):
     
     # Adding the instances
     for action in actions:
-        action.set_action_task(lambda: None)
         bindings = {   "thing": action.getThing(),
                         "action": action.uri,
                         "newAInstance": action.uri.replace(">","/instance1>"),
@@ -365,7 +363,10 @@ def test_action_instance(graph,reset=False):
                         "newIData": action.uri.replace(">","/instance1/InputData>"),
                         "newIValue": "This is an input string",
                         "newIDS": action.uri.replace(">","/DataSchema/input>")}
-        instance = Action.newRequest(graph,bindings,action.type)
+        instance = action.newRequest(bindings)
+        
+        # Workaround for test functionality avoids isInferred exceptions
+        action.set_action_task(lambda: None)
 
         # Checking the instance
         result = result and bzu.query_CompareUpdate(graph,
@@ -384,7 +385,9 @@ def test_action_instance(graph,reset=False):
         if action.type == AType.INPUT_ACTION:
             bindings["newIData"] = action.uri.replace(">","/instance2/InputData>")
             bindings["newIValue"] = "This is a modified input string"
-        instance = Action.newRequest(graph,bindings,action.type)
+        # Workaround for test functionality avoids isInferred exceptions
+        action.set_action_task(None)
+        instance = action.newRequest(bindings)
 
         # Checking updates to instances are successful
         result = result and bzu.query_CompareUpdate(graph,
@@ -396,10 +399,14 @@ def test_action_instance(graph,reset=False):
             ignore=["aTS"])
         
         # Adding and checking Confirmation and Completion timestamps
+        # Workaround for test functionality avoids isInferred exceptions
+        action.set_action_task(lambda: None)
         result = result and add_action_instance_ts(graph,instance,action,reset)
         
         if action.type == AType.INPUT_ACTION:
             # Post output
+            # Workaround for test functionality avoids isInferred exceptions
+            action.set_action_task(None)
             action.post_output({"instance": instance,
                                 "oData": action.uri.replace(">","/instance2/OutputData"),
                                 "oValue": "my output value",
@@ -474,7 +481,5 @@ def test_event_instance(graph,reset=False):
     
     result = result and bzu.query_FileCompare(graph,message="test_event_instance DELETE INSTANCE",show_diff=True)
     logger.info("ENDING TEST_EVENT_INSTANCE")
+    reset_blazegraph(graph)
     return result
-
-def dummyActionMethod():
-    pass

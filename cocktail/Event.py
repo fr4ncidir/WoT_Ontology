@@ -44,6 +44,7 @@ class Event(InteractionPattern):
         else:
             self._type = EType.EMPTY_EVENT
         self._forProperties = forProperties
+        self._observation_subid = None
         
     def post(self):
         sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_EVENT_TEMPLATE.format(self._type.value),fB_values=self._bindings)
@@ -118,11 +119,20 @@ class Event(InteractionPattern):
         out_bindings["thing"] = bzu.uriFormat(query_thing["results"]["bindings"][0]["thing"]["value"])
         return Event(sepa,out_bindings)
     
-    @staticmethod
-    def observe(sepa,eventURI,handler):
+    def observe(self,handler):
         """
         Subscribes to event notifications coming from eventURI.
         'handler' deals with the task to be performed in such situation.
         """
-        # TODO subscribes to notification and does something
-        pass
+        if self._observation_subid is None:
+            sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_QUERY_EVENT_INSTANCE,fB_values=self._bindings)
+            self._observation_subid = self._sepa.subscribe(sparql,fB=fB,alias=self.uri,handler=handler)
+        else:
+            logger.message("{} already observed".format(self.uri))
+        
+    def stop_observing(self):
+        if self._observation_subid is not None:
+            self._sepa.unsubscribe(self._observation.subid)
+            self._observation.subid = None
+        else:
+            logger.warning("Observation of {} already stopped".format(self.uri))
