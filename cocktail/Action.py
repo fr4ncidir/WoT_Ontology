@@ -102,6 +102,7 @@ class Action(InteractionPattern):
             sparql = sparql.replace("?ip wot:forProperty ?property","?ip wot:forProperty {}".format(", ".join(properties)))
             sparql = sparql.replace("?property a wot:Property"," a wotProperty. ".join(properties)+" a wot:Property")
             self._sepa.update(sparql,fB)
+        print("Post performed")
         return self
         
     def enable(self):
@@ -115,6 +116,7 @@ class Action(InteractionPattern):
             self._enable_subid = self._sepa.subscribe(sparql,fB=fB,alias=self.uri,handler=self._action_task)
         else:
             logger.message("{} already enabled".format(self.uri))
+        print("Action enabled")
         return self
         
     def disable(self):

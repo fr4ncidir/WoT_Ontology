@@ -91,6 +91,7 @@ def diff_JsonQuery(jA,jB,ignore_val=[],show_diff=False,log_message=""):
     for bindingA in jA["results"]["bindings"]:
         found = False
         for bindingB in jB["results"]["bindings"]:
+            print("bindingA: {}\nbindingB: {}----".format(bindingA,bindingB),end="")
             for key in bindingA:
                 ignored = key in ignore_val
                 if ((key in bindingB) and (bindingA[key]["type"]==bindingB[key]["type"]) and
@@ -98,6 +99,7 @@ def diff_JsonQuery(jA,jB,ignore_val=[],show_diff=False,log_message=""):
                     found = True
                 else:
                     found = False
+                    print("not found")
                     break
             if found:
                 break

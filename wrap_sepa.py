@@ -31,7 +31,8 @@ class Sepa:
     
     def __init__(self,ip="localhost",http_port=8000,ws_port=9000,security={"secure": False, "tokenURI": None, "registerURI": None}):
         self._ip = ip
-        self._port = port
+        self._http_port = http_port
+        self._ws_port = ws_port
         self._client = SEPAClient(lastSEPA=True)
         self._security = security
         
@@ -55,7 +56,7 @@ class Sepa:
         self._security = security
         
     def query(self,sparql,fB={},destination=None):
-        code,output = self._client.query("http://{}:{}/query".format(self._ip,self._port),
+        code,output = self._client.query("http://{}:{}/query".format(self._ip,self._http_port),
                             self._bound_sparql(sparql,fB),
                             secure=self._security["secure"],
                             tokenURI=self._security["tokenURI"],
@@ -67,7 +68,7 @@ class Sepa:
         return output
         
     def update(self,sparql,fB={}):
-        code,output = self._client.update("http://{}:{}/update".format(self._ip,self._port),
+        code,output = self._client.update("http://{}:{}/update".format(self._ip,self._http_port),
                                             self._bound_sparql(sparql,fB),
                                             secure=self._security["secure"],
                                             tokenURI=self._security["tokenURI"],
@@ -90,7 +91,7 @@ class Sepa:
         return bSparql
 
     def subscribe(self,sparql,fB={},alias=None,handler=None):
-        return self._client.subscribe("http://{}:{}/subscribe".format(self._ip,self._port),
+        return self._client.subscribe("ws://{}:{}/subscribe".format(self._ip,self._ws_port),
                                         self._bound_sparql(sparql,fB),
                                         alias,
                                         handler,

@@ -27,15 +27,20 @@
 #      | | | | | | | | | | (_| | |
 #      |_| |_| |_|_|_| |_|\__, |_|
 #                         |___/
+import sys
+sys.path.append("C:/Users/Francesco/Documents/Work/WoT_Ontology")
 
 from wrap_sepa import Sepa as Engine
 from time import sleep
-from datetime.datetime import utcnow
+from datetime import datetime
 from cocktail.Thing import Thing
 from cocktail.DataSchema import DataSchema
 from cocktail.Property import Property
 from cocktail.Action import Action
 from cocktail.Event import Event
+
+import sparql_utilities as bzu
+import constants as cst
 
 xsd_string = "xsd:string"
 xsd_integer = "xsd:integer"
@@ -87,7 +92,8 @@ def main(args):
                     "newValue": "Hello World!"}).post()
     print("Property added to thing!")
                     
-    action1 = Action(graph,{"td": thing_descriptor,
+    action1 = Action(graph,{"thing": thing1.uri,
+                            "td": thing_descriptor,
                             "action": "<http://MyFirstWebThing.com/Action1>",
                             "newName": "Thing1_Action1",
                             "ids": ds1.uri,
@@ -95,7 +101,8 @@ def main(args):
                             lambda: print("ACTION 1 HANDLER RUN")).post().enable()
     print("Action1 added to thing!")
     
-    action2 = Action(graph,{"td": thing_descriptor,
+    action2 = Action(graph,{"thing": thing1.uri,
+                            "td": thing_descriptor,
                             "action": "<http://MyFirstWebThing.com/Action2>",
                             "newName": "Thing1_Action2",
                             "ods": ds3.uri},
@@ -110,32 +117,37 @@ def main(args):
     print("Event added to thing!")
           
     
-    input("Continue?")
+    graph.query("select * where {?a ?b ?c}",destination="./missing.txt")
+    graph.update("delete where {?a ?b ?c}")
+    graph.update(bzu.file_to_string(cst.SPARQL_INSERT_THING1))
+    graph.query("select * where {?a ?b ?c}",destination="./res_thing1.txt")
+    bzu.compare_queries("./missing.txt","./res_thing1.txt",show_diff=True)
     
-    print("Now I'll trigger 10 events, one every 10 seconds. ")
-    for trigger_event1 in range(10):
-        print("... Firing event {}".format(trigger_event1))
-        instance = event1.notify({ "event": event1.uri,
-                        "newEInstance": event1.uri.replace(">","/instance{}>".format(trigger_event1)),
-                        "newOData": event1.uri.replace(">","/data{}>".format(trigger_event1)),
-                        "newValue": str(utcnow()).replace(" ","T")+"Z"),
-                        "newDS": ds4.uri})
-        sleep(10)
-        print("Deleting old event instance...")
-        event1.deleteInstance(instance)
-    print("Stopping triggering events!")
+    # input("Continue?")
     
-    print("Now I'll disable the two actions.")
-    action1.disable()
-    action2.disable()
-    print("Actions disabled!")
+    # print("Now I'll trigger 10 events, one every 10 seconds. ")
+    # for trigger_event1 in range(10):
+        # print("... Firing event {}".format(trigger_event1))
+        # instance = event1.notify({ "event": event1.uri,
+                        # "newEInstance": event1.uri.replace(">","/instance{}>".format(trigger_event1)),
+                        # "newOData": event1.uri.replace(">","/data{}>".format(trigger_event1)),
+                        # "newValue": str(datetime.utcnow()).replace(" ","T")+"Z",
+                        # "newDS": ds4.uri})
+        # sleep(10)
+        # print("Deleting old event instance...")
+        # event1.deleteInstance(instance)
+    # print("Stopping triggering events!")
     
-    print("Now I'll remove the thing.")
-    thing1.delete()
-    print("Thing deleted! Only DataSchemas should be remaining in the RDF store.")
+    # print("Now I'll disable the two actions.")
+    # action1.disable()
+    # action2.disable()
+    # print("Actions disabled!")
+    
+    # print("Now I'll remove the thing.")
+    # thing1.delete()
+    # print("Thing deleted! Only DataSchemas should be remaining in the RDF store.")
     
     return 0
 
 if __name__ == '__main__':
-    import sys
     sys.exit(main(sys.argv))

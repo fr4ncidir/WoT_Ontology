@@ -35,9 +35,8 @@ def main(args):
     graph = Engine()
     
     while True:
-        print("> ",end="")
-        print("ciao")
-        break
+        command = input("> ")
+        
     return 0
 
 if __name__ == '__main__':

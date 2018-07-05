@@ -67,3 +67,7 @@ class Thing:
     @property
     def bindings(self):
         return self._bindings
+        
+    @property
+    def uri(self):
+        return self._bindings["thing"]
