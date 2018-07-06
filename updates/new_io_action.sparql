@@ -13,7 +13,9 @@ ADD_IO_ACTION:
                 wot:hasAction ?action.
             ?action rdf:type wot:InteractionPattern, wot:Action;
                     wot:hasName ?newName;
+                    wot:hasDataSchema ?ids;
                     wot:hasInputDataSchema ?ids;
+                    wot:hasDataSchema ?ods;
                     wot:hasOutputDataSchema ?ods}
         where {
             ?td rdf:type wot:ThingDescription.

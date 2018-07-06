@@ -42,7 +42,7 @@ def main(args):
             print("Abort")
             return 1
 
-    myBZ = Engine(args["ip"],args["port"])
+    myBZ = Engine(ip=args["ip"])
     test.reset_blazegraph(myBZ)
     
     if args["reset"]:

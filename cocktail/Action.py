@@ -100,7 +100,7 @@ class Action(InteractionPattern):
             for prop in self._forProperties:
                 properties.append(prop.bindings["property"])
             sparql = sparql.replace("?ip wot:forProperty ?property","?ip wot:forProperty {}".format(", ".join(properties)))
-            sparql = sparql.replace("?property a wot:Property"," a wotProperty. ".join(properties)+" a wot:Property")
+            sparql = sparql.replace("?property a wot:Property"," a wot:Property. ".join(properties)+" a wot:Property")
             self._sepa.update(sparql,fB)
         print("Post performed")
         return self

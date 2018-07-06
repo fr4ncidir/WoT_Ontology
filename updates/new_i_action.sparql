@@ -13,6 +13,7 @@ ADD_I_ACTION:
                 wot:hasAction ?action.
             ?action rdf:type wot:InteractionPattern, wot:Action;
                     wot:hasName ?newName;
+                    wot:hasDataSchema ?ids;
                     wot:hasInputDataSchema ?ids}
         where {
             ?td rdf:type wot:ThingDescription.

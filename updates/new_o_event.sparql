@@ -14,6 +14,7 @@ ADD_O_EVENT:
                 wot:hasEvent ?event.
             ?event  rdf:type wot:InteractionPattern, wot:Event;
                     wot:hasName ?eName;
+                    wot:hasDataSchema ?ods;
                     wot:hasOutputDataSchema ?ods}
         where { 
             ?td rdf:type wot:ThingDescription.

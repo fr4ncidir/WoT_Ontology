@@ -105,3 +105,9 @@ class Blazegraph:
         
     def unsubscribe(self,subid):
         pass
+        
+    def clear(self):
+        return self.update("delete where {?a ?b ?c}")
+        
+    def query_all(self):
+        return self.query("select * where {?a ?b ?c}")

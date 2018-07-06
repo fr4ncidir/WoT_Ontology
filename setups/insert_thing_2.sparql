@@ -75,10 +75,10 @@ insert data {
 											wot:hasDataSchema <http://MySecondWebThing.com/Action1/DataSchema/input>, <http://MySecondWebThing.com/Action1/DataSchema/output>;
 											wot:hasInputDataSchema <http://MySecondWebThing.com/Action1/DataSchema/input>;
 											wot:hasOutputDataSchema <http://MySecondWebThing.com/Action1/DataSchema/output>.
-  <http://MySecondWebThing.com/Action1/DataSchema/input> rdf:type wot:DataSchema, wot:InputDataSchema;
+  <http://MySecondWebThing.com/Action1/DataSchema/input> rdf:type wot:DataSchema;
 														 wot:hasFieldSchema foaf: .
   foaf: rdf:type wot:FieldSchema, wot:OntologyURI.
-  <http://MySecondWebThing.com/Action1/DataSchema/output> 	rdf:type wot:DataSchema, wot:OutputDataSchema;
+  <http://MySecondWebThing.com/Action1/DataSchema/output> 	rdf:type wot:DataSchema;
 															wot:hasFieldSchema xsd:string.
   xsd:string rdf:type wot:FieldSchema, xsd:_.
   
@@ -87,7 +87,7 @@ insert data {
 										wot:hasName 'Thing2_Event1';
 										wot:hasDataSchema <http://MySecondWebThing.com/Event1/DataSchema/output>;
 										wot:hasOutputDataSchema <http://MySecondWebThing.com/Event1/DataSchema/output>.
-  <http://MySecondWebThing.com/Event1/DataSchema/output> rdf:type wot:DataSchema, wot:OutputDataSchema;
+  <http://MySecondWebThing.com/Event1/DataSchema/output> rdf:type wot:DataSchema;
 														 wot:hasFieldSchema xsd:integer.
   xsd:integer rdf:type wot:FieldSchema, xsd:_.
   
@@ -96,7 +96,7 @@ insert data {
 										wot:hasName 'Thing2_Event2';
 										wot:hasDataSchema <http://MySecondWebThing.com/Event2/DataSchema/output>;
 										wot:hasOutputDataSchema <http://MySecondWebThing.com/Event2/DataSchema/output>.
-  <http://MySecondWebThing.com/Event2/DataSchema/output> rdf:type wot:DataSchema, wot:OutputDataSchema;
+  <http://MySecondWebThing.com/Event2/DataSchema/output> rdf:type wot:DataSchema;
 														 wot:hasFieldSchema <http://www.google.it>.
   <http://www.google.it> rdf:type wot:FieldSchema, wot:ResourceURI.
   
@@ -111,7 +111,7 @@ insert data {
 											wot:hasPropertyData <http://MySecondWebThing.com/Property1/PropertyData>.
   <http://MySecondWebThing.com/Property1/PropertyData> rdf:type wot:PropertyData, dul:InformationObject;
 													   dul:hasDataValue '{"json":"content"}'.
-  <http://MySecondWebThing.com/Property1/DataSchema/property> rdf:type wot:DataSchema, wot:PropertyDataSchema;
+  <http://MySecondWebThing.com/Property1/DataSchema/property> rdf:type wot:DataSchema;
 															  wot:hasFieldSchema xsd:Literal.
   xsd:Literal rdf:type wot:FieldSchema, xsd:_.
   
@@ -126,7 +126,7 @@ insert data {
 											wot:hasPropertyData <http://MySecondWebThing.com/Property2/PropertyData>.
   <http://MySecondWebThing.com/Property2/PropertyData> rdf:type wot:PropertyData, dul:InformationObject;
 													   dul:hasDataValue 'Whatever kind of binary content'.
-  <http://MySecondWebThing.com/Property2/DataSchema/property> rdf:type wot:DataSchema, wot:PropertyDataSchema;
+  <http://MySecondWebThing.com/Property2/DataSchema/property> rdf:type wot:DataSchema;
 															  wot:hasFieldSchema xsd:Literal.
   # xsd:Literal rdf:type wot:FieldSchema, xsd:_.
   <http://MySecondWebThing.com/Action1> wot:forProperty <http://MySecondWebThing.com/Property1>, <http://MySecondWebThing.com/Property2>.

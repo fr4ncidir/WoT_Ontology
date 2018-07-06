@@ -63,10 +63,10 @@ INSERT DATA {
 										wot:hasDataSchema <http://MyFirstWebThing.com/Action1/DataSchema/input>, <http://MyFirstWebThing.com/Action1/DataSchema/output>;
 										wot:hasInputDataSchema <http://MyFirstWebThing.com/Action1/DataSchema/input>;
 										wot:hasOutputDataSchema <http://MyFirstWebThing.com/Action1/DataSchema/output>.
-  <http://MyFirstWebThing.com/Action1/DataSchema/input> rdf:type wot:DataSchema, wot:InputDataSchema;
+  <http://MyFirstWebThing.com/Action1/DataSchema/input> rdf:type wot:DataSchema;
 														wot:hasFieldSchema xsd:string.
   xsd:string rdf:type wot:FieldSchema, xsd:_.
-  <http://MyFirstWebThing.com/Action1/DataSchema/output> 	rdf:type wot:DataSchema, wot:OutputDataSchema;
+  <http://MyFirstWebThing.com/Action1/DataSchema/output> 	rdf:type wot:DataSchema;
 															wot:hasFieldSchema <http://www.wikipedia.it>.
   <http://www.wikipedia.it> rdf:type wot:FieldSchema, wot:ResourceURI.
 	
@@ -75,7 +75,7 @@ INSERT DATA {
 										wot:hasName 'Thing1_Action2';
 										wot:hasDataSchema <http://MyFirstWebThing.com/Action2/DataSchema/output>;
 										wot:hasOutputDataSchema <http://MyFirstWebThing.com/Action2/DataSchema/output>.
-  <http://MyFirstWebThing.com/Action2/DataSchema/output> 	rdf:type wot:DataSchema, wot:OutputDataSchema;
+  <http://MyFirstWebThing.com/Action2/DataSchema/output> 	rdf:type wot:DataSchema;
 															wot:hasFieldSchema xsd:integer.
   xsd:integer rdf:type wot:FieldSchema, xsd:_.
   
@@ -84,7 +84,7 @@ INSERT DATA {
 										wot:hasName 'Thing1_Event1';
 										wot:hasDataSchema <http://MyFirstWebThing.com/Event1/DataSchema/output>;
 										wot:hasOutputDataSchema <http://MyFirstWebThing.com/Event1/DataSchema/output>.
-  <http://MyFirstWebThing.com/Event1/DataSchema/output> rdf:type wot:DataSchema, wot:OutputDataSchema;
+  <http://MyFirstWebThing.com/Event1/DataSchema/output> rdf:type wot:DataSchema;
 														wot:hasFieldSchema xsd:dateTimeStamp.
   xsd:dateTimeStamp rdf:type wot:FieldSchema, xsd:_.
   
@@ -99,7 +99,7 @@ INSERT DATA {
 											wot:hasPropertyData <http://MyFirstWebThing.com/Property1/PropertyData>.
   <http://MyFirstWebThing.com/Property1/PropertyData> rdf:type wot:PropertyData, dul:InformationObject;
 													  dul:hasDataValue 'Hello World!'.
-  <http://MyFirstWebThing.com/Property1/DataSchema/property> rdf:type wot:DataSchema, wot:PropertyDataSchema;
+  <http://MyFirstWebThing.com/Property1/DataSchema/property> rdf:type wot:DataSchema;
 															 wot:hasFieldSchema xsd:string.
   <http://MyFirstWebThing.com/Action2> wot:forProperty <http://MyFirstWebThing.com/Property1>.
   # xsd:string rdf:type wot:FieldSchema, xsd:_.										

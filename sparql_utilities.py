@@ -77,7 +77,14 @@ def get_yaml_data(yaml_file,fB_values={}):
         if binding in fB:
             fB[binding]["value"] = fB_values[binding]
     return sparql,fB
-    
+
+def cfr_bindings(bA,bB,ignorance):
+    for key in bA:
+        if ((not (key in bB)) or ((bA[key]["type"] != bB[key]["type"]) or 
+            ((not (key in ignorance)) and (bA[key]["value"] != bB[key]["value"])))):
+            return False
+    return True
+
 def diff_JsonQuery(jA,jB,ignore_val=[],show_diff=False,log_message=""):
     """
     Compares json jA towards jB. You can ignore bindings values in 'ignore_val'.
@@ -89,32 +96,21 @@ def diff_JsonQuery(jA,jB,ignore_val=[],show_diff=False,log_message=""):
     result = True
     diff = []
     for bindingA in jA["results"]["bindings"]:
-        found = False
+        eq_binding = False
         for bindingB in jB["results"]["bindings"]:
-            print("bindingA: {}\nbindingB: {}----".format(bindingA,bindingB),end="")
-            for key in bindingA:
-                ignored = key in ignore_val
-                if ((key in bindingB) and (bindingA[key]["type"]==bindingB[key]["type"]) and
-                        ((ignored) or ((not ignored) and (bindingA[key]["value"]==bindingB[key]["value"])))):
-                    found = True
-                else:
-                    found = False
-                    print("not found")
-                    break
-            if found:
+            eq_binding = cfr_bindings(bindingA,bindingB,ignore_val)
+            if eq_binding:
                 break
-        if not found:
-            if not show_diff:
-                logging.error("{} - Binding\n{}\n not found!".format(log_message,bindingA))
-                return False
-            else:
-                diff.append(bindingA)
-                result = False
+        if not eq_binding:
+            diff.append(bindingA)
+            result = False
     if show_diff and len(diff)>0: 
-        diff_json = jB
-        diff_json["bindings"]=diff
+        jdiff=json.loads('{}')
+        jdiff["head"]={"vars": jA["head"]["vars"]}
+        jdiff["results"]={"bindings": diff}
+        #jdiff["results"]["bindings"] = diff
         print("{} Differences".format(log_message))
-        tablify(json.dumps(diff_json))
+        tablify(json.dumps(jdiff))
     return result
 
 def compare_queries(i_jA,i_jB,show_diff=False,ignore_val=[]):
@@ -162,7 +158,7 @@ def compare_queries(i_jA,i_jB,show_diff=False,ignore_val=[]):
 def tablify(json_string):
     # calls tablaze!
     import subprocess
-    p = subprocess.Popen(["python","tablaze.py","stdin"],stdin=subprocess.PIPE)
+    p = subprocess.Popen(["python3","tablaze.py","stdin"],stdin=subprocess.PIPE)
     p.communicate(input=str.encode(json_string))
 
 def query_CompareUpdate(graph,

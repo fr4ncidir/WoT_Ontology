@@ -35,12 +35,16 @@ class Sepa:
         self._ws_port = ws_port
         self._client = SEPAClient(lastSEPA=True)
         self._security = security
+        self._runtime_prefixes = []
         
     def getIp(self):
         return self._ip
         
     def getPort(self):
         return self._port
+        
+    def addPrefix(self,label,prefix):
+        self._runtime_prefixes.append("prefix {}: {}".format(label,prefix))
         
     @property
     def client(self):
@@ -83,6 +87,9 @@ class Sepa:
         The complete SPARQL is returned.
         """
         bSparql = sparql
+        for prefix in self._runtime_prefixes:
+            if not (prefix in sparql.lower()):
+                bSparql = prefix+"\n"+bSparql
         for key in fB.keys():
             if ((fB[key]["type"]=="uri") or (fB[key]["value"]=="UNDEF")):
                 bSparql = bSparql.replace("?"+key,fB[key]["value"])
@@ -101,3 +108,9 @@ class Sepa:
     
     def unsubscribe(self,subid):
         self._client.unsubscribe(subid,self._securtity["secure"])
+        
+    def clear(self):
+        return self.update("delete where {?a ?b ?c}")
+        
+    def query_all(self):
+        return self.query("select * where {?a ?b ?c}")
