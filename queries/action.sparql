@@ -8,7 +8,9 @@
 
 DESCRIBE_ACTION:
     sparql: "
-        select * 
+        select ?action ?aName ?iDS ?iFS ?iFS_type
+                ?oDS ?oFS ?oFS_type
+                (group_concat(?props; separator=';\\n') as ?property)
         where {
             ?action rdf:type wot:Action;
                     wot:hasName ?aName.
@@ -22,9 +24,10 @@ DESCRIBE_ACTION:
                 ?oDS wot:hasFieldSchema ?oFS.
                 ?oFS rdf:type ?oFS_type.
                 filter (?oFS_type != wot:FieldSchema) }.
-            optional {?action wot:forProperty ?property}
+            optional {?action wot:forProperty ?props}
             values (?action) {(?action_uri)}
-        }"
+        }
+        group by ?action ?aName ?iDS ?iFS ?iFS_type ?oDS ?oFS ?oFS_type"
     forcedBindings:
         action_uri:
             type: uri

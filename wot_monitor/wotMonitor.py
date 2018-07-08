@@ -31,11 +31,11 @@
 import sys
 import rlcompleter
 import readline
-from monitoring import discovery
+from monitoring import *
 from wrap_sepa import Sepa as Engine
 
 commands = ["discover", "describe", "new", "observe", "request", "exit", "back"]
-items = ["things", "actions", "events", "properties", "dataschemas", "exit", "back"]
+items = ["things", "actions", "events", "properties", "dataschemas", "i-patterns", "exit", "back"]
 instances = ["exit","back"]
 comps = None
 
@@ -60,11 +60,13 @@ def item_inspect(sepa,command,method):
     if item != "back":
         if not (item in items):
             print("{}: unknown item!".format(item))
+            return []
         else:
-            instances = method(sepa,item)
+            return method(sepa,item,instances)
 
 def main(args):
     global comps
+    global instances
     readline.parse_and_bind("tab: complete")
     readline.set_completer(complete)
     
@@ -79,7 +81,7 @@ def main(args):
         elif command == "exit":
             exit_procedure()
         elif command == "discover":
-            item_inspect(sepa,command,discovery)
+            instances += item_inspect(sepa,command,discovery)
         elif command == "describe":
             item_inspect(sepa,command,describe)
         elif command == "new":

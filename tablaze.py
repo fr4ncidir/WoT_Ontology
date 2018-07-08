@@ -62,7 +62,10 @@ def main(args):
                     for key in prefixes.keys():
                         # prefix substitution
                         nice_value = nice_value.replace(prefixes[key],key+":")
-                tableLine.append("({}) {}".format(binding[v]["type"],nice_value))
+                if nice_value != "":
+                    tableLine.append("({}) {}".format(binding[v]["type"],nice_value))
+                else:
+                    tableLine.append("")
             else:
                 # special case: absent binding
                 tableLine.append("")

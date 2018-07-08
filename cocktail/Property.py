@@ -25,6 +25,7 @@
 from cocktail.InteractionPattern import InteractionPattern
 import sparql_utilities as bzu
 import constants as cts
+import json
 
 class Property(InteractionPattern):
     """
@@ -66,3 +67,13 @@ class Property(InteractionPattern):
     def getBindingList():
         _,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_PROPERTY)
         return fB.keys()
+
+    @staticmethod
+    def discover(sepa,prop="UNDEF",nice_output=False):
+        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_QUERY_PROPERTY,fB_values={"property_uri":prop})
+        d_output = sepa.query(sparql,fB=fB)
+        if nice_output:
+            bzu.tablify(json.dumps(d_output))
+        if ((prop != "UNDEF") and (len(d_output["results"]["bindings"])>1)):
+            raise Exception("Property discovery gave more than one result")
+        return d_output

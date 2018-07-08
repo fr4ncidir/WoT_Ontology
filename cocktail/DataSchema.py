@@ -24,6 +24,7 @@
 
 import constants as cst
 import sparql_utilities as bzu
+import json
 
 class DataSchema:
     """
@@ -52,8 +53,9 @@ class DataSchema:
         return fB.keys()
     
     @staticmethod
-    def discover(sepa,nice_output):
-        d_output = sepa.query(cts.PATH_SPARQL_QUERY_DATASCHEMA)
+    def discover(sepa,ds="UNDEF",nice_output=False):
+        sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_QUERY_DATASCHEMA,fB_values={"ds_force": ds})
+        d_output = sepa.query(sparql,fB)
         if nice_output:
             bzu.tablify(json.dumps(d_output))
         return d_output
