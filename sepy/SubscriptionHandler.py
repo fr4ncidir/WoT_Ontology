@@ -2,15 +2,15 @@
 
 # global requirements
 import logging
+from abc import abstractmethod
 
 
-class BasicHandler:
-
-    """A simple example of an Handler class"""
+class SubscriptionHandler:
+    """A simple subscription handler class. It's an abstract class, so just extend it and override
+    the method 'handle'"""
     
     # constructor
     def __init__(self, kp=None):
-
         """This is the constructor for the example handler"""
 
         # get a logger
@@ -22,7 +22,7 @@ class BasicHandler:
 
 
     # handle notifications
+    @abstractmethod
     def handle(self, added,removed):
-
         # print the notification
         self.logger.debug("=== BasicHandler::handle\nreceived the following added: {}\nand the following removed: {}".format(added,removed))

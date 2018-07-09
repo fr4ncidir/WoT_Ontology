@@ -48,35 +48,35 @@ def notify_result(name,result):
         logging.error("{} - {}".format(name,result))
     return result
 
-def file_to_string(filepath,char_filter="#"):
-    """
-    Takes a path to file, returns a string containing the file without lines 
-    starting with a specific character. Default is '#'
-    """
-    # Opening file and reading all lines.
-    with open(filepath,"r") as myfile:
-        lines = myfile.readlines()
-    # Removing the lines beginning with the filter character.
-    filtered = list(filter(lambda line: line[0]!=char_filter,lines))
-    return "".join(filtered)
+# def file_to_string(filepath,char_filter="#"):
+    # """
+    # Takes a path to file, returns a string containing the file without lines 
+    # starting with a specific character. Default is '#'
+    # """
+    # # Opening file and reading all lines.
+    # with open(filepath,"r") as myfile:
+        # lines = myfile.readlines()
+    # # Removing the lines beginning with the filter character.
+    # filtered = list(filter(lambda line: line[0]!=char_filter,lines))
+    # return "".join(filtered)
     
-def get_yaml_data(yaml_file,fB_values={}):
-    """
-    yaml_file parameter is the path to a ysap file.
-    fB_values parameter can force values from the defaults in the yaml_file
-    The couple SPARQL string, forced binding dictionary is given in return.
-    """
-    textfile = file_to_string(yaml_file)
-    yaml_raw = yaml.load(textfile)
-    yaml_obj = yaml.dump(yaml_raw)
-    yaml_root = yaml_obj[:yaml_obj.index(":")]
-    sparql = cst.SPARQL_PREFIXES + yaml_raw[yaml_root]["sparql"]
-    fB = yaml_raw[yaml_root]["forcedBindings"]
-    # forcing bindings available in fB_values
-    for binding in fB_values.keys():
-        if binding in fB:
-            fB[binding]["value"] = fB_values[binding]
-    return sparql,fB
+# def get_yaml_data(yaml_file,fB_values={}):
+    # """
+    # yaml_file parameter is the path to a .sparql file.
+    # fB_values parameter can force values from the defaults in the yaml_file
+    # The couple SPARQL string, forced binding dictionary is given in return.
+    # """
+    # textfile = file_to_string(yaml_file)
+    # yaml_raw = yaml.load(textfile)
+    # yaml_obj = yaml.dump(yaml_raw)
+    # yaml_root = yaml_obj[:yaml_obj.index(":")]
+    # sparql = cst.SPARQL_PREFIXES + yaml_raw[yaml_root]["sparql"]
+    # fB = yaml_raw[yaml_root]["forcedBindings"]
+    # # forcing bindings available in fB_values
+    # for binding in fB_values.keys():
+        # if binding in fB:
+            # fB[binding]["value"] = fB_values[binding]
+    # return sparql,fB
 
 def cfr_bindings(bA,bB,ignorance):
     for key in bA:
@@ -113,53 +113,53 @@ def diff_JsonQuery(jA,jB,ignore_val=[],show_diff=False,log_message=""):
         tablify(json.dumps(jdiff))
     return result
 
-def compare_queries(i_jA,i_jB,show_diff=False,ignore_val=[]):
-    """
-    This function compares two json outputs of a SPARQL query.
-    jA, jB params are the two json objects containing the results of the query.
-    They may also be paths to json files.
-    show_diff param, usually false, when set to true will show the entries that
-    A has, but not B;
-    B has, but not A.
-    A boolean is returned, to notify whether jA==jB or not.
-    You can ignore the binding value by specifying its name in the ignore_val list. 
-    Ignoring the value means that the binding must be there, but that you don't care about its
-    actual value.
-    """
-    # Dealing with paths vs json objects as arguments
-    if isinstance(i_jA,str) and os.path.isfile(i_jA):
-        with open(i_jA,"r") as fA:
-            jA = json.load(fA)
-    else:
-        jA = i_jA
-    if isinstance(i_jB,str) and os.path.isfile(str(i_jB)):
-        with open(i_jB,"r") as fB:
-            jB = json.load(fB)
-    else:
-        jB = i_jB
+# def compare_queries(i_jA,i_jB,show_diff=False,ignore_val=[]):
+    # """
+    # This function compares two json outputs of a SPARQL query.
+    # jA, jB params are the two json objects containing the results of the query.
+    # They may also be paths to json files.
+    # show_diff param, usually false, when set to true will show the entries that
+    # A has, but not B;
+    # B has, but not A.
+    # A boolean is returned, to notify whether jA==jB or not.
+    # You can ignore the binding value by specifying its name in the ignore_val list. 
+    # Ignoring the value means that the binding must be there, but that you don't care about its
+    # actual value.
+    # """
+    # # Dealing with paths vs json objects as arguments
+    # if isinstance(i_jA,str) and os.path.isfile(i_jA):
+        # with open(i_jA,"r") as fA:
+            # jA = json.load(fA)
+    # else:
+        # jA = i_jA
+    # if isinstance(i_jB,str) and os.path.isfile(str(i_jB)):
+        # with open(i_jB,"r") as fB:
+            # jB = json.load(fB)
+    # else:
+        # jB = i_jB
         
-    # Checking if every variable in jA is also present in jB and vice versa
-    setVarA = set(jA["head"]["vars"])
-    setVarB = set(jB["head"]["vars"])
-    if setVarA != setVarB:
-        for item in (setVarA-setVarB):
-            logging.error("A->B Variable '{}'  not found!".format(item))
-        for item in (setVarB-setVarA):
-            logging.error("B->A Variable '{}'  not found!".format(item))
-        return False
+    # # Checking if every variable in jA is also present in jB and vice versa
+    # setVarA = set(jA["head"]["vars"])
+    # setVarB = set(jB["head"]["vars"])
+    # if setVarA != setVarB:
+        # for item in (setVarA-setVarB):
+            # logging.error("A->B Variable '{}'  not found!".format(item))
+        # for item in (setVarB-setVarA):
+            # logging.error("B->A Variable '{}'  not found!".format(item))
+        # return False
             
-    # A->B
-    # Check if every binding in A exists also in B
-    result = diff_JsonQuery(jA,jB,show_diff=show_diff,ignore_val=ignore_val,log_message="A->B")
-    # B->A
-    result = result and diff_JsonQuery(jB,jA,show_diff=show_diff,ignore_val=ignore_val,log_message="B->A")
-    return result
+    # # A->B
+    # # Check if every binding in A exists also in B
+    # result = diff_JsonQuery(jA,jB,show_diff=show_diff,ignore_val=ignore_val,log_message="A->B")
+    # # B->A
+    # result = result and diff_JsonQuery(jB,jA,show_diff=show_diff,ignore_val=ignore_val,log_message="B->A")
+    # return result
 
-def tablify(json_string):
-    # calls tablaze!
-    import subprocess
-    p = subprocess.Popen(["python3","tablaze.py","stdin"],stdin=subprocess.PIPE)
-    p.communicate(input=str.encode(json_string))
+# def tablify(json_string):
+    # # calls tablaze!
+    # import subprocess
+    # p = subprocess.Popen(["python3","tablaze.py","stdin"],stdin=subprocess.PIPE)
+    # p.communicate(input=str.encode(json_string))
 
 def query_CompareUpdate(graph,
                         query_path,

@@ -40,7 +40,9 @@ class DefaultHandler(SubscriptionHandler):
             self._subHandler(added,removed)
 
 class Sepa:
-    
+    """
+    This is the High-level class used to develop a client for SEPA.
+    """
     def __init__(self,ip="localhost",http_port=8000,ws_port=9000,security={"secure": False, "tokenURI": None, "registerURI": None}):
         """
         ip: where the SEPA is located
