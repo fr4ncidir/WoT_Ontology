@@ -33,6 +33,8 @@ import rlcompleter
 import readline
 from monitoring import *
 from wrap_sepa import Sepa as Engine
+from cocktail.Action import Action
+from cocktail.Event import Event
 
 commands = ["discover", "describe", "new", "observe", "request", "exit", "back"]
 items = ["things", "actions", "events", "properties", "dataschemas", "i-patterns", "exit", "back"]
@@ -81,20 +83,28 @@ def main(args):
         elif command == "exit":
             exit_procedure()
         elif command == "discover":
+            instances = []
             instances += item_inspect(sepa,command,discovery)
         elif command == "describe":
             item_inspect(sepa,command,describe)
         elif command == "new":
             item_inspect(sepa,command,create)
-        elif command == "observe":
-            eventInstances = [x for x in instances if x["type"]=="Event"]
-            comps = eventInstances
+        elif command == "observe":            
+            print("Available targets:")
+            comps = [x for x in instances if type(x)==Event]
+            for event in comps:
+                print(event.uri)
             instance = input("(observe)> ")
-            if not (instance in eventInstances):
-                print("{}: unavailable instance!".format(instance))
-            else:
-                #observe_event()
-                pass
+            if instance == "exit":
+                exit_procedure()
+            elif instance != "back":
+                started_observation = False
+                for event in comps:
+                    if instance == event.uri:
+                        started_observation = observe_event(sepa,event.uri)
+                        break
+                if not (started_observation):
+                    print("{}: unavailable instance!".format(instance))
         elif command == "request":
             actionInstances = [x for x in instances if x["type"]=="Action"]
             comps = actionInstances

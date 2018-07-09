@@ -23,9 +23,19 @@
 #  
 
 from sepy.SEPAClient import *
+from sepy.BasicHandler import BasicHandler
 import logging
 
-logging.basicConfig(format='%(levelname)s %(asctime)-15s %(message)s',level=logging.INFO)  
+logging.basicConfig(format='%(levelname)s %(asctime)-15s %(message)s',level=logging.INFO)
+
+class SubscriptionHandler(BasicHandler):
+    def __init__(self, kp=None, custom_handler=lambda: None):
+        super().__init__(kp=kp)
+        self._subHandler = custom_handler
+        
+    def handle(self,added,removed):
+        super().handle(added,removed)
+        self._subHandler(added,removed)
 
 class Sepa:
     
@@ -33,7 +43,7 @@ class Sepa:
         self._ip = ip
         self._http_port = http_port
         self._ws_port = ws_port
-        self._client = SEPAClient(lastSEPA=True)
+        self._client = SEPAClient()
         self._security = security
         self._runtime_prefixes = []
         
@@ -71,7 +81,9 @@ class Sepa:
                 print(json.dumps(output),file=fileDest)
         return output
         
-    def update(self,sparql,fB={}):
+    def update(self,sparql,fB={},show=False):
+        if show:
+            print(self._bound_sparql(sparql,fB))
         code,output = self._client.update("http://{}:{}/update".format(self._ip,self._http_port),
                                             self._bound_sparql(sparql,fB),
                                             secure=self._security["secure"],
@@ -97,11 +109,11 @@ class Sepa:
                 bSparql = bSparql.replace("?"+key,"'"+fB[key]["value"]+"'")
         return bSparql
 
-    def subscribe(self,sparql,fB={},alias=None,handler=None):
+    def subscribe(self,sparql,fB={},alias=None,handler=lambda a,r: None):
         return self._client.subscribe("ws://{}:{}/subscribe".format(self._ip,self._ws_port),
                                         self._bound_sparql(sparql,fB),
                                         alias,
-                                        handler,
+                                        SubscriptionHandler(custom_handler=handler),
                                         secure=self._security["secure"],
                                         tokenURI=self._security["tokenURI"],
                                         registerURI=self._security["registerURI"])

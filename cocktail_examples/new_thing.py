@@ -41,6 +41,10 @@ from cocktail.Event import Event
 
 import sparql_utilities as bzu
 import constants as cst
+import argparse
+import logging
+
+logger = logging.getLogger("cocktail_log") 
 
 xsd_string = "xsd:string"
 xsd_integer = "xsd:integer"
@@ -50,14 +54,16 @@ wot_FieldSchema = "wot:FieldSchema"
 thing_descriptor = "<http://MyFirstWebThingDescription.com>"
 
 def main(args):
-    graph = Engine(ip="10.0.2.2")
+    graph = Engine(  ip = args["ip"],
+                    http_port = args["query_port"],
+                    ws_port = args["sub_port"],
+                    security =     {"secure": args["security"], 
+                                    "tokenURI": args["token_uri"], 
+                                    "registerURI": args["registration_uri"]})
     
-    answer = input("Clear the RDF store? (y/n)")
-    if answer.lower() == "y":
+    if args["clear"]:
         print("Clearing the RDF store...")
         graph.update("delete where {?a ?b ?c}")
-    else:
-        print("I'm not clearing the RDF store...")
     
     print("Posting DataSchemas...")
     ds1 = DataSchema(graph, { "ds_uri": "<http://MyFirstWebThing.com/Action1/DataSchema/input>",
@@ -98,7 +104,7 @@ def main(args):
                             "newName": "Thing1_Action1",
                             "ids": ds1.uri,
                             "ods": ds2.uri},
-                            lambda: print("ACTION 1 HANDLER RUN")).post().enable()
+                            lambda a,r: print("ACTION 1 HANDLER RUN")).post().enable()
     print("Action1 added to thing!")
     
     action2 = Action(graph,{"thing": thing1.uri,
@@ -106,7 +112,7 @@ def main(args):
                             "action": "<http://MyFirstWebThing.com/Action2>",
                             "newName": "Thing1_Action2",
                             "ods": ds3.uri},
-                            lambda: print("ACTION 2 HANDLER RUN"),
+                            lambda a,r: print("ACTION 2 HANDLER RUN"),
                             forProperties=[property1]).post().enable()
     print("Action2added to thing!")
                             
@@ -123,20 +129,22 @@ def main(args):
     graph.query("select * where {?a ?b ?c}",destination="./res_thing1.txt")
     bzu.compare_queries("./missing.txt","./res_thing1.txt",show_diff=True)
     
-    # input("Continue?")
+    input("Continue?")
     
-    # print("Now I'll trigger 10 events, one every 10 seconds. ")
-    # for trigger_event1 in range(10):
-        # print("... Firing event {}".format(trigger_event1))
-        # instance = event1.notify({ "event": event1.uri,
-                        # "newEInstance": event1.uri.replace(">","/instance{}>".format(trigger_event1)),
-                        # "newOData": event1.uri.replace(">","/data{}>".format(trigger_event1)),
-                        # "newValue": str(datetime.utcnow()).replace(" ","T")+"Z",
-                        # "newDS": ds4.uri})
-        # sleep(10)
-        # print("Deleting old event instance...")
-        # event1.deleteInstance(instance)
-    # print("Stopping triggering events!")
+    print("Now I'll trigger 10 events, one every 10 seconds. ")
+    for trigger_event1 in range(10):
+        print("... Firing event {}".format(trigger_event1))
+        instance = event1.notify({ "event": event1.uri,
+                        "newEInstance": event1.uri.replace(">","/instance{}>".format(trigger_event1)),
+                        "newOData": event1.uri.replace(">","/data{}>".format(trigger_event1)),
+                        "newValue": str(datetime.utcnow()).replace(" ","T")+"Z",
+                        "newDS": ds4.uri})
+        sleep(10)
+        print("Deleting old event instance...")
+        event1.deleteInstance(instance)
+    print("Stopping triggering events!")
+    
+    input("Continue?")
     
     # print("Now I'll disable the two actions.")
     # action1.disable()
@@ -150,4 +158,16 @@ def main(args):
     return 0
 
 if __name__ == '__main__':
-    sys.exit(main(sys.argv))
+    parser = argparse.ArgumentParser(description="New Thing example script")
+    parser.add_argument("-ip", default="localhost", help="Sepa ip")
+    parser.add_argument("-query_port", default=8000, help="Sepa query/update port")
+    parser.add_argument("-sub_port", default=9000, help="Sepa subscription port")
+    parser.add_argument("-token_uri", default=None, help="Sepa token uri")
+    parser.add_argument("-registration_uri", default=None, help="Sepa registration uri")
+    parser.add_argument("-clear",action="store_true",help="Clears the SEPA before anything else")
+    arguments = vars(parser.parse_args())
+    if ((arguments["token_uri"] is not None) and (arguments["registration_uri"] is not None)):
+        arguments["security"] = True
+    else:
+        arguments["security"] = False
+    sys.exit(main(arguments))

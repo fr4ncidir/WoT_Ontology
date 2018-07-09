@@ -170,3 +170,13 @@ def create(sepa,item,instances):
         DataSchema(graph, { "ds_uri": input("(new dataschema) URI: "),
                     "fs_uri": input("(new dataschema) FIELDSCHEMA URI: "),
                     "fs_types": input("(new dataschema) FIELDSCHEMA TYPES: ")}).post()
+                    
+def observe_event(sepa,eventUri):
+    from threading import Thread
+    def observing_function(event_uri):
+        from subprocess import call
+        call(["xterm", "-hold", "-e", "python3", "/home/tarsier/Documents/Work/WoT_Ontology/wot_monitor/observe_event.py", event_uri])
+    Thread(target=observing_function, args=(eventUri, )).start()
+    return True
+    
+    

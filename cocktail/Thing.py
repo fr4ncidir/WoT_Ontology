@@ -25,6 +25,9 @@
 import sparql_utilities as bzu
 import constants as cst
 import json
+import logging
+
+logger = logging.getLogger("cocktail_log") 
 
 class Thing:
     """

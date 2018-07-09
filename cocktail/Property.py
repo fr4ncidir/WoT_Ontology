@@ -26,6 +26,9 @@ from cocktail.InteractionPattern import InteractionPattern
 import sparql_utilities as bzu
 import constants as cts
 import json
+import logging
+
+logger = logging.getLogger("cocktail_log") 
 
 class Property(InteractionPattern):
     """

@@ -28,6 +28,9 @@ import sparql_utilities as bzu
 import constants as cts
 from enum import Enum
 import json
+import logging
+
+logger = logging.getLogger("cocktail_log") 
 
 class EType(Enum):
     OUTPUT_EVENT = "o"
@@ -65,7 +68,7 @@ class Event(InteractionPattern):
         Posts to the rdf store a notification, whose data in 'bindings' is formatted as in the new-event-instance yaml.
         """
         sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_EVENT_INSTANCE_TEMPLATE.format(self._type.value),fB_values=bindings)
-        self._sepa.update(sparql,fB)
+        self._sepa.update(sparql,fB,show=True)
         return bindings["newEInstance"]
     
     @property
@@ -127,11 +130,13 @@ class Event(InteractionPattern):
         if self._observation_subid is None:
             sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_QUERY_EVENT_INSTANCE,fB_values=self._bindings)
             self._observation_subid = self._sepa.subscribe(sparql,fB=fB,alias=self.uri,handler=handler)
+            logger.info("Started observation of {}: id-{}".format(self.uri,self._observation_subid))
         else:
-            logger.message("{} already observed".format(self.uri))
+            logger.info("{} already observed".format(self.uri))
         
     def stop_observing(self):
         if self._observation_subid is not None:
+            logger.info("Stopped observation of {}: id-{}".format(self.uri,self._observation_subid))
             self._sepa.unsubscribe(self._observation.subid)
             self._observation.subid = None
         else:

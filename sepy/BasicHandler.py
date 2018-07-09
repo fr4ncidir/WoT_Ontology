@@ -9,7 +9,7 @@ class BasicHandler:
     """A simple example of an Handler class"""
     
     # constructor
-    def __init__(self, kp):
+    def __init__(self, kp=None):
 
         """This is the constructor for the example handler"""
 
@@ -22,7 +22,7 @@ class BasicHandler:
 
 
     # handle notifications
-    def handle(self, message):
+    def handle(self, added,removed):
 
         # print the notification
-        self.logger.debug("=== BasicHandler::handle received the following notification: %s" % message)
+        self.logger.debug("=== BasicHandler::handle\nreceived the following added: {}\nand the following removed: {}".format(added,removed))

@@ -26,6 +26,9 @@ import constants as cst
 from abc import abstractmethod
 import sparql_utilities as bzu
 import json
+import logging
+
+logger = logging.getLogger("cocktail_log") 
 
 class InteractionPattern:
     """
