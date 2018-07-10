@@ -22,10 +22,18 @@
 #  
 #  
 
-import sparql_utilities as bzu
-import constants as cst
+import sepy.utils as utils
+
+from constants import SPARQL_PREFIXES as WotPrefs
+from constants import PATH_SPARQL_NEW_THING as newThing
+from constants import PATH_SPARQL_NEW_SUBTHING as newSubThing
+from constants import PATH_SPARQL_DELETE_THING as delThing
+from constants import PATH_SPARQL_QUERY_THING as queryThing
+
 import json
 import logging
+
+from sepy.YSparqlObject import YSparqlObject as YSparql
 
 logger = logging.getLogger("cocktail_log") 
 
@@ -42,17 +50,17 @@ class Thing:
         """
         Posting the wot:Thing (and its connection to a superthing) with all its interaction patterns.
         """
-        sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_THING,fB_values=self._bindings)
+        sparql,fB = YSparql(newThing,external_prefixes=WotPrefs).getData(fB_values=self._bindings)
         self._sepa.update(sparql,fB)
         if self._superthing is not None:
-            sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_SUBTHING, fB_values={"superthing": self._superthing, "subthing": self._bindings["thing"]})
+            sparql,fB = YSparql(newSubThing,external_prefixes=WotPrefs).getData(fB_values={"superthing": self._superthing, "subthing": self._bindings["thing"]})
             self._sepa.update(sparql,fB)
         for ip in interaction_patterns:
             ip.post()
         return self
             
     def delete(self):
-        sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_DELETE_THING, fB_values=self._bindings)
+        sparql,fB = YSparql(delThing,external_prefixes=WotPrefs).getData(fB_values=self._bindings)
         self._sepa.update(sparql,fB)
         
     @staticmethod
@@ -61,7 +69,7 @@ class Thing:
         Thing discovery. It can be more selective when we use 'bindings', while 'nice_output'
         prints the results to console in a friendly manner.
         """
-        sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_QUERY_THING, fB_values=bindings)
+        sparql,fB = YSparql(queryThing,external_prefixes=WotPrefs).getData(fB_values=bindings)
         d_output = sepa.query(sparql,fB)
         if nice_output:
             bzu.tablify(json.dumps(d_output))

@@ -23,9 +23,10 @@
 #  
 
 import constants as cst
-import sparql_utilities as bzu
+import sepy.utils as utils
 import json
 import logging
+from sepy.YSparqlObject import YSparqlObject as YSparql
 
 logger = logging.getLogger("cocktail_log") 
 
@@ -46,18 +47,18 @@ class DataSchema:
         return self._bindings["ds_uri"]
 
     def post(self):
-        sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_NEW_DATASCHEMA,fB_values=self._bindings)
+        sparql,fB = YSparql(cst.PATH_SPARQL_NEW_DATASCHEMA,external_prefixes=cst.SPARQL_PREFIXES).getData(fB_values=self._bindings)
         self._sepa.update(sparql,fB)
         return self
         
     @staticmethod
     def getBindingList():
-        _,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_PROPERTY)
+        _,fB = YSparql(cts.PATH_SPARQL_NEW_PROPERTY).getData()
         return fB.keys()
     
     @staticmethod
     def discover(sepa,ds="UNDEF",nice_output=False):
-        sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_QUERY_DATASCHEMA,fB_values={"ds_force": ds})
+        sparql,fB = YSparql(cst.PATH_SPARQL_QUERY_DATASCHEMA,external_prefixes=cst.SPARQL_PREFIXES).getData(fB_values={"ds_force": ds})
         d_output = sepa.query(sparql,fB)
         if nice_output:
             bzu.tablify(json.dumps(d_output))

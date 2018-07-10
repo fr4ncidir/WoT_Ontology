@@ -23,11 +23,33 @@
 #  
 #  SEE THE README FOR EXPLANATIONS ON THE TESTS HERE AVAILABLE
 
-import sparql_utilities as bzu
+from sepy.YSparqlObject import YSparqlObject as YSparql
+from sepy.YSparqlObject import ysparql_to_string as y2str
+
+import sepy.utils as utils
+
 import json
 import logging
 import os
-import constants as cst
+
+#import constants as cst
+from constants import SPARQL_INSERT_THING1, SPARQL_INSERT_THING2, SPARQL_INSERT_THING3
+from constants import SPARQL_PREFIXES as WotPrefs
+from constants import PATH_SPARQL_QUERY_PROPERTY as queryProperty
+from constants import PATH_SPARQL_QUERY_TS_TEMPLATE, RES_SPARQL_NEW_TS_TEMPLATE
+from constants import PATH_SPARQL_QUERY_THING, RES_SPARQL_NEW_THING
+from constants import RES_SPARQL_QUERY_ALL
+from constants import RES_SPARQL_QUERY_ALL_NEW_DATASCHEMA
+from constants import RES_SPARQL_NEW_PROPERTY, RES_SPARQL_NEW_PROPERTY_UPDATE
+from constants import RES_SPARQL_QUERY_ALL_NEW_DS_ACTIONS, RES_SPARQL_QUERY_ALL_NEW_DS_EVENTS
+from constants import PATH_SPARQL_QUERY_ACTION, RES_SPARQL_NEW_ACTIONS
+from constants import PATH_SPARQL_QUERY_EVENT, RES_SPARQL_NEW_EVENTS
+from constants import PATH_SPARQL_QUERY_ACTION_INSTANCE, RES_SPARQL_NEW_ACTION_INSTANCE_TEMPLATE
+from constants import PATH_SPARQL_QUERY_INSTANCE_OUTPUT, RES_SPARQL_NEW_INSTANCE_OUTPUT
+from constants import RES_SPARQL_NEW_ACTION_INSTANCE_UPDATE_TEMPLATE, RES_SPARQL_NEW_EVENT_INSTANCE_TEMPLATE
+from constants import PATH_SPARQL_QUERY_EVENT_INSTANCE
+from constants import RES_SPARQL_NEW_EVENT_INSTANCE_UPDATE_TEMPLATE
+
 from cocktail.Thing import Thing
 from cocktail.DataSchema import DataSchema
 from cocktail.Property import Property
@@ -40,23 +62,24 @@ logger = logging.getLogger("ontology_test_log")
 THING_URI = "<http://TestThing.com>"
 
 def reset_blazegraph(graph):
-    graph.update(cst.SPARQL_DELETE_ALL)
-    graph.update(bzu.file_to_string(cst.SPARQL_INSERT_THING1))
-    graph.update(bzu.file_to_string(cst.SPARQL_INSERT_THING2))
-    graph.update(bzu.file_to_string(cst.SPARQL_INSERT_THING3))
+    graph.clear()
+    graph.update(y2str(SPARQL_INSERT_THING1))
+    graph.update(y2str(SPARQL_INSERT_THING2))
+    graph.update(y2str(SPARQL_INSERT_THING3))
     
 def add_action_instance_ts(graph,instance,action,reset):
     result = True
     for c in ["confirmation","completion"]:
         action._post_timestamp(c,instance)
         
-        result = result and bzu.query_CompareUpdate(graph,
-            cst.PATH_SPARQL_QUERY_TS_TEMPLATE.format(c),
+        result = result and utils.query_CompareUpdate(graph,
+            PATH_SPARQL_QUERY_TS_TEMPLATE.format(c),
             {"aInstance": instance},
             reset,
-            cst.RES_SPARQL_NEW_TS_TEMPLATE.format(c),
+            RES_SPARQL_NEW_TS_TEMPLATE.format(c),
             "test_{}_action_instance {}".format(action.type.value,c.upper()),
-            ignore=["ts"])
+            ignore=["ts"],
+            prefixes=WotPrefs)
     return result
     
 def test_queries(graph,reset=False):
@@ -70,13 +93,14 @@ def test_queries(graph,reset=False):
     result = True
     # listing all files in ./queries, filtering hidden (starting with '.') and directories
     for fileName in list(filter(lambda myfile: not (myfile.startswith(".") or os.path.isdir("./queries/"+myfile)),os.listdir("./queries"))):
-        result = result and bzu.query_CompareUpdate(graph,
+        result = result and utils.query_CompareUpdate(graph,
             "./queries/{}".format(fileName),
             {}, reset,
             "./queries/results/res_{}".format(fileName).replace(".sparql",".json"),
-            fileName)
+            fileName,
+            prefixes=WotPrefs)
     logger.info("ENDING TEST_QUERIES")
-    return bzu.notify_result("test_queries",result)
+    return utils.notify_result("test_queries",result)
 
 def test_new_thing(graph,reset=False):
     """
@@ -90,12 +114,13 @@ def test_new_thing(graph,reset=False):
     # Adding new thing within the forced bindings
     dummyThing = Thing(graph,{"thing": THING_URI,"newName": "TEST-THING","newTD": "<http://TestTD.com>" },superthing=SUPERTHING).post()
     
-    result = bzu.query_CompareUpdate(graph,
-        cst.PATH_SPARQL_QUERY_THING,
+    result = utils.query_CompareUpdate(graph,
+        PATH_SPARQL_QUERY_THING,
         {}, reset,
-        cst.RES_SPARQL_NEW_THING,
+        RES_SPARQL_NEW_THING,
         "test_thing ADD",
-        replace={"(?thing_uri ?name_literal ?td_uri)": "({} ?name_literal ?td_uri) ({} ?name_literal ?td_uri)".format(THING_URI,SUPERTHING)})
+        replace={"(?thing_uri ?name_literal ?td_uri)": "({} ?name_literal ?td_uri) ({} ?name_literal ?td_uri)".format(THING_URI,SUPERTHING)},
+        prefixes=WotPrefs)
         
     # Passing through this point also in reset case allows not to refresh the RDF store into the following test.
     # Deleting the thing, and checking if the triples in all the store are the same as if all the test never happened
@@ -103,7 +128,7 @@ def test_new_thing(graph,reset=False):
 
     # With this line, if it outputs True, we certify that the contents of the RDF store are exactly the same as they were
     # at the beginning of this function. So, no need to call reset_blazegraph
-    result = result and bzu.query_FileCompare(graph,message="test_thing DELETE")
+    result = result and utils.query_FileCompare(graph,message="test_thing DELETE",fileAddress=RES_SPARQL_QUERY_ALL)
     logger.info("ENDING TEST_NEW_THING")
     return result
     
@@ -124,10 +149,11 @@ def test_new_property(graph,reset=False):
     DATASCHEMA_URI = "<http://TestThing.com/Property1/DataSchema/property>"
     PROPERTY_URI = "<http://TestProperty.com>"
     NEW_PROPERTY_VALUE = "HIJKLMNOP"
+    TEST_TD = "<http://TestTD.com>"
     
     logger.info("STARTING TEST_NEW_PROPERTY")
     result = True
-    if not (reset or bzu.query_FileCompare(graph,message="test_property start check")):
+    if not (reset or utils.query_FileCompare(graph,fileAddress=RES_SPARQL_QUERY_ALL,message="test_property start check")):
         # This check is useful only if reset is False.
         logger.error("test_property start check failure: skip")
         return False
@@ -137,14 +163,14 @@ def test_new_property(graph,reset=False):
                                     "fs_types": "xsd:_, wot:FieldSchema"}).post()
 
     if reset:
-        logger.warning("Rebuilding "+cst.RES_SPARQL_QUERY_ALL_NEW_DATASCHEMA)
-        graph.query(cst.SPARQL_QUERY_ALL,destination=cst.RES_SPARQL_QUERY_ALL_NEW_DATASCHEMA)
+        logger.warning("Rebuilding "+RES_SPARQL_QUERY_ALL_NEW_DATASCHEMA)
+        graph.query("select * where {?a ?b ?c}",destination=RES_SPARQL_QUERY_ALL_NEW_DATASCHEMA)
     
     # Adding the new thing
-    dummyThing = Thing(graph,{"thing": THING_URI,"newName": "TEST-THING","newTD": "<http://TestTD.com>" }).post()
+    dummyThing = Thing(graph,{"thing": THING_URI,"newName": "TEST-THING","newTD": TEST_TD }).post()
     
     # Adding the property
-    p_fBindings = { "td": "<http://TestTD.com>",
+    p_fBindings = { "td": TEST_TD,
                     "property": PROPERTY_URI,
                     "newName": "TEST-PROPERTY",
                     "newStability": "1",
@@ -155,13 +181,13 @@ def test_new_property(graph,reset=False):
     testProperty = Property(graph,p_fBindings).post()
     
     # Querying the property to check it
-    sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_QUERY_PROPERTY, fB_values={"property_uri": PROPERTY_URI})
+    sparql,fB = YSparql(queryProperty,external_prefixes=WotPrefs).getData(fB_values={"property_uri": PROPERTY_URI})
     if reset:
-        logger.warning("Rebuilding "+cst.RES_SPARQL_NEW_PROPERTY)
+        logger.warning("Rebuilding "+RES_SPARQL_NEW_PROPERTY)
         # First property creation query and write result to file
-        create = graph.query(sparql,fB=fB,destination=cst.RES_SPARQL_NEW_PROPERTY)
+        create = graph.query(sparql,fB=fB,destination=RES_SPARQL_NEW_PROPERTY)
     else:
-        result = bzu.query_FileCompare(graph,sparql=sparql,fB=fB,message="test_property ADD",fileAddress=cst.RES_SPARQL_NEW_PROPERTY)
+        result = utils.query_FileCompare(graph,sparql=sparql,fB=fB,message="test_property ADD",fileAddress=RES_SPARQL_NEW_PROPERTY)
     
     
     # Updating property with a new writability and a new value
@@ -170,43 +196,43 @@ def test_new_property(graph,reset=False):
     testProperty.update(p_fBindings)
     
     # Query again to confirm updates
-    sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_QUERY_PROPERTY, fB_values={"property_uri": PROPERTY_URI})
+    sparql,fB = YSparql(queryProperty,external_prefixes=WotPrefs).getData(fB_values={"property_uri": PROPERTY_URI})
     if reset:
         # reset version: just a plain equivalence check:
         # create json is already open and written to file
-        logger.warning("Rebuilding "+cst.RES_SPARQL_NEW_PROPERTY_UPDATE)
+        logger.warning("Rebuilding "+RES_SPARQL_NEW_PROPERTY_UPDATE)
         # Property update query and write result to file, open it; create redefinition to check
-        update = graph.query(sparql,fB=fB,destination=cst.RES_SPARQL_NEW_PROPERTY_UPDATE)
+        update = graph.query(sparql,fB=fB,destination=RES_SPARQL_NEW_PROPERTY_UPDATE)
         create["results"]["bindings"][0]["pWritability"]["value"] = "false"
         create["results"]["bindings"][0]["pValue"]["value"] = NEW_PROPERTY_VALUE
-        result = bzu.notify_result("test_property UPDATE rebuild",bzu.compare_queries(create,update,show_diff=True))
+        result = utils.notify_result("test_property UPDATE rebuild",utils.compare_queries(create,update,show_diff=True))
         if not result:
             logger.error("Rebuild error: files res_new_property_update.json and res_new_property_create.json are not equivalent")
     else:
         # Non reset version of Query again to confirm updates
         try:
             # check results files are correct
-            create = open(cst.RES_SPARQL_NEW_PROPERTY,"r")
-            update = open(cst.RES_SPARQL_NEW_PROPERTY_UPDATE,"r")
+            create = open(RES_SPARQL_NEW_PROPERTY,"r")
+            update = open(RES_SPARQL_NEW_PROPERTY_UPDATE,"r")
             jCreate = json.load(create)
             jCreate["results"]["bindings"][0]["pWritability"]["value"] = "false"
             jCreate["results"]["bindings"][0]["pValue"]["value"] = NEW_PROPERTY_VALUE
-            result = bzu.notify_result("test_property UPDATE result check",bzu.compare_queries(jCreate,json.load(update),show_diff=True))
+            result = utils.notify_result("test_property UPDATE result check",utils.compare_queries(jCreate,json.load(update),show_diff=True))
             create.close()
             update.close()
         except Exception as e:
             logger.error("Error while opening new_property_create or update")
-            bzu.notify_result("test_property UPDATE exception",str(e))
+            utils.notify_result("test_property UPDATE exception",str(e))
             reset_blazegraph(graph)
             return False
         # Performing the query after updates, and check with the update file
-        result = result and bzu.query_FileCompare(graph,sparql=sparql,fB=fB,message="test_property UPDATE",fileAddress=cst.RES_SPARQL_NEW_PROPERTY_UPDATE)
+        result = result and utils.query_FileCompare(graph,sparql=sparql,fB=fB,message="test_property UPDATE",fileAddress=RES_SPARQL_NEW_PROPERTY_UPDATE)
         
         # Deleting the property
         testProperty.delete()
         # Query all check
         dummyThing.delete()
-        result = result and bzu.query_FileCompare(graph,message="test_property DELETE",fileAddress=cst.RES_SPARQL_QUERY_ALL_NEW_DATASCHEMA,show_diff=False)
+        result = result and utils.query_FileCompare(graph,message="test_property DELETE",fileAddress=RES_SPARQL_QUERY_ALL_NEW_DATASCHEMA,show_diff=False)
     
     reset_blazegraph(graph)
     logger.info("ENDING TEST_NEW_PROPERTY")
@@ -239,8 +265,8 @@ def test_new_action(graph,reset=False):
                     "fs_types": "xsd:_, wot:FieldSchema"}).post()
     
     if reset:
-        logger.warning("Rebuilding "+cst.RES_SPARQL_QUERY_ALL_NEW_DS_ACTIONS)
-        graph.query(cst.SPARQL_QUERY_ALL,destination=cst.RES_SPARQL_QUERY_ALL_NEW_DS_ACTIONS)
+        logger.warning("Rebuilding "+RES_SPARQL_QUERY_ALL_NEW_DS_ACTIONS)
+        graph.query("select * where {?a ?b ?c}",destination=RES_SPARQL_QUERY_ALL_NEW_DS_ACTIONS)
     
     # Adding the new thing
     dummyThing = Thing(graph,{   "thing": THING_URI,
@@ -256,19 +282,20 @@ def test_new_action(graph,reset=False):
                         "ids": DS_URI_INPUT,
                         "ods": DS_URI_OUTPUT},lambda: None,force_type=aType).post())
     
-    result = bzu.query_CompareUpdate(graph,
-        cst.PATH_SPARQL_QUERY_ACTION,
+    result = utils.query_CompareUpdate(graph,
+        PATH_SPARQL_QUERY_ACTION,
         {}, reset,
-        cst.RES_SPARQL_NEW_ACTIONS,
+        RES_SPARQL_NEW_ACTIONS,
         "test_actions ADD",
-        replace={"(?action_uri)": "(<http://TestAction_io.com>) (<http://TestAction_i.com>) (<http://TestAction_o.com>) (<http://TestAction_empty.com>)"})
+        replace={"(?action_uri)": "(<http://TestAction_io.com>) (<http://TestAction_i.com>) (<http://TestAction_o.com>) (<http://TestAction_empty.com>)"},
+        prefixes=WotPrefs)
     if not reset:
         # Deleting the actions
         for action in actions:
             action.delete()
         # Query all check
         dummyThing.delete()
-        result = result and bzu.query_FileCompare(graph,message="test_actions DELETE",fileAddress=cst.RES_SPARQL_QUERY_ALL_NEW_DS_ACTIONS)
+        result = result and utils.query_FileCompare(graph,message="test_actions DELETE",fileAddress=RES_SPARQL_QUERY_ALL_NEW_DS_ACTIONS)
     
     reset_blazegraph(graph)
     logger.info("ENDING TEST_NEW_ACTIONS")
@@ -297,8 +324,8 @@ def test_new_event(graph,reset=False):
                 "fs_types": "xsd:_, wot:FieldSchema"}).post()
     
     if reset:
-        logger.warning("Rebuilding "+cst.RES_SPARQL_QUERY_ALL_NEW_DS_EVENTS)
-        graph.query(cst.SPARQL_QUERY_ALL,destination=cst.RES_SPARQL_QUERY_ALL_NEW_DS_EVENTS)
+        logger.warning("Rebuilding "+RES_SPARQL_QUERY_ALL_NEW_DS_EVENTS)
+        graph.query("select * where {?a ?b ?c}",destination=RES_SPARQL_QUERY_ALL_NEW_DS_EVENTS)
     
     # Adding the new thing
     dummyThing = Thing(graph,{   "thing": THING_URI,
@@ -314,12 +341,13 @@ def test_new_event(graph,reset=False):
                         "ods": DS_URI_OUTPUT},force_type=eType).post())
 
     # Querying the actions
-    result = bzu.query_CompareUpdate(graph,
-        cst.PATH_SPARQL_QUERY_EVENT,
+    result = utils.query_CompareUpdate(graph,
+        PATH_SPARQL_QUERY_EVENT,
         {},reset,
-        cst.RES_SPARQL_NEW_EVENTS,
+        RES_SPARQL_NEW_EVENTS,
         "test_events ADD",
-        replace={"(?event_uri)": "(<http://TestEvent_o.com>) (<http://TestEvent_empty.com>)"})
+        replace={"(?event_uri)": "(<http://TestEvent_o.com>) (<http://TestEvent_empty.com>)"},
+        prefixes=WotPrefs)
     
     if not reset:
         # Deleting the events
@@ -327,7 +355,7 @@ def test_new_event(graph,reset=False):
             event.delete()
         # Query all check
         dummyThing.delete()
-        result = result and bzu.query_FileCompare(graph,message="test_events DELETE",fileAddress=cst.RES_SPARQL_QUERY_ALL_NEW_DS_EVENTS)
+        result = result and utils.query_FileCompare(graph,message="test_events DELETE",fileAddress=RES_SPARQL_QUERY_ALL_NEW_DS_EVENTS)
     
     reset_blazegraph(graph)
     logger.info("ENDING TEST_NEW_EVENTS")
@@ -369,13 +397,14 @@ def test_action_instance(graph,reset=False):
         action.set_action_task(lambda: None)
 
         # Checking the instance
-        result = result and bzu.query_CompareUpdate(graph,
-            cst.PATH_SPARQL_QUERY_ACTION_INSTANCE,
+        result = result and utils.query_CompareUpdate(graph,
+            PATH_SPARQL_QUERY_ACTION_INSTANCE,
             bindings,
             reset,
-            cst.RES_SPARQL_NEW_ACTION_INSTANCE_TEMPLATE.format(action.type.value),
+            RES_SPARQL_NEW_ACTION_INSTANCE_TEMPLATE.format(action.type.value),
             "test_{}_action_instance UPDATE-SUBSCRIBE".format(action.type.value),
-            ignore=["aTS"])
+            ignore=["aTS"],
+            prefixes=WotPrefs)
             
         # Adding and checking Confirmation and Completion timestamps
         result = result and add_action_instance_ts(graph,instance,action,reset)
@@ -390,13 +419,14 @@ def test_action_instance(graph,reset=False):
         instance = action.newRequest(bindings)
 
         # Checking updates to instances are successful
-        result = result and bzu.query_CompareUpdate(graph,
-            cst.PATH_SPARQL_QUERY_ACTION_INSTANCE,
+        result = result and utils.query_CompareUpdate(graph,
+            PATH_SPARQL_QUERY_ACTION_INSTANCE,
             bindings,
             reset,
-            cst.RES_SPARQL_NEW_ACTION_INSTANCE_UPDATE_TEMPLATE.format(action.type.value),
+            RES_SPARQL_NEW_ACTION_INSTANCE_UPDATE_TEMPLATE.format(action.type.value),
             "test_{}_action_instance NEW REQUEST".format(action.type.value),
-            ignore=["aTS"])
+            ignore=["aTS"],
+            prefixes=WotPrefs)
         
         # Adding and checking Confirmation and Completion timestamps
         # Workaround for test functionality avoids isInferred exceptions
@@ -412,17 +442,18 @@ def test_action_instance(graph,reset=False):
                                 "oValue": "my output value",
                                 "oDS": action.uri.replace(">","/DataSchema/output")})
             # Check it
-            result = result and bzu.query_CompareUpdate(graph,
-                cst.PATH_SPARQL_QUERY_INSTANCE_OUTPUT,
+            result = result and utils.query_CompareUpdate(graph,
+                PATH_SPARQL_QUERY_INSTANCE_OUTPUT,
                 {"instance": bindings["newAInstance"]},
                 reset,
-                cst.RES_SPARQL_NEW_INSTANCE_OUTPUT,
-                "test_{}_action_instance OUTPUT".format(URIS[action].value))
+                RES_SPARQL_NEW_INSTANCE_OUTPUT,
+                "test_{}_action_instance OUTPUT".format(URIS[action].value),
+                prefixes=WotPrefs)
     
         # Remove instances and outputs
         action.deleteInstance(instance)
     
-    result = result and bzu.query_FileCompare(graph,message="test_action_instance DELETE INSTANCE")
+    result = result and utils.query_FileCompare(graph,fileAddress=RES_SPARQL_QUERY_ALL,message="test_action_instance DELETE INSTANCE")
     logger.info("ENDING TEST_ACTION_INSTANCE")
     reset_blazegraph(graph)
     return result
@@ -452,13 +483,14 @@ def test_event_instance(graph,reset=False):
         instance = event.notify(bindings)
 
         # Checking the instance
-        result = result and bzu.query_CompareUpdate(graph,
-            cst.PATH_SPARQL_QUERY_EVENT_INSTANCE,
+        result = result and utils.query_CompareUpdate(graph,
+            PATH_SPARQL_QUERY_EVENT_INSTANCE,
             bindings,
             reset,
-            cst.RES_SPARQL_NEW_EVENT_INSTANCE_TEMPLATE.format(event.type.value),
+            RES_SPARQL_NEW_EVENT_INSTANCE_TEMPLATE.format(event.type.value),
             "test_{}_event_instance UPDATE-SUBSCRIBE".format(event.type.value),
-            ignore=["eTS"])
+            ignore=["eTS"],
+            prefixes=WotPrefs)
                     
         # Update the instances
         bindings["newEInstance"] = event.uri.replace(">","/instance2>")
@@ -468,18 +500,19 @@ def test_event_instance(graph,reset=False):
         instance = event.notify(bindings)
 
         # Checking updates to instances are successful
-        result = result and bzu.query_CompareUpdate(graph,
-            cst.PATH_SPARQL_QUERY_EVENT_INSTANCE,
+        result = result and utils.query_CompareUpdate(graph,
+            PATH_SPARQL_QUERY_EVENT_INSTANCE,
             bindings,
             reset,
-            cst.RES_SPARQL_NEW_EVENT_INSTANCE_UPDATE_TEMPLATE.format(event.type.value),
+            RES_SPARQL_NEW_EVENT_INSTANCE_UPDATE_TEMPLATE.format(event.type.value),
             "test_{}_event_instance NEW REQUEST".format(event.type.value),
-            ignore=["eTS"])
+            ignore=["eTS"],
+            prefixes=WotPrefs)
     
         # Remove instances and outputs
         event.deleteInstance(instance)
     
-    result = result and bzu.query_FileCompare(graph,message="test_event_instance DELETE INSTANCE",show_diff=True)
+    result = result and utils.query_FileCompare(graph,fileAddress=RES_SPARQL_QUERY_ALL,message="test_event_instance DELETE INSTANCE",show_diff=True)
     logger.info("ENDING TEST_EVENT_INSTANCE")
     reset_blazegraph(graph)
     return result

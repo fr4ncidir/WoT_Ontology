@@ -24,8 +24,18 @@
 
 from cocktail.InteractionPattern import InteractionPattern
 from cocktail.Thing import Thing
-import sparql_utilities as bzu
-import constants as cts
+
+import sepy.utils as utils
+from sepy.YSparqlObject import YSparqlObject as YSparql
+
+from constants import SPARQL_PREFIXES as WotPrefs
+from constants import PATH_SPARQL_NEW_ACTION_TEMPLATE, PATH_SPARQL_NEW_TS_TEMPLATE, PATH_SPARQL_QUERY_TS_TEMPLATE, PATH_SPARQL_NEW_ACTION_INSTANCE_TEMPLATE
+from constants import PATH_SPARQL_ADD_FORPROPERTY
+from constants import PATH_SPARQL_QUERY_ACTION_INSTANCE, PATH_SPARQL_QUERY_INSTANCE_OUTPUT
+from constants import PATH_SPARQL_NEW_INSTANCE_OUTPUT
+from constants import PATH_SPARQL_DELETE_ACTION_INSTANCE
+from constants import PATH_SPARQL_QUERY_ACTION
+
 from enum import Enum
 import threading
 import logging
@@ -91,18 +101,17 @@ class Action(InteractionPattern):
         Posts the Action to the rdf store, together with its forced bindings.
         """
         assert not self.isInferred()
-        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_ACTION_TEMPLATE.format(self._type.value),fB_values=self._bindings)
+        sparql,fB = YSparql(PATH_SPARQL_NEW_ACTION_TEMPLATE.format(self._type.value),external_prefixes=WotPrefs).getData(fB_values=self._bindings)
         self._sepa.update(sparql,fB)
         
         if self._forProperties:
-            sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_ADD_FORPROPERTY,fB_values={"ip":self._bindings["action"]})
+            sparql,fB = YSparql(PATH_SPARQL_ADD_FORPROPERTY,external_prefixes=WotPrefs).getData(fB_values={"ip":self._bindings["action"]})
             properties = []
             for prop in self._forProperties:
                 properties.append(prop.bindings["property"])
             sparql = sparql.replace("?ip wot:forProperty ?property","?ip wot:forProperty {}".format(", ".join(properties)))
             sparql = sparql.replace("?property a wot:Property"," a wot:Property. ".join(properties)+" a wot:Property")
             self._sepa.update(sparql,fB)
-        print("Post performed")
         return self
         
     def enable(self):
@@ -112,7 +121,7 @@ class Action(InteractionPattern):
         """
         if self._enable_subid is None:
             assert not self.isInferred()
-            sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_QUERY_ACTION_INSTANCE,fB_values=self._bindings)
+            sparql,fB = YSparql(PATH_SPARQL_QUERY_ACTION_INSTANCE,external_prefixes=WotPrefs).getData(fB_values=self._bindings)
             self._enable_subid = self._sepa.subscribe(sparql,fB=fB,alias=self.uri,handler=self._action_task)
         else:
             logger.message("{} already enabled".format(self.uri))
@@ -139,7 +148,7 @@ class Action(InteractionPattern):
         """
         assert not self.isInferred()
         if (self._type is AType.OUTPUT_ACTION) or (self._type is AType.IO_ACTION):
-            sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_INSTANCE_OUTPUT,fB_values=bindings)
+            sparql,fB = YSparql(PATH_SPARQL_NEW_INSTANCE_OUTPUT,external_prefixes=WotPrefs).getData(fB_values=bindings)
             self._sepa.update(sparql,fB)
             self.post_timestamp("completion",instance)
            
@@ -153,7 +162,7 @@ class Action(InteractionPattern):
         assert not self.isInferred()
         if (ts_type.lower() != "completion") and (ts_type.lower() != "confirmation"):
             raise ValueError
-        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_TS_TEMPLATE.format(ts_type.lower()),fB_values={"aInstance": instance})
+        sparql,fB = YSparql(PATH_SPARQL_NEW_TS_TEMPLATE.format(ts_type.lower()),external_prefixes=WotPrefs).getData(fB_values={"aInstance": instance})
         self._sepa.update(sparql,fB)
         
     @property
@@ -168,7 +177,7 @@ class Action(InteractionPattern):
         """
         if action_type not in AType:
             raise ValueError
-        _,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_ACTION_TEMPLATE.format(action_type.value))
+        _,fB = YSparql(PATH_SPARQL_NEW_ACTION_TEMPLATE.format(action_type.value),external_prefixes=WotPrefs).getData()
         return fB.keys()
         
     @staticmethod
@@ -178,7 +187,7 @@ class Action(InteractionPattern):
         'action' by default is 'UNDEF', retrieving every action. Otherwise it will be more selective
         'nice_output' prints a nice table on console, using tablaze.
         """
-        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_QUERY_ACTION,fB_values={"action_uri":action})
+        sparql,fB = YSparql(PATH_SPARQL_QUERY_ACTION,external_prefixes=WotPrefs).getData(fB_values={"action_uri":action})
         d_output = sepa.query(sparql,fB=fB)
         if nice_output:
             bzu.tablify(json.dumps(d_output))
@@ -196,17 +205,17 @@ class Action(InteractionPattern):
         query_ip = InteractionPattern.discover(sepa,ip_type="wot:Action",nice_output=False)
         for binding in query_ip["results"]["bindings"]:
             if binding["ipattern"]["value"] == actionURI.replace("<","").replace(">",""):
-                td = bzu.uriFormat(binding["td"]["value"])
+                td = utils.uriFormat(binding["td"]["value"])
         aBinding = query_action["results"]["bindings"][0]
         out_bindings = { "td": td,
-                        "action": bzu.uriFormat(aBinding["action"]["value"]),
+                        "action": utils.uriFormat(aBinding["action"]["value"]),
                         "newName": aBinding["aName"]["value"]}
         if "oDS" in aBinding.keys():
-            out_bindings["ods"] = bzu.uriFormat(aBinding["oDS"]["value"])
+            out_bindings["ods"] = utils.uriFormat(aBinding["oDS"]["value"])
         if "iDS" in aBinding.keys():
-            out_bindings["ids"] = bzu.uriFormat(aBinding["iDS"]["value"])
+            out_bindings["ids"] = utils.uriFormat(aBinding["iDS"]["value"])
         query_thing = Thing.discover(sepa,bindings={"td_uri": td})
-        out_bindings["thing"] = bzu.uriFormat(query_thing["results"]["bindings"][0]["thing"]["value"])
+        out_bindings["thing"] = utils.uriFormat(query_thing["results"]["bindings"][0]["thing"]["value"])
         return Action(sepa,out_bindings,None)
     
     def newRequest(self,bindings,confirm_handler=None,completion_handler=None,output_handler=None):
@@ -218,18 +227,18 @@ class Action(InteractionPattern):
         assert self.isInferred()
         if confirm_handler is not None:
             # in case i'm interested in capturing the confirm flag
-            sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_QUERY_TS_TEMPLATE.format("confirmation"), fB_values={"aInstance": bindings["newAInstance"]})
+            sparql,fB = YSparql(PATH_SPARQL_QUERY_TS_TEMPLATE.format("confirmation"),external_prefixes=WotPrefs).getData(fB_values={"aInstance": bindings["newAInstance"]})
             self._sepa.subscribe(sparql,fB=fB,alias=bindings["newAInstance"],handler=self.confirm_handler)
         if completion_handler is not None:
             # in case i'm interested in capturing the completion flag
-            sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_QUERY_TS_TEMPLATE.format("completion"), fB_values={"aInstance": bindings["newAInstance"]})
+            sparql,fB = YSparql(PATH_SPARQL_QUERY_TS_TEMPLATE.format("completion"),external_prefixes=WotPrefs).getData(fB_values={"aInstance": bindings["newAInstance"]})
             self._sepa.subscribe(sparql,fB=fB,alias=bindings["newAInstance"],handler=self.completion_handler)
         if output_handler is not None:
             # in case i'm interested in capturing the output
-            sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_QUERY_INSTANCE_OUTPUT, fB_values={"instance": bindings["newAInstance"]})
+            sparql,fB = YSparql(PATH_SPARQL_QUERY_INSTANCE_OUTPUT,external_prefixes=WotPrefs).getData(fB_values={"instance": bindings["newAInstance"]})
             self._sepa.subscribe(sparql,fB=fB,alias=bindings["newAInstance"],handler=self.output_handler)
         req_type = AType.INPUT_ACTION.value if (self._type is AType.INPUT_ACTION or self._type is AType.IO_ACTION) else AType.EMPTY_ACTION.value
-        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_ACTION_INSTANCE_TEMPLATE.format(req_type), fB_values=bindings)
+        sparql,fB = YSparql(PATH_SPARQL_NEW_ACTION_INSTANCE_TEMPLATE.format(req_type),external_prefixes=WotPrefs).getData(fB_values=bindings)
         self._sepa.update(sparql,fB)
         return bindings["newAInstance"]
             
@@ -241,5 +250,5 @@ class Action(InteractionPattern):
     def deleteInstance(self,instance):
         super().deleteInstance(instance)
         assert not self.isInferred()
-        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_DELETE_ACTION_INSTANCE,fB_values={"aInstance": instance})
+        sparql,fB = YSparql(PATH_SPARQL_DELETE_ACTION_INSTANCE,external_prefixes=WotPrefs).getData(fB_values={"aInstance": instance})
         self._sepa.update(sparql,fB)

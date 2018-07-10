@@ -22,20 +22,21 @@
 #  
 #  
 
-from wrap_sepa import Sepa as Engine
+from sepy.Sepa import Sepa as Engine
 #from blazegraph import Blazegraph as Engine
 import yaml
 import json
-import sparql_utilities as bzu
+import sepy.utils as utils
 import wot_test as test
 import argparse
 import logging
 import constants as cst
 
-#logging.basicConfig(format=,level=logging.INFO)  
 logger = logging.getLogger("ontology_test_log") 
+logging.basicConfig(format='%(levelname)s %(asctime)-15s %(message)s',level=logging.INFO) 
 
 def main(args):
+    logger.setLevel(logging.INFO)
     if args["reset"]:
         confirm = input("Detected reset request! Are you sure? (y/n) ")
         if not confirm.lower()=="y":
@@ -51,30 +52,30 @@ def main(args):
     else:
         # 1st check: after the updates the content of the store has to be the same as in the json
         # this call exploits default params.
-        result = bzu.query_FileCompare(myBZ)
+        result = utils.query_FileCompare(myBZ,fileAddress=cst.RES_SPARQL_QUERY_ALL)
     
     # 2nd check: every query in ./queries folder
     result = result and test.test_queries(myBZ,args["reset"])
     
     # 3rd check: adding and removing a thing
-    result = result and bzu.notify_result("test_thing",test.test_new_thing(myBZ,reset=args["reset"]))
+    result = result and utils.notify_result("test_thing",test.test_new_thing(myBZ,reset=args["reset"]))
     
     # 4th check: adding and removing a property
-    result = result and bzu.notify_result("test_new_property",test.test_new_property(myBZ,reset=args["reset"]))
+    result = result and utils.notify_result("test_new_property",test.test_new_property(myBZ,reset=args["reset"]))
     
     # 5th check: adding and removing actions
-    result = result and bzu.notify_result("test_new_actions",test.test_new_action(myBZ,reset=args["reset"]))
+    result = result and utils.notify_result("test_new_actions",test.test_new_action(myBZ,reset=args["reset"]))
     
     # 6th check: adding and removing events
-    result = result and bzu.notify_result("test_new_events",test.test_new_event(myBZ,reset=args["reset"]))
+    result = result and utils.notify_result("test_new_events",test.test_new_event(myBZ,reset=args["reset"]))
     
     # 7th check: action instance
-    result = result and bzu.notify_result("test_new_events",test.test_action_instance(myBZ,reset=args["reset"]))
+    result = result and utils.notify_result("test_new_events",test.test_action_instance(myBZ,reset=args["reset"]))
     
     # 8th check: action instance
-    result = result and bzu.notify_result("test_new_events",test.test_event_instance(myBZ,reset=args["reset"]))
+    result = result and utils.notify_result("test_new_events",test.test_event_instance(myBZ,reset=args["reset"]))
     
-    bzu.notify_result("Ontology test result",result)
+    utils.notify_result("Ontology test result",result)
     
     return 0
 

@@ -22,9 +22,15 @@
 #  
 #  
 
+import sepy.utils as utils
+from sepy.YSparqlObject import YSparqlObject as YSparql
+
 from cocktail.InteractionPattern import InteractionPattern
-import sparql_utilities as bzu
-import constants as cts
+
+from constants import PATH_SPARQL_NEW_PROPERTY as newProperty
+from constants import SPARQL_PREFIXES as WotPrefs
+from constants import PATH_SPARQL_QUERY_PROPERTY as queryProperty
+
 import json
 import logging
 
@@ -34,11 +40,13 @@ class Property(InteractionPattern):
     """
     wot:Property python implementation
     """
+    
+    
     def __init__(self,sepa,bindings):
         super().__init__(sepa,bindings)
         
     def post(self):
-        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_PROPERTY,fB_values=self._bindings)
+        sparql,fB = YSparql(newProperty,external_prefixes=WotPrefs).getData(fB_values=self._bindings)
         self._sepa.update(sparql,fB)
         return self
         
@@ -73,7 +81,7 @@ class Property(InteractionPattern):
 
     @staticmethod
     def discover(sepa,prop="UNDEF",nice_output=False):
-        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_QUERY_PROPERTY,fB_values={"property_uri":prop})
+        sparql,fB = YSparql(queryProperty,external_prefixes=WotPrefs).getData(fB_values={"property_uri":prop})
         d_output = sepa.query(sparql,fB=fB)
         if nice_output:
             bzu.tablify(json.dumps(d_output))

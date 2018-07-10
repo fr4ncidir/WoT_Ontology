@@ -22,9 +22,15 @@
 #  
 #  
 
-import constants as cst
 from abc import abstractmethod
-import sparql_utilities as bzu
+
+import sepy.utils as utils
+from sepy.YSparqlObject import YSparqlObject as YSparql
+
+from constants import SPARQL_PREFIXES as WotPrefs
+from constants import PATH_SPARQL_DELETE_IP as delIP
+from constants import PATH_SPARQL_QUERY_INTERACTION_PATTERN as queryIP
+
 import json
 import logging
 
@@ -67,7 +73,7 @@ class InteractionPattern:
             tag = "action"
         else:
             raise ValueError("Bad bindings!")
-        sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_DELETE_IP,fB_values={"ip": self._bindings[tag]})
+        sparql,fB = YSparql(delIP,external_prefixes=WotPrefs).getData(fB_values={"ip": self._bindings[tag]})
         self._sepa.update(sparql,fB)
         
     @abstractmethod
@@ -87,7 +93,7 @@ class InteractionPattern:
         'td_uri' and 'ip_type' params. 
         'nice_output' prints to console a table with the result.
         """
-        sparql,fB = bzu.get_yaml_data(cst.PATH_SPARQL_QUERY_INTERACTION_PATTERN,fB_values={"td_uri": td_uri, "ipattern_type_specific": ip_type})
+        sparql,fB = YSparql(queryIP,external_prefixes=WotPrefs).getData(fB_values={"td_uri": td_uri, "ipattern_type_specific": ip_type})
         d_output = sepa.query(sparql,fB)
         if nice_output:
             bzu.tablify(json.dumps(d_output))

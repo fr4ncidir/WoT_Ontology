@@ -8,7 +8,7 @@
 
 DESCRIBE_PROPERTY:
     sparql: "
-        select ?property ?pName ?pStability ?pWritability ?pDS ?pValue ?pFS ?pFS_type (group_concat(?ip; separator=';\\n') as ?ipattern)
+        select ?property ?pName ?pStability ?pWritability ?pDS ?pValue ?pFS ?pFS_type (group_concat(?ip; separator='; ') as ?ipattern)
         where {
             ?property   rdf:type wot:Property;
                         wot:hasName ?pName;
@@ -20,7 +20,7 @@ DESCRIBE_PROPERTY:
             ?pFS rdf:type ?pFS_type.
             optional {?ip wot:forProperty ?property}.
             filter (?pFS_type != wot:FieldSchema).
-            values (?property) {(UNDEF)}
+            values (?property) {(?property_uri)}
         }
 group by ?property ?pName ?pStability ?pWritability ?pDS ?pValue ?pFS ?pFS_type"
     forcedBindings:

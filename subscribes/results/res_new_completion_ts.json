@@ -1,1 +1,1 @@
-{"head": {"vars": ["ts"]}, "results": {"bindings": [{"ts": {"datatype": "http://www.w3.org/2001/XMLSchema#dateTime", "type": "literal", "value": "2018-07-05T15:57:10.326Z"}}]}}
+{"head": {"vars": ["ts"]}, "results": {"bindings": [{"ts": {"datatype": "http://www.w3.org/2001/XMLSchema#dateTime", "type": "literal", "value": "2018-07-10T14:35:58.284Z"}}]}}

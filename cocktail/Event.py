@@ -24,8 +24,16 @@
 
 from cocktail.InteractionPattern import InteractionPattern
 from cocktail.Thing import Thing
-import sparql_utilities as bzu
-import constants as cts
+
+import sepy.utils as utils
+from sepy.YSparqlObject import YSparqlObject as YSparql
+
+from constants import SPARQL_PREFIXES as WotPrefs
+from constants import PATH_SPARQL_NEW_EVENT_TEMPLATE, PATH_SPARQL_NEW_EVENT_INSTANCE_TEMPLATE
+from constants import PATH_SPARQL_ADD_FORPROPERTY
+from constants import PATH_SPARQL_DELETE_EVENT_INSTANCE
+from constants import PATH_SPARQL_QUERY_EVENT, PATH_SPARQL_QUERY_EVENT_INSTANCE
+
 from enum import Enum
 import json
 import logging
@@ -50,11 +58,11 @@ class Event(InteractionPattern):
         self._observation_subid = None
         
     def post(self):
-        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_EVENT_TEMPLATE.format(self._type.value),fB_values=self._bindings)
+        sparql,fB = YSparql(PATH_SPARQL_NEW_EVENT_TEMPLATE.format(self._type.value),external_prefixes=WotPrefs).getData(fB_values=self._bindings)
         self._sepa.update(sparql,fB)
         
         if self._forProperties:
-            sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_ADD_FORPROPERTY,fB_values={"ip":self._bindings["event"]})
+            sparql,fB = YSparql(PATH_SPARQL_ADD_FORPROPERTY,external_prefixes=WotPrefs).getData(fB_values={"ip":self._bindings["event"]})
             properties = []
             for prop in self._forProperties:
                 properties.append(prop.bindings["property"])
@@ -67,8 +75,8 @@ class Event(InteractionPattern):
         """
         Posts to the rdf store a notification, whose data in 'bindings' is formatted as in the new-event-instance yaml.
         """
-        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_EVENT_INSTANCE_TEMPLATE.format(self._type.value),fB_values=bindings)
-        self._sepa.update(sparql,fB,show=True)
+        sparql,fB = YSparql(PATH_SPARQL_NEW_EVENT_INSTANCE_TEMPLATE.format(self._type.value),external_prefixes=WotPrefs).getData(fB_values=bindings)
+        self._sepa.update(sparql,fB)
         return bindings["newEInstance"]
     
     @property
@@ -92,12 +100,12 @@ class Event(InteractionPattern):
         
     def deleteInstance(self,instance):
         super().deleteInstance(instance)
-        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_DELETE_EVENT_INSTANCE,fB_values={"eInstance": instance})
+        sparql,fB = YSparql(PATH_SPARQL_DELETE_EVENT_INSTANCE,external_prefixes=WotPrefs).getData(fB_values={"eInstance": instance})
         self._sepa.update(sparql,fB)
         
     @staticmethod
     def discover(sepa,event="UNDEF",nice_output=False):
-        sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_QUERY_EVENT,fB_values={"event_uri":event})
+        sparql,fB = YSparql(PATH_SPARQL_QUERY_EVENT,external_prefixes=WotPrefs).getData(fB_values={"event_uri":event})
         d_output = sepa.query(sparql,fB=fB)
         if nice_output:
             bzu.tablify(json.dumps(d_output))
@@ -111,15 +119,15 @@ class Event(InteractionPattern):
         query_ip = InteractionPattern.discover(sepa,ip_type="wot:Event",nice_output=False)
         for binding in query_ip["results"]["bindings"]:
             if binding["ipattern"]["value"] == eventURI.replace("<","").replace(">",""):
-                td = bzu.uriFormat(binding["td"]["value"])
+                td = utils.uriFormat(binding["td"]["value"])
         eBinding = query_event["results"]["bindings"][0]
         out_bindings = { "td": td,
-                        "event": bzu.uriFormat(eBinding["event"]["value"]),
+                        "event": utils.uriFormat(eBinding["event"]["value"]),
                         "eName": eBinding["eName"]["value"]}
         if "oDS" in eBinding.keys():
-            out_bindings["ods"] = bzu.uriFormat(eBinding["oDS"]["value"])
+            out_bindings["ods"] = utils.uriFormat(eBinding["oDS"]["value"])
         query_thing = Thing.discover(sepa,bindings={"td_uri": td})
-        out_bindings["thing"] = bzu.uriFormat(query_thing["results"]["bindings"][0]["thing"]["value"])
+        out_bindings["thing"] = utils.uriFormat(query_thing["results"]["bindings"][0]["thing"]["value"])
         return Event(sepa,out_bindings)
     
     def observe(self,handler):
@@ -128,7 +136,7 @@ class Event(InteractionPattern):
         'handler' deals with the task to be performed in such situation.
         """
         if self._observation_subid is None:
-            sparql,fB = bzu.get_yaml_data(cts.PATH_SPARQL_QUERY_EVENT_INSTANCE,fB_values=self._bindings)
+            sparql,fB = YSparql(PATH_SPARQL_QUERY_EVENT_INSTANCE,external_prefixes=WotPrefs).getData(fB_values=self._bindings)
             self._observation_subid = self._sepa.subscribe(sparql,fB=fB,alias=self.uri,handler=handler)
             logger.info("Started observation of {}: id-{}".format(self.uri,self._observation_subid))
         else:
