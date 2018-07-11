@@ -40,7 +40,7 @@ from cocktail.Property import Property
 from cocktail.Action import Action
 from cocktail.Event import Event
 
-
+import threading
 import argparse
 import logging
 
@@ -54,6 +54,9 @@ wot_FieldSchema = "wot:FieldSchema"
 thing_descriptor = "<http://MyFirstWebThingDescription.com>"
 
 def main(args):
+    action1 = None
+    action1Lock = threading.Lock()
+    
     graph = Engine(  ip = args["ip"],
                     http_port = args["query_port"],
                     ws_port = args["sub_port"],
@@ -97,14 +100,28 @@ def main(args):
                     "newPD": "<http://MyFirstWebThing.com/Property1/PropertyData>",
                     "newValue": "Hello World!"}).post()
     print("Property added to thing!")
-                    
+    
+    def action1Handler(added,removed):
+        action1Lock.acquire()
+        if len(added)>0:
+            print("\n*******ACTION 1 HANDLER START**********")
+            print("Added: {}\nRemoved: {}".format(added,removed))
+            print("*******ACTION 1 HANDLER END**********\n")
+            for instance in added:
+                action1.post_confirmation(utils.uriFormat(instance["aInstance"]["value"]))
+                action1.post_output({   "instance": utils.uriFormat(instance["aInstance"]["value"]),
+                                        "oData": utils.uriFormat("http://ODATA_"+str(datetime.now()).replace(" ","T").replace(":","_")+"Z"),
+                                        "oValue": instance["iValue"]["value"][::-1],
+                                        "oDS": action1.bindings["ods"]})
+        action1Lock.release()
+        
     action1 = Action(graph,{"thing": thing1.uri,
                             "td": thing_descriptor,
                             "action": "<http://MyFirstWebThing.com/Action1>",
                             "newName": "Thing1_Action1",
                             "ids": ds1.uri,
                             "ods": ds2.uri},
-                            lambda a,r: print("ACTION 1 HANDLER RUN")).post().enable()
+                            action1Handler).post().enable()
     print("Action1 added to thing!")
     
     action2 = Action(graph,{"thing": thing1.uri,
@@ -122,22 +139,28 @@ def main(args):
                             "ods": ds4.uri}).post()
     print("Event added to thing!")
     
-    input("Continue?")
+    #input("Continue?")
     
-    print("Now I'll trigger 10 events, one every 10 seconds. ")
-    for trigger_event1 in range(10):
-        print("... Firing event {}".format(trigger_event1))
-        instance = event1.notify({ "event": event1.uri,
-                        "newEInstance": event1.uri.replace(">","/instance{}>".format(trigger_event1)),
-                        "newOData": event1.uri.replace(">","/data{}>".format(trigger_event1)),
-                        "newValue": str(datetime.utcnow()).replace(" ","T")+"Z",
-                        "newDS": ds4.uri})
-        sleep(10)
-        print("Deleting old event instance...")
-        event1.deleteInstance(instance)
-    print("Stopping triggering events!")
+    # print("Now I'll trigger 10 events, one every 10 seconds. ")
+    # for trigger_event1 in range(10):
+        # print("... Firing event {}".format(trigger_event1))
+        # instance = event1.notify({ "event": event1.uri,
+                        # "newEInstance": event1.uri.replace(">","/instance{}>".format(trigger_event1)),
+                        # "newOData": event1.uri.replace(">","/data{}>".format(trigger_event1)),
+                        # "newValue": str(datetime.utcnow()).replace(" ","T")+"Z",
+                        # "newDS": ds4.uri})
+        # sleep(10)
+        # print("Deleting old event instance...")
+        # event1.deleteInstance(instance)
+    # print("Stopping triggering events!")
     
-    input("Continue?")
+    #input("Continue?")
+    
+    try:
+        while True:
+            sleep(10)
+    except KeyboardInterrupt:
+        print("Bye Bye!")
     
     # print("Now I'll disable the two actions.")
     # action1.disable()

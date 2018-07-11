@@ -151,7 +151,7 @@ class Action(InteractionPattern):
         if (self._type is AType.OUTPUT_ACTION) or (self._type is AType.IO_ACTION):
             sparql,fB = YSparql(PATH_SPARQL_NEW_INSTANCE_OUTPUT,external_prefixes=WotPrefs).getData(fB_values=bindings)
             self._sepa.update(sparql,fB)
-            self.post_timestamp("completion",instance)
+            self.post_completion(bindings["instance"])
            
     def post_completion(self,instance):
         self._post_timestamp("completion",instance)
@@ -239,10 +239,8 @@ class Action(InteractionPattern):
             sparql,fB = YSparql(PATH_SPARQL_QUERY_INSTANCE_OUTPUT,external_prefixes=WotPrefs).getData(fB_values={"instance": bindings["newAInstance"]})
             self._sepa.subscribe(sparql,fB=fB,alias=bindings["newAInstance"],handler=output_handler)
         req_type = AType.INPUT_ACTION.value if (self._type is AType.INPUT_ACTION or self._type is AType.IO_ACTION) else AType.EMPTY_ACTION.value
-        print("Prima")
         sparql,fB = YSparql(PATH_SPARQL_NEW_ACTION_INSTANCE_TEMPLATE.format(req_type),external_prefixes=WotPrefs).getData(fB_values=bindings)
         self._sepa.update(sparql,fB)
-        print("Dopo")
         return bindings["newAInstance"]
             
     def isInferred(self):

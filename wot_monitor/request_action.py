@@ -67,8 +67,8 @@ def main(args):
         handler = module.handler
     
     bindings = {"action": action.uri,
-                "newAInstance": "AInstance_"+str(datetime.now()).replace(" ","T")+"Z",
-                "newAuthor": "MonitorPython"}
+                "newAInstance": utils.uriFormat("http://AInstance_"+str(datetime.now()).replace(" ","T").replace(":","_")+"Z"),
+                "newAuthor": utils.uriFormat("http://MonitorPython")}
     if ((action.type is AType.IO_ACTION) or (action.type is AType.INPUT_ACTION)):
         print("Please give input according to the following dataschema: ")
         print("DS info:")
@@ -78,13 +78,13 @@ def main(args):
             chosen_format = {}
             for ds in dss:
                 queried_format[ds["ds"]["value"]] = ds["fs"]["value"]
-            bindings["newIDS"] = input(">> Please insert the DataSchema Uri chosen: ")
+            bindings["newIDS"] = utils.uriFormat(input(">> Please insert the DataSchema Uri chosen: "))
             chosen_format = queried_format[chosen_ds]
         else:
-            bindings["newIDS"] = dss[0]["ds"]["value"]
+            bindings["newIDS"] = utils.uriFormat(dss[0]["ds"]["value"])
             chosen_format = dss[0]["fs"]["value"]
         bindings["newIValue"] = input("({}) Insert input in {} format > ".format(bindings["newIDS"],chosen_format))
-        bindings["newIData"] = "IDATA_"+str(datetime.now()).replace(" ","T")+"Z"
+        bindings["newIData"] = utils.uriFormat("http://IDATA_"+str(datetime.now()).replace(" ","T").replace(":","_")+"Z")
         
     action.newRequest(  bindings,
                         confirm_handler=lambda a,r: print("\nConfirmation handler:\na: {}\nr: {}".format(a,r)),
