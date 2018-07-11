@@ -24,6 +24,7 @@
 
 import sepy.utils as utils
 from sepy.YSparqlObject import YSparqlObject as YSparql
+from sepy.tablaze import tablify
 
 from cocktail.InteractionPattern import InteractionPattern
 
@@ -31,7 +32,6 @@ from constants import PATH_SPARQL_NEW_PROPERTY as newProperty
 from constants import SPARQL_PREFIXES as WotPrefs
 from constants import PATH_SPARQL_QUERY_PROPERTY as queryProperty
 
-import json
 import logging
 
 logger = logging.getLogger("cocktail_log") 
@@ -84,7 +84,7 @@ class Property(InteractionPattern):
         sparql,fB = YSparql(queryProperty,external_prefixes=WotPrefs).getData(fB_values={"property_uri":prop})
         d_output = sepa.query(sparql,fB=fB)
         if nice_output:
-            bzu.tablify(json.dumps(d_output))
+            tablify(d_output,prefix_file=WotPrefs.split("\n"))
         if ((prop != "UNDEF") and (len(d_output["results"]["bindings"])>1)):
             raise Exception("Property discovery gave more than one result")
         return d_output

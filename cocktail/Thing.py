@@ -30,10 +30,10 @@ from constants import PATH_SPARQL_NEW_SUBTHING as newSubThing
 from constants import PATH_SPARQL_DELETE_THING as delThing
 from constants import PATH_SPARQL_QUERY_THING as queryThing
 
-import json
 import logging
 
 from sepy.YSparqlObject import YSparqlObject as YSparql
+from sepy.tablaze import tablify
 
 logger = logging.getLogger("cocktail_log") 
 
@@ -72,7 +72,7 @@ class Thing:
         sparql,fB = YSparql(queryThing,external_prefixes=WotPrefs).getData(fB_values=bindings)
         d_output = sepa.query(sparql,fB)
         if nice_output:
-            bzu.tablify(json.dumps(d_output))
+            tablify(d_output,prefix_file=WotPrefs.split("\n"))
         return d_output
         
     @property

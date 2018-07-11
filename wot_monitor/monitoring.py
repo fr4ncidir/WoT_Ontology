@@ -3,12 +3,15 @@
 import sys
 sys.path.append("/home/tarsier/Documents/Work/WoT_Ontology")
 
+from sepy import utils
+
 from cocktail.Thing import Thing
 from cocktail.DataSchema import DataSchema
 from cocktail.Property import Property
-from cocktail.Action import Action
+from cocktail.Action import *
 from cocktail.Event import Event
 
+from datetime import datetime
 import rlcompleter
 import readline
 import json
@@ -69,9 +72,9 @@ def discovery(sepa,item,instances):
         elif item == "dataschemas":
             query = DataSchema.discover(sepa,nice_output=True)
             for ds in query["results"]["bindings"]:
-                output.append(DataSchema(sepa, {  "ds_uri": query["ds"]["value"],
-                                    "fs_uri": query["fs"]["value"],
-                                    "fs_types": query["fs_type"]["value"]+", wot:FieldSchema"}))
+                output.append(DataSchema(sepa, {  "ds_uri": ds["ds"]["value"],
+                                    "fs_uri": ds["fs"]["value"],
+                                    "fs_types": ds["fs_type"]["value"]+", wot:FieldSchema"}))
     return output
         
 def describe(sepa,item,instances):
@@ -179,4 +182,9 @@ def observe_event(sepa,eventUri):
     Thread(target=observing_function, args=(eventUri, )).start()
     return True
     
-    
+def request_action(sepa,actionURI):
+    from threading import Thread
+    def action_request_function(action_uri):
+        from subprocess import call
+        call(["xterm", "-hold", "-maximized","-e", "python3", "/home/tarsier/Documents/Work/WoT_Ontology/wot_monitor/request_action.py", action_uri])
+    Thread(target=action_request_function, args=(actionURI, )).start()

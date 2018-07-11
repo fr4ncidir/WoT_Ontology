@@ -27,6 +27,7 @@ from cocktail.Thing import Thing
 
 import sepy.utils as utils
 from sepy.YSparqlObject import YSparqlObject as YSparql
+from sepy.tablaze import tablify
 
 from constants import SPARQL_PREFIXES as WotPrefs
 from constants import PATH_SPARQL_NEW_EVENT_TEMPLATE, PATH_SPARQL_NEW_EVENT_INSTANCE_TEMPLATE
@@ -35,7 +36,6 @@ from constants import PATH_SPARQL_DELETE_EVENT_INSTANCE
 from constants import PATH_SPARQL_QUERY_EVENT, PATH_SPARQL_QUERY_EVENT_INSTANCE
 
 from enum import Enum
-import json
 import logging
 
 logger = logging.getLogger("cocktail_log") 
@@ -95,7 +95,7 @@ class Event(InteractionPattern):
     def getBindingList(event_type):
         if event_type not in EType:
             raise ValueError
-        _,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_EVENT_TEMPLATE.format(event_type.value))
+        _,fB = bzu.get_yaml_data(PATH_SPARQL_NEW_EVENT_TEMPLATE.format(event_type.value))
         return fB.keys()
         
     def deleteInstance(self,instance):
@@ -108,7 +108,7 @@ class Event(InteractionPattern):
         sparql,fB = YSparql(PATH_SPARQL_QUERY_EVENT,external_prefixes=WotPrefs).getData(fB_values={"event_uri":event})
         d_output = sepa.query(sparql,fB=fB)
         if nice_output:
-            bzu.tablify(json.dumps(d_output))
+            tablify(d_output,prefix_file=WotPrefs.split("\n"))
         if ((event != "UNDEF") and (len(d_output["results"]["bindings"])>1)):
             raise Exception("Event discovery gave more than one result")
         return d_output

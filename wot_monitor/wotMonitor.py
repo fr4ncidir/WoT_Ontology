@@ -31,8 +31,11 @@
 import sys
 import rlcompleter
 import readline
+
 from monitoring import *
-from wrap_sepa import Sepa as Engine
+
+from sepy.Sepa import Sepa as Engine
+
 from cocktail.Action import Action
 from cocktail.Event import Event
 
@@ -106,14 +109,21 @@ def main(args):
                 if not (started_observation):
                     print("{}: unavailable instance!".format(instance))
         elif command == "request":
-            actionInstances = [x for x in instances if x["type"]=="Action"]
-            comps = actionInstances
+            print("Available targets:")
+            comps = [x for x in instances if type(x)==Action]
+            for action in comps:
+                print(action.uri)
             instance = input("(request)> ")
-            if not (instance in eventInstances):
-                print("{}: unavailable instance!".format(instance))
-            else:
-                #request_action()
-                pass
+            if instance == "exit":
+                exit_procedure()
+            elif instance != "back":
+                requested_action = False
+                for action in comps:
+                    if instance == action.uri:
+                        requested_action = request_action(sepa,action.uri)
+                        break
+                if not (requested_action):
+                    print("{}: unavailable instance!".format(instance))
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv))

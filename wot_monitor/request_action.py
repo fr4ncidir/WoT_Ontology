@@ -25,9 +25,12 @@ import sys
 sys.path.append("/home/tarsier/Documents/Work/WoT_Ontology")
 
 from sepy.Sepa import Sepa as Engine
+from sepy import utils
 
-from cocktail.Event import Event
+from cocktail.Action import *
+from cocktail.DataSchema import DataSchema
 
+from datetime import datetime
 from time import sleep
 import argparse
 
@@ -45,34 +48,65 @@ def main(args):
                                     "tokenURI": args["token_uri"], 
                                     "registerURI": args["registration_uri"]})
     
-    observed = Event.buildFromQuery(sepa,"<"+args["Event-Instance-URI"]+">")
-    print("Subscribing to event: \n{}".format(observed.bindings))
+    action = Action.buildFromQuery(sepa,utils.uriFormat(args["Action-URI"]))
     if args["custom_handler"] is None:
-        observed.observe(custom_handler)
+        if ((action.type is AType.IO_ACTION) or (action.type is AType.OUTPUT_ACTION)):
+            def handler(a,r):
+                print("\n**************************************")
+                print("Request action output handler! ")
+                print("Added: {}".format(a))
+                print("Removed: {}".format(r))
+                print("**************************************\n")
+        else:
+            handler = None
     else:
         import importlib.util as iutil
         spec = iutil.spec_from_file_location("module.name",args["custom_handler"])
         module = iutil.module_from_spec(spec)
         spec.loader.exec_module(module)
-        observed.observe(module.handler)
+        handler = module.handler
+    
+    bindings = {"action": action.uri,
+                "newAInstance": "AInstance_"+str(datetime.now()).replace(" ","T")+"Z",
+                "newAuthor": "MonitorPython"}
+    if ((action.type is AType.IO_ACTION) or (action.type is AType.INPUT_ACTION)):
+        print("Please give input according to the following dataschema: ")
+        print("DS info:")
+        dss = DataSchema.discover(sepa,ds=action.bindings["ids"],nice_output=True)["results"]["bindings"]
+        
+        if len(dss)>1:
+            chosen_format = {}
+            for ds in dss:
+                queried_format[ds["ds"]["value"]] = ds["fs"]["value"]
+            bindings["newIDS"] = input(">> Please insert the DataSchema Uri chosen: ")
+            chosen_format = queried_format[chosen_ds]
+        else:
+            bindings["newIDS"] = dss[0]["ds"]["value"]
+            chosen_format = dss[0]["fs"]["value"]
+        bindings["newIValue"] = input("({}) Insert input in {} format > ".format(bindings["newIDS"],chosen_format))
+        bindings["newIData"] = "IDATA_"+str(datetime.now()).replace(" ","T")+"Z"
+        
+    action.newRequest(  bindings,
+                        confirm_handler=lambda a,r: print("\nConfirmation handler:\na: {}\nr: {}".format(a,r)),
+                        completion_handler=lambda a,r: print("\nCompletion handler:\na: {}\nr: {}".format(a,r)),
+                        output_handler=handler)
     try:
         while True:
             sleep(10)
     except KeyboardInterrupt:
         pass
     finally:
-        observed.stop_observing()
         print("Bye Bye!")
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="WoT Event subscriber")
+    parser = argparse.ArgumentParser(description="WoT Action requestor")
     parser.add_argument("-ip", default="localhost", help="Sepa ip")
     parser.add_argument("-query_port", default=8000, help="Sepa query/update port")
     parser.add_argument("-sub_port", default=9000, help="Sepa subscription port")
     parser.add_argument("-token_uri", default=None, help="Sepa token uri")
     parser.add_argument("-registration_uri", default=None, help="Sepa registration uri")
-    parser.add_argument("-custom_handler", default=None, help="Event handler location. The .py file must have a method inside called 'handler'")
-    parser.add_argument("Event-Instance-URI",help="Uri of the event to which subscribe")
+    parser.add_argument("-custom_handler", default=None, help="Action output handler location. The .py file must have a method inside called 'handler'")
+    parser.add_argument("Action-URI",help="Uri of the action to be requested")
     arguments = vars(parser.parse_args())
     if ((arguments["token_uri"] is not None) and (arguments["registration_uri"] is not None)):
         arguments["security"] = True

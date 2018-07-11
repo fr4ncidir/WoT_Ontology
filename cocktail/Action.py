@@ -27,6 +27,7 @@ from cocktail.Thing import Thing
 
 import sepy.utils as utils
 from sepy.YSparqlObject import YSparqlObject as YSparql
+from sepy.tablaze import tablify
 
 from constants import SPARQL_PREFIXES as WotPrefs
 from constants import PATH_SPARQL_NEW_ACTION_TEMPLATE, PATH_SPARQL_NEW_TS_TEMPLATE, PATH_SPARQL_QUERY_TS_TEMPLATE, PATH_SPARQL_NEW_ACTION_INSTANCE_TEMPLATE
@@ -190,7 +191,7 @@ class Action(InteractionPattern):
         sparql,fB = YSparql(PATH_SPARQL_QUERY_ACTION,external_prefixes=WotPrefs).getData(fB_values={"action_uri":action})
         d_output = sepa.query(sparql,fB=fB)
         if nice_output:
-            bzu.tablify(json.dumps(d_output))
+            tablify(d_output,prefix_file=WotPrefs.split("\n"))
         if ((action != "UNDEF") and (len(d_output["results"]["bindings"])>1)):
             raise Exception("Action discovery gave more than one result")
         return d_output
@@ -228,18 +229,20 @@ class Action(InteractionPattern):
         if confirm_handler is not None:
             # in case i'm interested in capturing the confirm flag
             sparql,fB = YSparql(PATH_SPARQL_QUERY_TS_TEMPLATE.format("confirmation"),external_prefixes=WotPrefs).getData(fB_values={"aInstance": bindings["newAInstance"]})
-            self._sepa.subscribe(sparql,fB=fB,alias=bindings["newAInstance"],handler=self.confirm_handler)
+            self._sepa.subscribe(sparql,fB=fB,alias=bindings["newAInstance"],handler=confirm_handler)
         if completion_handler is not None:
             # in case i'm interested in capturing the completion flag
             sparql,fB = YSparql(PATH_SPARQL_QUERY_TS_TEMPLATE.format("completion"),external_prefixes=WotPrefs).getData(fB_values={"aInstance": bindings["newAInstance"]})
-            self._sepa.subscribe(sparql,fB=fB,alias=bindings["newAInstance"],handler=self.completion_handler)
+            self._sepa.subscribe(sparql,fB=fB,alias=bindings["newAInstance"],handler=completion_handler)
         if output_handler is not None:
             # in case i'm interested in capturing the output
             sparql,fB = YSparql(PATH_SPARQL_QUERY_INSTANCE_OUTPUT,external_prefixes=WotPrefs).getData(fB_values={"instance": bindings["newAInstance"]})
-            self._sepa.subscribe(sparql,fB=fB,alias=bindings["newAInstance"],handler=self.output_handler)
+            self._sepa.subscribe(sparql,fB=fB,alias=bindings["newAInstance"],handler=output_handler)
         req_type = AType.INPUT_ACTION.value if (self._type is AType.INPUT_ACTION or self._type is AType.IO_ACTION) else AType.EMPTY_ACTION.value
+        print("Prima")
         sparql,fB = YSparql(PATH_SPARQL_NEW_ACTION_INSTANCE_TEMPLATE.format(req_type),external_prefixes=WotPrefs).getData(fB_values=bindings)
         self._sepa.update(sparql,fB)
+        print("Dopo")
         return bindings["newAInstance"]
             
     def isInferred(self):

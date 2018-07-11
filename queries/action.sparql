@@ -10,7 +10,7 @@ DESCRIBE_ACTION:
     sparql: "
         select ?action ?aName ?iDS ?iFS ?iFS_type
                 ?oDS ?oFS ?oFS_type
-                (group_concat(?props; separator=';\\n') as ?property)
+                (group_concat(?props; separator='; ') as ?property)
         where {
             ?action rdf:type wot:Action;
                     wot:hasName ?aName.

@@ -30,7 +30,8 @@
 import sys
 sys.path.append("/home/tarsier/Documents/Work/WoT_Ontology")
 
-from wrap_sepa import Sepa as Engine
+from sepy.Sepa import Sepa as Engine
+import sepy.utils as utils
 from time import sleep
 from datetime import datetime
 from cocktail.Thing import Thing
@@ -39,8 +40,7 @@ from cocktail.Property import Property
 from cocktail.Action import Action
 from cocktail.Event import Event
 
-import sparql_utilities as bzu
-import constants as cst
+
 import argparse
 import logging
 
@@ -121,13 +121,6 @@ def main(args):
                             "eName": "Thing1_Event1",
                             "ods": ds4.uri}).post()
     print("Event added to thing!")
-          
-    
-    graph.query("select * where {?a ?b ?c}",destination="./missing.txt")
-    graph.update("delete where {?a ?b ?c}")
-    graph.update(bzu.file_to_string(cst.SPARQL_INSERT_THING1))
-    graph.query("select * where {?a ?b ?c}",destination="./res_thing1.txt")
-    bzu.compare_queries("./missing.txt","./res_thing1.txt",show_diff=True)
     
     input("Continue?")
     

@@ -26,12 +26,12 @@ from abc import abstractmethod
 
 import sepy.utils as utils
 from sepy.YSparqlObject import YSparqlObject as YSparql
+from sepy.tablaze import tablify
 
 from constants import SPARQL_PREFIXES as WotPrefs
 from constants import PATH_SPARQL_DELETE_IP as delIP
 from constants import PATH_SPARQL_QUERY_INTERACTION_PATTERN as queryIP
 
-import json
 import logging
 
 logger = logging.getLogger("cocktail_log") 
@@ -96,7 +96,7 @@ class InteractionPattern:
         sparql,fB = YSparql(queryIP,external_prefixes=WotPrefs).getData(fB_values={"td_uri": td_uri, "ipattern_type_specific": ip_type})
         d_output = sepa.query(sparql,fB)
         if nice_output:
-            bzu.tablify(json.dumps(d_output))
+            tablify(d_output,prefix_file=WotPrefs.split("\n"))
         return d_output
         
     def deleteInstance(self,instance):

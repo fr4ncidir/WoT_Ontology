@@ -22,11 +22,15 @@
 #  
 #  
 
-import constants as cst
+from constants import PATH_SPARQL_NEW_DATASCHEMA, PATH_SPARQL_QUERY_DATASCHEMA
+from constants import SPARQL_PREFIXES as WotPrefs
+from constants import PATH_SPARQL_NEW_PROPERTY
+
 import sepy.utils as utils
-import json
-import logging
 from sepy.YSparqlObject import YSparqlObject as YSparql
+from sepy.tablaze import tablify
+
+import logging
 
 logger = logging.getLogger("cocktail_log") 
 
@@ -47,21 +51,21 @@ class DataSchema:
         return self._bindings["ds_uri"]
 
     def post(self):
-        sparql,fB = YSparql(cst.PATH_SPARQL_NEW_DATASCHEMA,external_prefixes=cst.SPARQL_PREFIXES).getData(fB_values=self._bindings)
+        sparql,fB = YSparql(PATH_SPARQL_NEW_DATASCHEMA,external_prefixes=WotPrefs).getData(fB_values=self._bindings)
         self._sepa.update(sparql,fB)
         return self
         
     @staticmethod
     def getBindingList():
-        _,fB = YSparql(cts.PATH_SPARQL_NEW_PROPERTY).getData()
+        _,fB = YSparql(PATH_SPARQL_NEW_PROPERTY).getData()
         return fB.keys()
     
     @staticmethod
     def discover(sepa,ds="UNDEF",nice_output=False):
-        sparql,fB = YSparql(cst.PATH_SPARQL_QUERY_DATASCHEMA,external_prefixes=cst.SPARQL_PREFIXES).getData(fB_values={"ds_force": ds})
+        sparql,fB = YSparql(PATH_SPARQL_QUERY_DATASCHEMA,external_prefixes=WotPrefs).getData(fB_values={"ds_force": ds})
         d_output = sepa.query(sparql,fB)
         if nice_output:
-            bzu.tablify(json.dumps(d_output))
+            tablify(d_output,prefix_file=WotPrefs.split("\n"))
         return d_output
 
     def delete(self):
