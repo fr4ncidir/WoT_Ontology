@@ -32,23 +32,23 @@ import json
 import logging
 import os
 
-#import constants as cst
-from constants import SPARQL_INSERT_THING1, SPARQL_INSERT_THING2, SPARQL_INSERT_THING3
-from constants import SPARQL_PREFIXES as WotPrefs
-from constants import PATH_SPARQL_QUERY_PROPERTY as queryProperty
-from constants import PATH_SPARQL_QUERY_TS_TEMPLATE, RES_SPARQL_NEW_TS_TEMPLATE
-from constants import PATH_SPARQL_QUERY_THING, RES_SPARQL_NEW_THING
-from constants import RES_SPARQL_QUERY_ALL
-from constants import RES_SPARQL_QUERY_ALL_NEW_DATASCHEMA
-from constants import RES_SPARQL_NEW_PROPERTY, RES_SPARQL_NEW_PROPERTY_UPDATE
-from constants import RES_SPARQL_QUERY_ALL_NEW_DS_ACTIONS, RES_SPARQL_QUERY_ALL_NEW_DS_EVENTS
-from constants import PATH_SPARQL_QUERY_ACTION, RES_SPARQL_NEW_ACTIONS
-from constants import PATH_SPARQL_QUERY_EVENT, RES_SPARQL_NEW_EVENTS
-from constants import PATH_SPARQL_QUERY_ACTION_INSTANCE, RES_SPARQL_NEW_ACTION_INSTANCE_TEMPLATE
-from constants import PATH_SPARQL_QUERY_INSTANCE_OUTPUT, RES_SPARQL_NEW_INSTANCE_OUTPUT
-from constants import RES_SPARQL_NEW_ACTION_INSTANCE_UPDATE_TEMPLATE, RES_SPARQL_NEW_EVENT_INSTANCE_TEMPLATE
-from constants import PATH_SPARQL_QUERY_EVENT_INSTANCE
-from constants import RES_SPARQL_NEW_EVENT_INSTANCE_UPDATE_TEMPLATE
+#import cocktail.constants as cst
+from cocktail.constants import SPARQL_INSERT_THING1, SPARQL_INSERT_THING2, SPARQL_INSERT_THING3
+from cocktail.constants import SPARQL_PREFIXES as WotPrefs
+from cocktail.constants import PATH_SPARQL_QUERY_PROPERTY as queryProperty
+from cocktail.constants import PATH_SPARQL_QUERY_TS_TEMPLATE, RES_SPARQL_NEW_TS_TEMPLATE
+from cocktail.constants import PATH_SPARQL_QUERY_THING, RES_SPARQL_NEW_THING
+from cocktail.constants import RES_SPARQL_QUERY_ALL
+from cocktail.constants import RES_SPARQL_QUERY_ALL_NEW_DATASCHEMA
+from cocktail.constants import RES_SPARQL_NEW_PROPERTY, RES_SPARQL_NEW_PROPERTY_UPDATE
+from cocktail.constants import RES_SPARQL_QUERY_ALL_NEW_DS_ACTIONS, RES_SPARQL_QUERY_ALL_NEW_DS_EVENTS
+from cocktail.constants import PATH_SPARQL_QUERY_ACTION, RES_SPARQL_NEW_ACTIONS
+from cocktail.constants import PATH_SPARQL_QUERY_EVENT, RES_SPARQL_NEW_EVENTS
+from cocktail.constants import PATH_SPARQL_QUERY_ACTION_INSTANCE, RES_SPARQL_NEW_ACTION_INSTANCE_TEMPLATE
+from cocktail.constants import PATH_SPARQL_QUERY_INSTANCE_OUTPUT, RES_SPARQL_NEW_INSTANCE_OUTPUT
+from cocktail.constants import RES_SPARQL_NEW_ACTION_INSTANCE_UPDATE_TEMPLATE, RES_SPARQL_NEW_EVENT_INSTANCE_TEMPLATE
+from cocktail.constants import PATH_SPARQL_QUERY_EVENT_INSTANCE
+from cocktail.constants import RES_SPARQL_NEW_EVENT_INSTANCE_UPDATE_TEMPLATE
 
 from cocktail.Thing import Thing
 from cocktail.DataSchema import DataSchema
@@ -61,7 +61,7 @@ logger = logging.getLogger("ontology_test_log")
 
 THING_URI = "<http://TestThing.com>"
 
-def reset_blazegraph(graph):
+def reset_testbase(graph):
     graph.clear()
     graph.update(y2str(SPARQL_INSERT_THING1))
     graph.update(y2str(SPARQL_INSERT_THING2))
@@ -83,6 +83,8 @@ def add_action_instance_ts(graph,instance,action,reset):
     return result
     
 def test_queries(graph,reset=False):
+    from pkg_resources import resource_filename
+    from cocktail import __name__ as cName
     """
     This function performs all the queries available in ./queries folder, and checks the
     corresponding result if there is coincidence. In case of reset==True, results file are 
@@ -92,12 +94,12 @@ def test_queries(graph,reset=False):
     logger.info("STARTING TEST_QUERIES")
     result = True
     # listing all files in ./queries, filtering hidden (starting with '.') and directories
-    for fileName in list(filter(lambda myfile: not (myfile.startswith(".") or os.path.isdir("./queries/"+myfile)),os.listdir("./queries"))):
+    dir_path = resource_filename(cName,"queries/")
+    for fileName in list(filter(lambda myfile: not (myfile.startswith(".") or os.path.isdir(dir_path+myfile)),os.listdir(dir_path))):
         result = result and utils.query_CompareUpdate(graph,
-            "./queries/{}".format(fileName),
+            dir_path+fileName,
             {}, reset,
-            "./queries/results/res_{}".format(fileName).replace(".sparql",".json"),
-            fileName,
+            (dir_path+"results/res_{}").format(fileName).replace(".sparql",".json"),
             prefixes=WotPrefs)
     logger.info("ENDING TEST_QUERIES")
     return utils.notify_result("test_queries",result)
@@ -127,7 +129,7 @@ def test_new_thing(graph,reset=False):
     dummyThing.delete()
 
     # With this line, if it outputs True, we certify that the contents of the RDF store are exactly the same as they were
-    # at the beginning of this function. So, no need to call reset_blazegraph
+    # at the beginning of this function. So, no need to call reset_testbase
     result = result and utils.query_FileCompare(graph,message="test_thing DELETE",fileAddress=RES_SPARQL_QUERY_ALL)
     logger.info("ENDING TEST_NEW_THING")
     return result
@@ -223,7 +225,7 @@ def test_new_property(graph,reset=False):
         except Exception as e:
             logger.error("Error while opening new_property_create or update")
             utils.notify_result("test_property UPDATE exception",str(e))
-            reset_blazegraph(graph)
+            reset_testbase(graph)
             return False
         # Performing the query after updates, and check with the update file
         result = result and utils.query_FileCompare(graph,sparql=sparql,fB=fB,message="test_property UPDATE",fileAddress=RES_SPARQL_NEW_PROPERTY_UPDATE)
@@ -234,7 +236,7 @@ def test_new_property(graph,reset=False):
         dummyThing.delete()
         result = result and utils.query_FileCompare(graph,message="test_property DELETE",fileAddress=RES_SPARQL_QUERY_ALL_NEW_DATASCHEMA,show_diff=False)
     
-    reset_blazegraph(graph)
+    reset_testbase(graph)
     logger.info("ENDING TEST_NEW_PROPERTY")
     return result
     
@@ -297,7 +299,7 @@ def test_new_action(graph,reset=False):
         dummyThing.delete()
         result = result and utils.query_FileCompare(graph,message="test_actions DELETE",fileAddress=RES_SPARQL_QUERY_ALL_NEW_DS_ACTIONS)
     
-    reset_blazegraph(graph)
+    reset_testbase(graph)
     logger.info("ENDING TEST_NEW_ACTIONS")
     return result
 
@@ -357,7 +359,7 @@ def test_new_event(graph,reset=False):
         dummyThing.delete()
         result = result and utils.query_FileCompare(graph,message="test_events DELETE",fileAddress=RES_SPARQL_QUERY_ALL_NEW_DS_EVENTS)
     
-    reset_blazegraph(graph)
+    reset_testbase(graph)
     logger.info("ENDING TEST_NEW_EVENTS")
     return result
 
@@ -384,7 +386,7 @@ def test_action_instance(graph,reset=False):
     
     # Adding the instances
     for action in actions:
-        bindings = {   "thing": action.getThing(),
+        bindings = {   "thing": action.thing,
                         "action": action.uri,
                         "newAInstance": action.uri.replace(">","/instance1>"),
                         "newAuthor": "<http://MySecondWebThing.com>",
@@ -455,7 +457,7 @@ def test_action_instance(graph,reset=False):
     
     result = result and utils.query_FileCompare(graph,fileAddress=RES_SPARQL_QUERY_ALL,message="test_action_instance DELETE INSTANCE")
     logger.info("ENDING TEST_ACTION_INSTANCE")
-    reset_blazegraph(graph)
+    reset_testbase(graph)
     return result
 
 def test_event_instance(graph,reset=False):
@@ -474,7 +476,7 @@ def test_event_instance(graph,reset=False):
     
     # Adding the instances
     for event in events:
-        bindings = {"thing": event.getThing(),
+        bindings = {"thing": event.thing,
                     "event": event.uri,
                     "newEInstance": event.uri.replace(">","/instance1>"),
                     "newOData": event.uri.replace(">","/instance1/OutputData>"),
@@ -514,5 +516,5 @@ def test_event_instance(graph,reset=False):
     
     result = result and utils.query_FileCompare(graph,fileAddress=RES_SPARQL_QUERY_ALL,message="test_event_instance DELETE INSTANCE",show_diff=True)
     logger.info("ENDING TEST_EVENT_INSTANCE")
-    reset_blazegraph(graph)
+    reset_testbase(graph)
     return result

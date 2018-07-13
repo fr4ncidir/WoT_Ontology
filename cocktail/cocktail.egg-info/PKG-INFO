@@ -1,0 +1,42 @@
+Metadata-Version: 2.1
+Name: cocktail
+Version: 0.9
+Summary: Cocktail package
+Home-page: https://github.com/fr4ncidir/WoT_Ontology.git
+Author: Francesco Antoniazzi
+Author-email: francesco.antoniazzi@unibo.it
+License: GNU LGPL
+Description: # Cocktail
+        Within this repository we store all the necessary to start with a Web Of Things implementation. 
+        
+        ### 1. WoT Ontology
+        The file called `wot_ontology.owl` contains the ontology we use to represent things. The Classes are
+        1. `Thing`
+        2. `InteractionPattern` (`Action`, `Event`, `Property`)
+        3. `DataSchema`
+        4. `FieldSchema`
+        
+        And some others that are going to be described in a paper soon.
+        
+        ### 2. Cocktail python3 framework
+        Requiring [Sepy](https://github.com/arces-wot/SEPA-python3-APIs.git), you can use the framework to create applications.
+        First you have to run a SEPA instance, then just read up the documentation of the framework. 
+        
+        You should not need to know SPARQL to use Cocktail. However, for very special needs, in the package there are all the basic SPARQL that the framework uses, from which you can take inspiration, and then apply `sepy` to perform your queries.
+        
+        ##### _Install_
+        Soon available instructions
+        
+        ### 3. Tests
+        For now, tests are available only to check ontology consistency.
+        
+        ### 4. Examples
+        Soon available
+        
+        ### Contribute
+        Feel free to get in touch, if you have any question!
+        
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown

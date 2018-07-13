@@ -30,7 +30,7 @@ import sepy.utils as utils
 import wot_test as test
 import argparse
 import logging
-import constants as cst
+import cocktail.constants as cst
 
 logger = logging.getLogger("ontology_test_log") 
 logging.basicConfig(format='%(levelname)s %(asctime)-15s %(message)s',level=logging.INFO) 
@@ -44,7 +44,7 @@ def main(args):
             return 1
 
     myBZ = Engine(ip=args["ip"])
-    test.reset_blazegraph(myBZ)
+    test.reset_testbase(myBZ)
     
     if args["reset"]:
         result = myBZ.query(cst.SPARQL_QUERY_ALL,destination=cst.RES_SPARQL_QUERY_ALL)

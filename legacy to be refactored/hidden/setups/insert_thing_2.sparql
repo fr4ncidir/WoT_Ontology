@@ -1,0 +1,134 @@
+#	 _____ _     _             ____
+#	|_   _| |__ (_)_ __   __ _|___ \
+#	  | | | '_ \| | '_ \ / _` | __) |
+#	  | | | | | | | | | | (_| |/ __/
+#	  |_| |_| |_|_|_| |_|\__, |_____|
+#	                     |___/
+#	This example inserts a thing into the store.
+#	URI: 										<http://MySecondWebThing.com>
+#	Name: 										'Thing2'
+#	Thing-Description URI: 						<http://MySecondWebThingDescription.com>
+#	Number of Actions: 							1
+#	Number of Events: 							2
+#	Number of Properties: 						2
+#	Action URI: 								<http://MySecondWebThing.com/Action1>
+#	Action Name: 								'Thing2_Action1'
+#	Action InputDataSchema URI:					<http://MySecondWebThing.com/Action1/DataSchema/input>
+#	Action OutputDataSchema URI:				<http://MySecondWebThing.com/Action1/DataSchema/output>
+#	Action InputDataSchema FieldSchema:			foaf --> type wot:OntologyURI
+#	Action OutputDataSchema FieldSchema:		xsd:string - xsd:_
+#	Event 1 URI: 								<http://MySecondWebThing.com/Event1>
+#	Event 1 Name: 								'Thing2_Event1'
+#	Event 1 OutputDataSchema URI:				<http://MySecondWebThing.com/Event1/DataSchema/output>
+# 	Event 1 OutputDataSchema FieldSchema:		xsd:integer --> type xsd:_
+#	Event 2 URI: 								<http://MySecondWebThing.com/Event2>
+#	Event 2 Name: 								'Thing2_Event2'
+#	Event 2 OutputDataSchema URI:				<http://MySecondWebThing.com/Event2/DataSchema/output>
+# 	Event 2 OutputDataSchema FieldSchema:		<http://www.google.it> --> type wot:ResourceURI
+#	Property 1 URI: 							<http://MySecondWebThing.com/Property1>
+#	Property 1 Name: 							'Thing2_Property1'
+#	Property 1 Stability: 						'0'
+#	Property 1 Writability:						'false'
+#	Property 1 forProperty:						<http://MySecondWebThing.com/Action1>
+#	Property 1 PropertyDataSchema URI:			<http://MySecondWebThing.com/Property1/DataSchema/property>
+#	Property 1 PropertyDataSchema FieldSchema:	xsd:Literal --> type xsd:_
+#	Property 1 PropertyData:					<http://MySecondWebThing.com/Property1/PropertyData>
+#	Property 1 initial value: 					'{"json":"content"}'
+#	Property 2 URI: 							<http://MySecondWebThing.com/Property2>
+#	Property 2 Name: 							'Thing2_Property2'
+#	Property 2 Stability: 						'75'
+#	Property 2 Writability: 					'true'
+#	Property 2 forProperty: 					<http://MySecondWebThing.com/Action1>, <http://MySecondWebThing.com/Event1>
+#	Property 2 PropertyDataSchema URI: 			<http://MySecondWebThing.com/Property2/DataSchema/property>
+#	Property 2 PropertyDataSchema FieldSchema: 	xsd:Literal --> type xsd:_
+#	Property 2 PropertyData:					<http://MySecondWebThing.com/Property2/PropertyData>
+#	Property 2 initial value: 					'Whatever kind of binary content'
+
+
+prefix wot: <http://wot.arces.unibo.it/ontology/web_of_things#>
+prefix dul: <http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+prefix foaf: <http://xmlns.com/foaf/0.1/>
+
+insert data {
+	# BASIC INFORMATION
+  <http://MySecondWebThing.com> 	rdf:type wot:Thing, dul:Agent;
+									wot:hasName 'Thing2';
+									wot:hasThingDescription <http://MySecondWebThingDescription.com>.
+  <http://MySecondWebThingDescription.com> 	rdf:type wot:ThingDescription;
+											wot:hasInteractionPattern 	<http://MySecondWebThing.com/Action1>, 
+																	<http://MySecondWebThing.com/Event1>, 
+																	<http://MySecondWebThing.com/Event2>, 
+																	<http://MySecondWebThing.com/Property1>,
+																	<http://MySecondWebThing.com/Property2>;
+											wot:hasAction <http://MySecondWebThing.com/Action1>;
+											wot:hasEvent <http://MySecondWebThing.com/Event1>, <http://MySecondWebThing.com/Event2>;
+											wot:hasProperty <http://MySecondWebThing.com/Property1>, <http://MySecondWebThing.com/Property2>.
+	
+	# ACTION TRIPLES
+  <http://MySecondWebThing.com/Action1> 	rdf:type wot:InteractionPattern, wot:Action;
+											wot:hasName 'Thing2_Action1';
+											wot:hasDataSchema <http://MySecondWebThing.com/Action1/DataSchema/input>, <http://MySecondWebThing.com/Action1/DataSchema/output>;
+											wot:hasInputDataSchema <http://MySecondWebThing.com/Action1/DataSchema/input>;
+											wot:hasOutputDataSchema <http://MySecondWebThing.com/Action1/DataSchema/output>.
+  <http://MySecondWebThing.com/Action1/DataSchema/input> rdf:type wot:DataSchema;
+														 wot:hasFieldSchema foaf: .
+  foaf: rdf:type wot:FieldSchema, wot:OntologyURI.
+  <http://MySecondWebThing.com/Action1/DataSchema/output> 	rdf:type wot:DataSchema;
+															wot:hasFieldSchema xsd:string.
+  xsd:string rdf:type wot:FieldSchema, xsd:_.
+  
+	# EVENT 1 TRIPLES
+  <http://MySecondWebThing.com/Event1> 	rdf:type wot:InteractionPattern, wot:Event;
+										wot:hasName 'Thing2_Event1';
+										wot:hasDataSchema <http://MySecondWebThing.com/Event1/DataSchema/output>;
+										wot:hasOutputDataSchema <http://MySecondWebThing.com/Event1/DataSchema/output>.
+  <http://MySecondWebThing.com/Event1/DataSchema/output> rdf:type wot:DataSchema;
+														 wot:hasFieldSchema xsd:integer.
+  xsd:integer rdf:type wot:FieldSchema, xsd:_.
+  
+	# EVENT 2 TRIPLES
+  <http://MySecondWebThing.com/Event2> 	rdf:type wot:InteractionPattern, wot:Event;
+										wot:hasName 'Thing2_Event2';
+										wot:hasDataSchema <http://MySecondWebThing.com/Event2/DataSchema/output>;
+										wot:hasOutputDataSchema <http://MySecondWebThing.com/Event2/DataSchema/output>.
+  <http://MySecondWebThing.com/Event2/DataSchema/output> rdf:type wot:DataSchema;
+														 wot:hasFieldSchema <http://www.google.it>.
+  <http://www.google.it> rdf:type wot:FieldSchema, wot:ResourceURI.
+  
+	# PROPERTY 1 TRIPLES
+  <http://MySecondWebThing.com/Property1> 	rdf:type wot:InteractionPattern, wot:Property;
+											wot:hasName 'Thing2_Property1';
+											wot:hasStability '0';
+											wot:isWritable 'false';
+											wot:hasDataSchema <http://MySecondWebThing.com/Property1/DataSchema/property>;
+											wot:hasPropertyDataSchema <http://MySecondWebThing.com/Property1/DataSchema/property>;
+											wot:hasData <http://MySecondWebThing.com/Property1/PropertyData>;
+											wot:hasPropertyData <http://MySecondWebThing.com/Property1/PropertyData>.
+  <http://MySecondWebThing.com/Property1/PropertyData> rdf:type wot:PropertyData, dul:InformationObject;
+													   dul:hasDataValue '{"json":"content"}'.
+  <http://MySecondWebThing.com/Property1/DataSchema/property> rdf:type wot:DataSchema;
+															  wot:hasFieldSchema xsd:Literal.
+  xsd:Literal rdf:type wot:FieldSchema, xsd:_.
+  
+	# PROPERTY 2 TRIPLES
+  <http://MySecondWebThing.com/Property2> 	rdf:type wot:InteractionPattern, wot:Property;
+											wot:hasName 'Thing2_Property2';
+											wot:hasStability '75';
+											wot:isWritable 'true';
+											wot:hasDataSchema <http://MySecondWebThing.com/Property2/DataSchema/property>;
+											wot:hasPropertyDataSchema <http://MySecondWebThing.com/Property2/DataSchema/property>;
+											wot:hasData <http://MySecondWebThing.com/Property2/PropertyData>;
+											wot:hasPropertyData <http://MySecondWebThing.com/Property2/PropertyData>.
+  <http://MySecondWebThing.com/Property2/PropertyData> rdf:type wot:PropertyData, dul:InformationObject;
+													   dul:hasDataValue 'Whatever kind of binary content'.
+  <http://MySecondWebThing.com/Property2/DataSchema/property> rdf:type wot:DataSchema;
+															  wot:hasFieldSchema xsd:Literal.
+  # xsd:Literal rdf:type wot:FieldSchema, xsd:_.
+  <http://MySecondWebThing.com/Action1> wot:forProperty <http://MySecondWebThing.com/Property1>, <http://MySecondWebThing.com/Property2>.
+  <http://MySecondWebThing.com/Event1> wot:forProperty <http://MySecondWebThing.com/Property2>.
+  }

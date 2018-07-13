@@ -1,0 +1,818 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://wot.arces.unibo.it/ontology/web_of_things#"
+     xml:base="http://wot.arces.unibo.it/ontology/web_of_things"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:dul="http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#"
+     xmlns:wot="http://wot.arces.unibo.it/ontology/web_of_things#">
+    <owl:Ontology rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#">
+        <owl:versionIRI rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things/2.0"/>
+        <owl:imports rdf:resource="http://www.ontologydesignpatterns.org/ont/dul/DUL.owl"/>
+        <rdfs:comment>Semantic Web of Things Ontology</rdfs:comment>
+        <rdfs:seeAlso rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">https://github.com/fr4ncidir/WoT_Ontology</rdfs:seeAlso>
+        <owl:versionInfo rdf:datatype="http://www.w3.org/2000/01/rdf-schema#Literal">Francesco Antoniazzi &lt;francesco.antoniazzi1991@gmail.com&gt;</owl:versionInfo>
+    </owl:Ontology>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotation properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#action -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#action">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#query"/>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#ysap"/>
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Action"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#action_instance -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#action_instance">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#query"/>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#ysap"/>
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#ActionInstance"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#data_field_schema -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#data_field_schema">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#query"/>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#ysap"/>
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#DataSchema"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#del_property -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#del_property">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#delete"/>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#ysap"/>
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Property"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#del_thing -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#del_thing">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#delete"/>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#ysap"/>
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Thing"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#delete -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#delete"/>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#event -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#event">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#query"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#event_instance -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#event_instance">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#query"/>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#ysap"/>
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#EventInstance"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#interaction_pattern -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#interaction_pattern">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#query"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#new_dataschema -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#new_dataschema">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#update"/>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#ysap"/>
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#DataSchema"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#new_empty_action -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#new_empty_action">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#update"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#new_empty_event -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#new_empty_event">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#update"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#new_i_action -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#new_i_action">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#update"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#new_io_action -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#new_io_action">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#update"/>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#ysap"/>
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Action"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#new_o_action -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#new_o_action">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#update"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#new_o_event -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#new_o_event">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#update"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#new_property -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#new_property">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#update"/>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#ysap"/>
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Property"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#new_subthing -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#new_subthing">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#update"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#new_thing -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#new_thing">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#update"/>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#ysap"/>
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Thing"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#property -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#property">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#query"/>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#ysap"/>
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Property"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#query -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#query"/>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#thing -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#thing">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#query"/>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#ysap"/>
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Thing"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#thing_description -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#thing_description">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#query"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#update -->
+
+    <owl:AnnotationProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#update"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Datatypes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#ysap -->
+
+    <rdfs:Datatype rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#ysap"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#forProperty -->
+
+    <owl:ObjectProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#forProperty">
+        <rdfs:domain>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#Action"/>
+                    <rdf:Description rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#Event"/>
+                </owl:unionOf>
+            </owl:Class>
+        </rdfs:domain>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Property"/>
+        <rdfs:comment xml:lang="en">This ObjectProperty notifies that an Action, or an Event, have some relationship, within their activity, with a Property.</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#hasAction -->
+
+    <owl:ObjectProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#hasAction">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#hasInteractionPattern"/>
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#ThingDescription"/>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Action"/>
+        <rdfs:comment xml:lang="en">Connection between the ThingDescription and its own Actions</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#hasActionInstance -->
+
+    <owl:ObjectProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#hasActionInstance">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#hasInstance"/>
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Action"/>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#ActionInstance"/>
+        <rdfs:comment xml:lang="en">Pointer to ActionInstance</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#hasData -->
+
+    <owl:ObjectProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#hasData">
+        <rdfs:domain>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#Instance"/>
+                    <rdf:Description rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#Property"/>
+                </owl:unionOf>
+            </owl:Class>
+        </rdfs:domain>
+        <rdfs:range rdf:resource="http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#InformationObject"/>
+        <rdfs:comment xml:lang="en">Pointers from actual instances of interactions to their actual parametrization</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#hasDataSchema -->
+
+    <owl:ObjectProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#hasDataSchema">
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#InteractionPattern"/>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#DataSchema"/>
+        <rdfs:comment xml:lang="en">Pointers to Web Things interaction DataSchema</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#hasEvent -->
+
+    <owl:ObjectProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#hasEvent">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#hasInteractionPattern"/>
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#ThingDescription"/>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Event"/>
+        <rdfs:comment xml:lang="en">Connection between the ThingDescription and its own Events</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#hasEventInstance -->
+
+    <owl:ObjectProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#hasEventInstance">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#hasInstance"/>
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Event"/>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#EventInstance"/>
+        <rdfs:comment xml:lang="en">Pointer to EventInstance</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#hasFieldSchema -->
+
+    <owl:ObjectProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#hasFieldSchema">
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#DataSchema"/>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#FieldSchema"/>
+        <rdfs:comment xml:lang="en">Pointer to DataSchema description as a collection of FieldSchemas</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#hasInputData -->
+
+    <owl:ObjectProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#hasInputData">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#hasData"/>
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#ActionInstance"/>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#InputData"/>
+        <rdfs:comment xml:lang="en">Pointer from the new ActionInstance to its input</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#hasInputDataSchema -->
+
+    <owl:ObjectProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#hasInputDataSchema">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#hasDataSchema"/>
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Action"/>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#DataSchema"/>
+        <rdfs:comment xml:lang="en">Pointers to Action input DataSchema description</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#hasInstance -->
+
+    <owl:ObjectProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#hasInstance">
+        <rdfs:domain>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#InteractionPattern"/>
+                    <owl:Class>
+                        <owl:complementOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Property"/>
+                    </owl:Class>
+                </owl:intersectionOf>
+            </owl:Class>
+        </rdfs:domain>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Instance"/>
+        <rdfs:comment xml:lang="en">Pointer to instances of Web Thing interactions</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#hasInteractionPattern -->
+
+    <owl:ObjectProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#hasInteractionPattern">
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#ThingDescription"/>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#InteractionPattern"/>
+        <rdfs:comment xml:lang="en">Connection between the ThingDescription and its own InteractionPatterns</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#hasOutputData -->
+
+    <owl:ObjectProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#hasOutputData">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#hasData"/>
+        <rdfs:domain>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#ActionInstance"/>
+                    <rdf:Description rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#EventInstance"/>
+                </owl:unionOf>
+            </owl:Class>
+        </rdfs:domain>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#OutputData"/>
+        <rdfs:comment xml:lang="en">Pointer from an ActionInstance or EventInstance with their output</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#hasOutputDataSchema -->
+
+    <owl:ObjectProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#hasOutputDataSchema">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#hasDataSchema"/>
+        <rdfs:domain>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#Action"/>
+                    <rdf:Description rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#Event"/>
+                </owl:unionOf>
+            </owl:Class>
+        </rdfs:domain>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#DataSchema"/>
+        <rdfs:comment xml:lang="en">Pointers to Action and Event output DataSchema description</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#hasProperty -->
+
+    <owl:ObjectProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#hasProperty">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#hasInteractionPattern"/>
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#ThingDescription"/>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Property"/>
+        <rdfs:comment xml:lang="en">Connection between the ThingDescription and its own Properties</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#hasPropertyData -->
+
+    <owl:ObjectProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#hasPropertyData">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#hasData"/>
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Property"/>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#PropertyData"/>
+        <rdfs:comment xml:lang="en">Pointer from actual Property to its actual data</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#hasPropertyDataSchema -->
+
+    <owl:ObjectProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#hasPropertyDataSchema">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#hasDataSchema"/>
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Property"/>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#DataSchema"/>
+        <rdfs:comment xml:lang="en">Pointers to Property DataSchema description</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#hasSubThing -->
+
+    <owl:ObjectProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#hasSubThing">
+        <rdfs:subPropertyOf rdf:resource="http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasComponent"/>
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Thing"/>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Thing"/>
+        <rdfs:comment xml:lang="en">Thing A is represented by Thing B in the WoT environment.</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#hasThingDescription -->
+
+    <owl:ObjectProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#hasThingDescription">
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Thing"/>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#ThingDescription"/>
+        <rdfs:comment xml:lang="en">Pointer to WebThing Thing Description</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#requestedBy -->
+
+    <owl:ObjectProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#requestedBy">
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#ActionInstance"/>
+        <rdfs:range rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Thing"/>
+        <rdfs:comment xml:lang="en">Identifies the author of an Action request</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasComponent -->
+
+    <owl:ObjectProperty rdf:about="http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#hasComponent"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#hasCompletionTimeStamp -->
+
+    <owl:DatatypeProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#hasCompletionTimeStamp">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#hasTimeStamp"/>
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#ActionInstance"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTimeStamp"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#hasConfirmationTimeStamp -->
+
+    <owl:DatatypeProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#hasConfirmationTimeStamp">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#hasTimeStamp"/>
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#ActionInstance"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTimeStamp"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#hasName -->
+
+    <owl:DatatypeProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#hasName">
+        <rdfs:domain>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#Action"/>
+                    <rdf:Description rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#Event"/>
+                    <rdf:Description rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#Property"/>
+                    <rdf:Description rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#Thing"/>
+                </owl:unionOf>
+            </owl:Class>
+        </rdfs:domain>
+        <rdfs:range>
+            <rdfs:Datatype>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.w3.org/2000/01/rdf-schema#Literal"/>
+                    <rdf:Description rdf:about="http://www.w3.org/2001/XMLSchema#Name"/>
+                </owl:unionOf>
+            </rdfs:Datatype>
+        </rdfs:range>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#hasRequestTimeStamp -->
+
+    <owl:DatatypeProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#hasRequestTimeStamp">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#hasTimeStamp"/>
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#ActionInstance"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTimeStamp"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#hasStability -->
+
+    <owl:DatatypeProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#hasStability">
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Property"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#unsignedLong"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#hasTimeStamp -->
+
+    <owl:DatatypeProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#hasTimeStamp">
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Instance"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTimeStamp"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#hasValue -->
+
+    <owl:DatatypeProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#hasValue">
+        <rdfs:domain>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#InputData"/>
+                    <rdf:Description rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#OutputData"/>
+                    <rdf:Description rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#PropertyData"/>
+                </owl:unionOf>
+            </owl:Class>
+        </rdfs:domain>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#isWritable -->
+
+    <owl:DatatypeProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#isWritable">
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Property"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#occurredAt -->
+
+    <owl:DatatypeProperty rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#occurredAt">
+        <rdfs:subPropertyOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#hasTimeStamp"/>
+        <rdfs:domain rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#EventInstance"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTimeStamp"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#Action -->
+
+    <owl:Class rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#Action">
+        <rdfs:subClassOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#InteractionPattern"/>
+        <rdfs:comment xml:lang="en">An Action is the synchronous interaction of a Web Thing</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#ActionInstance -->
+
+    <owl:Class rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#ActionInstance">
+        <rdfs:subClassOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Instance"/>
+        <rdfs:comment xml:lang="en">When a user requests a new Action, a new ActionInstance is inserted</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#DataSchema -->
+
+    <owl:Class rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#DataSchema">
+        <rdfs:comment xml:lang="en">Node from which you can get all the information needed to format inputs for an Action, or to interpret outputs from Actions and Events. Similarly, also the value of Properties have their DataSchema.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#Event -->
+
+    <owl:Class rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#Event">
+        <rdfs:subClassOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#InteractionPattern"/>
+        <rdfs:comment xml:lang="en">An Event is the asynchronous interaction of a Web Thing</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#EventInstance -->
+
+    <owl:Class rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#EventInstance">
+        <rdfs:subClassOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#Instance"/>
+        <rdfs:comment xml:lang="en">When a new Event is to be notified, the Web Thing inserts a new EventInstance</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#FieldSchema -->
+
+    <owl:Class rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#FieldSchema">
+        <rdfs:comment xml:lang="en">DataSchemas can be compounds of one or more FieldSchemas. You can embed web resources, graphs, plain binary data</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#InputData -->
+
+    <owl:Class rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#InputData">
+        <rdfs:subClassOf rdf:resource="http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#InformationObject"/>
+        <rdfs:comment xml:lang="en">Node in which you have to put the data needed by an Action to perform its task.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#Instance -->
+
+    <owl:Class rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#Instance">
+        <rdfs:comment xml:lang="en">Instances are triggers for new Event notifications, or new Action requests</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#InteractionPattern -->
+
+    <owl:Class rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#InteractionPattern">
+        <rdfs:comment xml:lang="en">Things interact with the external world according to their InteractionPattern</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#OntologyURI -->
+
+    <owl:Class rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#OntologyURI">
+        <rdfs:subClassOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#FieldSchema"/>
+        <rdfs:comment xml:lang="en">Identifies that data is in a graph form, available in a RDF store whose location is given in the InputData, OutputData or PropertyData. Queries should be made according to the ontology of the actual instance of this same object</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#OutputData -->
+
+    <owl:Class rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#OutputData">
+        <rdfs:subClassOf rdf:resource="http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#InformationObject"/>
+        <rdfs:comment xml:lang="en">Node from which you can find the output value coming from an Action or an Event.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#Property -->
+
+    <owl:Class rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#Property">
+        <rdfs:subClassOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#InteractionPattern"/>
+        <rdfs:comment xml:lang="en">A Property is the static interaction pattern of Web Things.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#PropertyData -->
+
+    <owl:Class rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#PropertyData">
+        <rdfs:subClassOf rdf:resource="http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#InformationObject"/>
+        <rdfs:comment xml:lang="en">Node from which you can find the actual data of a Property, according to the PropertyDataSchema.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#ResourceURI -->
+
+    <owl:Class rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#ResourceURI">
+        <rdfs:subClassOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#FieldSchema"/>
+        <rdfs:comment xml:lang="en">Identifies data types that are only accessible through the web URI of that same instance</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#Thing -->
+
+    <owl:Class rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#Thing">
+        <rdfs:subClassOf rdf:resource="http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Agent"/>
+        <rdfs:comment xml:lang="en">This is the class of Web Things. From this object descriptions based on other ontologies should be attached, to identify location and every other circumstantial quality.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://wot.arces.unibo.it/ontology/web_of_things#ThingDescription -->
+
+    <owl:Class rdf:about="http://wot.arces.unibo.it/ontology/web_of_things#ThingDescription">
+        <rdfs:subClassOf rdf:resource="http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#InformationObject"/>
+        <rdfs:comment xml:lang="en">A ThingDescription is a node in the graph from which you can query all information about a Web Thing. When you perform an HTTP GET on the resource, you obtain a JSON-LD representation of the Thing Description.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Agent -->
+
+    <owl:Class rdf:about="http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#Agent"/>
+    
+
+
+    <!-- http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#InformationObject -->
+
+    <owl:Class rdf:about="http://www.ontologydesignpatterns.org/ont/dul/DUL.owl#InformationObject"/>
+    
+
+
+    <!-- http://www.w3.org/2001/XMLSchema#_ -->
+
+    <owl:Class rdf:about="http://www.w3.org/2001/XMLSchema#_">
+        <rdfs:subClassOf rdf:resource="http://wot.arces.unibo.it/ontology/web_of_things#FieldSchema"/>
+        <rdfs:comment xml:lang="en">Identifies the textual data type, for instance JSON (xsd:Literal), a plain integer (xsd:integer), or more complex data structures as suggested by W3C typesystem.</rdfs:comment>
+    </owl:Class>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 4.2.8.20170104-2310) https://github.com/owlcs/owlapi -->
+
