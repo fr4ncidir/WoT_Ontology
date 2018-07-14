@@ -55,9 +55,9 @@ class DataSchema:
         self._sepa.update(sparql,fB)
         return self
         
-    @staticmethod
-    def getBindingList():
-        _,fB = YSparql(PATH_SPARQL_NEW_PROPERTY).getData()
+    @classmethod
+    def getBindingList(self):
+        _,fB = YSparql(PATH_SPARQL_NEW_PROPERTY,external_prefixes=WotPrefs).getData()
         return fB.keys()
     
     @staticmethod

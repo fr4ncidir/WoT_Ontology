@@ -192,7 +192,7 @@ class Action(InteractionPattern):
         return self._type
     
     @classmethod
-    def getBindingList(action_type):
+    def getBindingList(self,action_type):
         """
         Utility function to know how you have to format the bindings for the constructor.
         """

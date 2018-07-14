@@ -108,13 +108,13 @@ class Event(InteractionPattern):
         return self._type
     
     @classmethod
-    def getBindingList(event_type):
+    def getBindingList(self,event_type):
         """
         Utility function to know how you have to format the bindings for the constructor.
         """
         if event_type not in EType:
             raise ValueError
-        _,fB = bzu.get_yaml_data(PATH_SPARQL_NEW_EVENT_TEMPLATE.format(event_type.value))
+        _,fB = YSparql(PATH_SPARQL_NEW_EVENT_TEMPLATE.format(event_type.value),external_prefixes=WotPrefs).getData()
         return fB.keys()
         
     def deleteInstance(self,instance):
@@ -180,7 +180,7 @@ class Event(InteractionPattern):
         """
         if self._observation_subid is not None:
             logger.info("Stopped observation of {}: id-{}".format(self.uri,self._observation_subid))
-            self._sepa.unsubscribe(self._observation.subid)
-            self._observation.subid = None
+            self._sepa.unsubscribe(self._observation_subid)
+            self._observation_subid = None
         else:
             logger.warning("Observation of {} already stopped".format(self.uri))

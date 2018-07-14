@@ -85,7 +85,7 @@ class InteractionPattern:
     
     @classmethod
     @abstractmethod
-    def getBindingList():
+    def getBindingList(self):
         pass
     
     @staticmethod

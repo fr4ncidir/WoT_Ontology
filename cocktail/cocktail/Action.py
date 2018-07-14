@@ -127,7 +127,7 @@ class Action(InteractionPattern):
         """
         if self._enable_subid is None:
             assert not self.isInferred()
-            logger.message("Enabling Action "+self.uri)
+            logger.info("Enabling Action "+self.uri)
             sparql,fB = YSparql(PATH_SPARQL_QUERY_ACTION_INSTANCE,external_prefixes=WotPrefs).getData(fB_values=self._bindings)
             self._enable_subid = self._sepa.subscribe(sparql,fB=fB,alias=self.uri,handler=self._action_task)
         else:
@@ -142,7 +142,7 @@ class Action(InteractionPattern):
         # unsubscribe to action requests
         if self._enable_subid is not None:
             assert not self.isInferred()
-            logger.message("Disabling Action "+self.uri)
+            logger.info("Disabling Action "+self.uri)
             self._sepa.unsubscribe(self._enable_subid)
             self._enable_subid = None
         else:
@@ -192,7 +192,7 @@ class Action(InteractionPattern):
         return self._type
     
     @classmethod
-    def getBindingList(action_type):
+    def getBindingList(self,action_type):
         """
         Utility function to know how you have to format the bindings for the constructor.
         """

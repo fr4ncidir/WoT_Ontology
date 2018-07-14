@@ -82,8 +82,8 @@ class Property(InteractionPattern):
         return self._bindings["newValue"]
     
     @classmethod
-    def getBindingList():
-        _,fB = bzu.get_yaml_data(cts.PATH_SPARQL_NEW_PROPERTY)
+    def getBindingList(self):
+        _,fB = YSparql(newProperty,external_prefixes=WotPrefs).getData()
         return fB.keys()
 
     @staticmethod

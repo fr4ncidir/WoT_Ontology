@@ -107,3 +107,11 @@ class Thing:
     @property
     def superthing(self):
         return self._superthing
+    
+    @classmethod
+    def getBindingList(self):
+        """
+        Utility function to know how you have to format the bindings for the constructor.
+        """
+        _,fB = YSparql(newThing,external_prefixes=WotPrefs).getData()
+        return fB.keys()

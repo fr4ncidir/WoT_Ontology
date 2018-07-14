@@ -1,7 +1,7 @@
 #!/usr/bin python3
 # -*- coding: utf-8 -*-
 #
-#  new_thing.py
+#  new_thing_example.py
 #  
 #  Copyright 2018 Francesco Antoniazzi <francesco.antoniazzi@unibo.it>
 #  
@@ -28,12 +28,13 @@
 #      |_| |_| |_|_|_| |_|\__, |_|
 #                         |___/
 import sys
-sys.path.append("/home/tarsier/Documents/Work/WoT_Ontology")
 
 from sepy.Sepa import Sepa as Engine
 import sepy.utils as utils
+
 from time import sleep
 from datetime import datetime
+
 from cocktail.Thing import Thing
 from cocktail.DataSchema import DataSchema
 from cocktail.Property import Property
@@ -42,9 +43,6 @@ from cocktail.Event import Event
 
 import threading
 import argparse
-import logging
-
-logger = logging.getLogger("cocktail_log") 
 
 xsd_string = "xsd:string"
 xsd_integer = "xsd:integer"
@@ -57,16 +55,18 @@ def main(args):
     action1 = None
     action1Lock = threading.Lock()
     
-    graph = Engine(  ip = args["ip"],
+    # Here you can find an example of how to fully setup a call to
+    # high level sepy APIs
+    graph = Engine( ip = args["ip"],
                     http_port = args["query_port"],
                     ws_port = args["sub_port"],
-                    security =     {"secure": args["security"], 
-                                    "tokenURI": args["token_uri"], 
-                                    "registerURI": args["registration_uri"]})
+                    security = {"secure": args["security"], 
+                                "tokenURI": args["token_uri"], 
+                                "registerURI": args["registration_uri"]})
     
     if args["clear"]:
         print("Clearing the RDF store...")
-        graph.update("delete where {?a ?b ?c}")
+        graph.clear()
     
     print("Posting DataSchemas...")
     ds1 = DataSchema(graph, { "ds_uri": "<http://MyFirstWebThing.com/Action1/DataSchema/input>",
@@ -101,6 +101,10 @@ def main(args):
                     "newValue": "Hello World!"}).post()
     print("Property added to thing!")
     
+    # Here follows the declaration of two actions. The first one offers a 
+    # full handler, the method called action1Handler. As you can see, action1
+    # is available from outside, as well as a Lock to prevent strange behaviors.
+    # Notice, also, the posting of output and confirmation Timestamps.
     def action1Handler(added,removed):
         action1Lock.acquire()
         if len(added)>0:
@@ -114,7 +118,7 @@ def main(args):
                                         "oValue": instance["iValue"]["value"][::-1],
                                         "oDS": action1.bindings["ods"]})
         action1Lock.release()
-        
+    
     action1 = Action(graph,{"thing": thing1.uri,
                             "td": thing_descriptor,
                             "action": "<http://MyFirstWebThing.com/Action1>",
@@ -124,6 +128,7 @@ def main(args):
                             action1Handler).post().enable()
     print("Action1 added to thing!")
     
+    # In this second example, the handler is a lambda expression.
     action2 = Action(graph,{"thing": thing1.uri,
                             "td": thing_descriptor,
                             "action": "<http://MyFirstWebThing.com/Action2>",
@@ -139,37 +144,35 @@ def main(args):
                             "ods": ds4.uri}).post()
     print("Event added to thing!")
     
-    #input("Continue?")
+    print("Waiting for action requests...")
     
-    # print("Now I'll trigger 10 events, one every 10 seconds. ")
-    # for trigger_event1 in range(10):
-        # print("... Firing event {}".format(trigger_event1))
-        # instance = event1.notify({ "event": event1.uri,
-                        # "newEInstance": event1.uri.replace(">","/instance{}>".format(trigger_event1)),
-                        # "newOData": event1.uri.replace(">","/data{}>".format(trigger_event1)),
-                        # "newValue": str(datetime.utcnow()).replace(" ","T")+"Z",
-                        # "newDS": ds4.uri})
-        # sleep(10)
-        # print("Deleting old event instance...")
-        # event1.deleteInstance(instance)
-    # print("Stopping triggering events!")
-    
-    #input("Continue?")
-    
+    print("Ctrl-C to be prompted for what to do...")
     try:
+        # Wait forever ...
+        event_number = 0
         while True:
-            sleep(10)
+            # firing events...
+            print("... Firing event {}".format(event_number))
+            instance = event1.notify({ "event": event1.uri,
+                "newEInstance": event1.uri.replace(">","/instance{}>".format(event_number)),
+                "newOData": event1.uri.replace(">","/data{}>".format(event_number)),
+                "newValue": str(datetime.utcnow()).replace(" ","T")+"Z",
+                "newDS": ds4.uri})
+            sleep(args["event_timing"])
+            print("Deleting old event instance...")
+            event1.deleteInstance(instance)
+            event_number += 1
     except KeyboardInterrupt:
         print("Bye Bye!")
     
-    # print("Now I'll disable the two actions.")
-    # action1.disable()
-    # action2.disable()
-    # print("Actions disabled!")
+    print("Now I'll disable the two actions.")
+    action1.disable()
+    action2.disable()
+    print("Actions disabled!")
     
-    # print("Now I'll remove the thing.")
-    # thing1.delete()
-    # print("Thing deleted! Only DataSchemas should be remaining in the RDF store.")
+    print("Now I'll remove the thing.")
+    thing1.delete()
+    print("Thing deleted! Only DataSchemas should be remaining in the RDF store.")
     
     return 0
 
@@ -181,6 +184,7 @@ if __name__ == '__main__':
     parser.add_argument("-token_uri", default=None, help="Sepa token uri")
     parser.add_argument("-registration_uri", default=None, help="Sepa registration uri")
     parser.add_argument("-clear",action="store_true",help="Clears the SEPA before anything else")
+    parser.add_argument("-event_timing", default=10, help="Number of seconds between every event notification")
     arguments = vars(parser.parse_args())
     if ((arguments["token_uri"] is not None) and (arguments["registration_uri"] is not None)):
         arguments["security"] = True
