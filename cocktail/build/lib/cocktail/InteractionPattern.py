@@ -53,14 +53,14 @@ class InteractionPattern:
     def td(self):
         return self._bindings["td"]
         
+    @property
+    def thing(self):
+        return self._bindings["thing"] if "thing" in self._bindings.keys() else None    
+    
     @thing.setter
     def thing(self,thingURI):
         self._bindings["thing"] = thingURI
     
-    @property
-    def thing(self):
-        return self._bindings["thing"] if "thing" in self._bindings.keys() else None
-        
     def setSepa(self,new_sepa):
         self._sepa = new_sepa
         

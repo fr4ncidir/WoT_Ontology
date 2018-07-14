@@ -51,7 +51,7 @@ import sepy.utils as utils
 from sepy.Sepa import Sepa as Engine
 from sepy.YSparqlObject import ysparql_to_string as y2str
 
-from .TestCase1_QueryUpdate import reset_testbase
+from .TestCase2_QueryUpdate import reset_testbase
 
 def add_action_instance_ts(graph,instance,action):
     for c in ["confirmation","completion"]:
@@ -67,7 +67,7 @@ def add_action_instance_ts(graph,instance,action):
             return False
     return True
 
-class TestCase2_Subscriptions(unittest.TestCase):
+class TestCase3_Subscriptions(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.engine = Engine()
@@ -223,4 +223,4 @@ class TestCase2_Subscriptions(unittest.TestCase):
         reset_testbase(self.engine)
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(failfast=True)

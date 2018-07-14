@@ -13,6 +13,6 @@ cocktail.egg-info/SOURCES.txt
 cocktail.egg-info/dependency_links.txt
 cocktail.egg-info/requires.txt
 cocktail.egg-info/top_level.txt
-cocktail/tests/TestCase1_QueryUpdate.py
-cocktail/tests/TestCase2_Subscriptions.py
+cocktail/tests/TestCase1_Setup.py
+cocktail/tests/TestCase2_QueryUpdate.py
 cocktail/tests/__init__.py
