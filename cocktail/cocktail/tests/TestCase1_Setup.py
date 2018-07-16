@@ -48,7 +48,16 @@ class TestCase1_Setup(unittest.TestCase):
         super().__init__(*args, **kwargs)
         self.engine = Engine()
         
+    def setUp(self):
+        self.test_0()
+        
     def test_0(self):
+        try:
+            self.engine.query_all()
+        except Exception as e:
+            self.skipTest(str(e))
+            
+    def test_1(self):
         """
         This test checks if the sparql insert of Thing1 and the sum of cocktail sparqls 
         have the same effect in the rdf store.
@@ -116,13 +125,12 @@ class TestCase1_Setup(unittest.TestCase):
         self.assertTrue(compare_queries(query_all_cocktail,query_all_sparql,show_diff=True))
         self.engine.clear()
         
-    def test_1(self):
+    def test_2(self):
         """
         This test checks if the sparql insert of Thing2 and the sum of cocktail sparqls 
         have the same effect in the rdf store.
         """
         thing_descriptor = "<http://MySecondWebThingDescription.com>"
-        
         self.engine.addPrefix("foaf","<http://xmlns.com/foaf/0.1/>")
         self.engine.clear()
         self.engine.update(y2str(SPARQL_INSERT_THING2))
@@ -195,13 +203,12 @@ class TestCase1_Setup(unittest.TestCase):
         self.assertTrue(compare_queries(query_all_cocktail,query_all_sparql,show_diff=True))
         self.engine.clear()
         
-    def test_2(self):
+    def test_3(self):
         """
         This test checks if the sparql insert of Thing3 and the sum of cocktail sparqls 
         have the same effect in the rdf store.
         """
         thing_descriptor = "<http://MyThirdWebThingDescription.com>"
-        
         self.engine.clear()
         self.engine.update(y2str(SPARQL_INSERT_THING3))
         query_all_sparql = self.engine.query_all()
