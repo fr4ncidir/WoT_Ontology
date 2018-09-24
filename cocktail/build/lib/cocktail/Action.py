@@ -110,7 +110,7 @@ class Action(InteractionPattern):
         logger.debug("Posting action {}: {}".format(self.name,self.uri))
         
         if self._forProperties:
-            sparql,fB = YSparql(PATH_SPARQL_ADD_FORPROPERTY,external_prefixes=WotPrefs).getData(fB_values={"ip":self._bindings["action"]})
+            sparql,fB = YSparql(PATH_SPARQL_ADD_FORPROPERTY,external_prefixes=WotPrefs).getData(fB_values={"ip":self._bindings["action"]},noExcept=True)
             properties = []
             for prop in self._forProperties:
                 properties.append(prop.bindings["property"])
@@ -127,7 +127,7 @@ class Action(InteractionPattern):
         """
         if self._enable_subid is None:
             assert not self.isInferred()
-            logger.message("Enabling Action "+self.uri)
+            logger.info("Enabling Action "+self.uri)
             sparql,fB = YSparql(PATH_SPARQL_QUERY_ACTION_INSTANCE,external_prefixes=WotPrefs).getData(fB_values=self._bindings)
             self._enable_subid = self._sepa.subscribe(sparql,fB=fB,alias=self.uri,handler=self._action_task)
         else:
@@ -142,7 +142,7 @@ class Action(InteractionPattern):
         # unsubscribe to action requests
         if self._enable_subid is not None:
             assert not self.isInferred()
-            logger.message("Disabling Action "+self.uri)
+            logger.info("Disabling Action "+self.uri)
             self._sepa.unsubscribe(self._enable_subid)
             self._enable_subid = None
         else:
@@ -180,7 +180,7 @@ class Action(InteractionPattern):
         # This method is not available if the Action is inferred.
         assert not self.isInferred()
         if (ts_type.lower() != "completion") and (ts_type.lower() != "confirmation"):
-            raise ValueError
+            raise ValueError("Only 'completion' and 'confirmation' are valid keys")
         sparql,fB = YSparql(PATH_SPARQL_NEW_TS_TEMPLATE.format(ts_type.lower()),external_prefixes=WotPrefs).getData(fB_values={"aInstance": instance})
         self._sepa.update(sparql,fB)
         

@@ -73,7 +73,7 @@ class Event(InteractionPattern):
         logger.debug("Posting event {}: {}".format(self.name,self.uri))
         
         if self._forProperties:
-            sparql,fB = YSparql(PATH_SPARQL_ADD_FORPROPERTY,external_prefixes=WotPrefs).getData(fB_values={"ip":self._bindings["event"]})
+            sparql,fB = YSparql(PATH_SPARQL_ADD_FORPROPERTY,external_prefixes=WotPrefs).getData(fB_values={"ip":self._bindings["event"]},noExcept=True)
             properties = []
             for prop in self._forProperties:
                 properties.append(prop.bindings["property"])
@@ -180,7 +180,7 @@ class Event(InteractionPattern):
         """
         if self._observation_subid is not None:
             logger.info("Stopped observation of {}: id-{}".format(self.uri,self._observation_subid))
-            self._sepa.unsubscribe(self._observation.subid)
-            self._observation.subid = None
+            self._sepa.unsubscribe(self._observation_subid)
+            self._observation_subid = None
         else:
             logger.warning("Observation of {} already stopped".format(self.uri))

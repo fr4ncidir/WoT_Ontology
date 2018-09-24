@@ -76,13 +76,22 @@ class TestCase2_QueryUpdate(unittest.TestCase):
         super().__init__(*args, **kwargs)
         self.engine = Engine()
         
+    def setUp(self):
+        self.test_0()
+        
     def test_0(self):
+        try:
+            self.engine.query_all()
+        except Exception as e:
+            self.skipTest(str(e))
+        
+    def test_1(self):
         # reset the rdf store, puts the 3 test web things and checks
         print("\nRDF store reset; test backgroung setup and check")
         reset_testbase(self.engine)
         self.assertTrue(utils.query_FileCompare(self.engine,fileAddress=RES_SPARQL_QUERY_ALL))
         
-    def test_1(self):
+    def test_2(self):
         """
         This function performs all the queries available in ./queries folder, and checks the
         corresponding result if there is coincidence. In case of reset==True, results file are 
@@ -103,7 +112,7 @@ class TestCase2_QueryUpdate(unittest.TestCase):
                 log_message=fileName,
                 prefixes=WotPrefs))
     
-    def test_2(self):
+    def test_3(self):
         """
         This function performs checks for adding and removing all is needed for a new web thing.
         In case reset==True, the specific thing query result file is rebuilt.
@@ -132,7 +141,7 @@ class TestCase2_QueryUpdate(unittest.TestCase):
         # at the beginning of this function. So, no need to call reset_testbase
         self.assertTrue(utils.query_FileCompare(self.engine,message="test_thing DELETE",fileAddress=RES_SPARQL_QUERY_ALL))
         
-    def test_3(self):
+    def test_4(self):
         """
         This function performs checks for adding, updating and removing a new Property to a web thing.
         Notice that to do so, it is required to test also DataSchema and FieldSchema updates. Those two classes
@@ -200,7 +209,7 @@ class TestCase2_QueryUpdate(unittest.TestCase):
         self.assertTrue(utils.query_FileCompare(self.engine,message="test_property DELETE",fileAddress=RES_SPARQL_QUERY_ALL_NEW_DATASCHEMA,show_diff=False))
         reset_testbase(self.engine)
         
-    def test_4(self):
+    def test_5(self):
         """
         This function performs checks for adding, updating and removing Actions to a web thing.
         Notice that to do so, it is required to test also DataSchema and FieldSchema updates. Those two classes
@@ -256,7 +265,7 @@ class TestCase2_QueryUpdate(unittest.TestCase):
         self.assertTrue(utils.query_FileCompare(self.engine,message="test_actions DELETE",fileAddress=RES_SPARQL_QUERY_ALL_NEW_DS_ACTIONS))
         reset_testbase(self.engine)
         
-    def test_5(self):
+    def test_6(self):
         """
         This function performs checks for adding, updating and removing Events to a web thing.
         Notice that to do so, it is required to test also DataSchema and FieldSchema updates. Those two classes
@@ -309,7 +318,7 @@ class TestCase2_QueryUpdate(unittest.TestCase):
         self.assertTrue(utils.query_FileCompare(self.engine,message="test_events DELETE",fileAddress=RES_SPARQL_QUERY_ALL_NEW_DS_EVENTS))
         reset_testbase(self.engine)
         
-    def test_6(self):
+    def test_7(self):
         """ 
         The procedure to test the action request/response sequence is the following.
         Given the standard content of the RDF store, we update a new action instance. 
@@ -403,7 +412,7 @@ class TestCase2_QueryUpdate(unittest.TestCase):
         self.assertTrue(utils.query_FileCompare(self.engine,fileAddress=RES_SPARQL_QUERY_ALL,message="test_action_instance DELETE INSTANCE"))
         reset_testbase(self.engine)
     
-    def test_7(self):
+    def test_8(self):
         """ 
         The procedure to test the event throwing/receive sequence is the following.
         Given the standard content of the RDF store, we update a new event instance. 
